@@ -1916,6 +1916,14 @@ Zim_Data <- readRDS('data/ZimbabweOutput_Denominators.RDS') %>%
 countryData <- rbind(Bot_Data,
                      Ken_Data,
                      Les_Data,
-                     Zim_Data)
+                     Zim_Data) %>%
+  pivot_longer(
+    cols = `2019`:`2022`,
+    names_to = c("fiscal_year"), 
+    names_prefix = "F",
+    values_to = "population"
+  )
+
+saveRDS(countryData, file = "data/countryData.RDS")
 
 saveRDS(countryData, file = "data/countryData.RDS")
