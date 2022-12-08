@@ -167,6 +167,12 @@ ui <- fixedPage(
 
 
 server <- function(input, output, session) {
+  
+  AGYW_PREV <- s3read_using(FUN = read.csv,
+                               bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+                               object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
+    as.data.frame()
+  
   params <- reactiveValues(
     country = "Botswana",
     country_SF1 = botADM1.sf,
