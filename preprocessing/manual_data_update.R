@@ -81,7 +81,8 @@ my_data <-
   }) %>% 
   bind_rows()
 
-### A few basic data checks
+### A few basic data checks, if entries are found with no Q4 data, no cumulative data, but Q2 data...
+### or if found with no data at all, pass on tp data managers for QC
 
 noQ4 <- my_data %>% 
   filter(is.na(qtr4))
@@ -101,17 +102,7 @@ NoData <- my_data %>%
 
 ###
 
-# read mer structured data
-# read options
-#read in data, fill in your bucket name and file name (object should hold the name of the file you want to read)
-# my_data <- "MER_Structured_Datasets/Current_Frozen/PSNU_Recent/txt/MER_Structured_Datasets_PSNU_IM_Recent_Ukraine.txt"
-# data <- aws.s3::s3read_using(FUN = readr::read_delim, "|", escape_double = FALSE,
-#                              trim_ws = TRUE, col_types = readr::cols(.default = readr::col_character()
-#                              ), 
-#                              bucket = my_bucket,
-#                              object = my_data)
-# 
-# head(data, 5)
+my_data %>% 
 
 
 # writing --------------
