@@ -52,13 +52,13 @@ print(choices)
 # reset row names
 rownames(choices) <- NULL
 
-choices_recent_countries_all <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Recent/txt/", path_names))
+choices_recent_countries_all_historic <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Historic/txt/", path_names))
 
-choices_recent_countries_all2 <- subset(choices_recent_countries_all, grepl("Botswana|Kenya|Lesotho|Zimbabwe", path_names))
+choices_recent_countries_all2_historic <- subset(choices_recent_countries_all_historic, grepl("Botswana|Kenya|Lesotho|Zimbabwe", path_names))
 
 
-my_data <- 
-  lapply(choices_recent_countries_all2$path_names, function(the_file) {
+my_data_historic <- 
+  lapply(choices_recent_countries_all2_historic$path_names, function(the_file) {
     
     print(the_file)
     
@@ -74,36 +74,132 @@ my_data <-
       filter(country %in% c("Botswana", "Kenya", "Lesotho", "Zimbabwe")) %>%
       filter(!is.na(qtr4)) %>%
       group_by(country, snu1, ageasentered, fiscal_year) %>%
-      summarize(qtr2 = sum(as.numeric(qtr2)),
-                qtr4 = sum(as.numeric(qtr4)),
-                cumulative = sum(as.numeric(cumulative)))
+      summarize(qtr4 = sum(as.numeric(qtr4)))
         
   }) %>% 
-  bind_rows()
+  bind_rows() %>%
+  rename(AGYW_PREV = qtr4) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (snu1 == "Central District" & country == "Botswana") ~ "CENTRAL",
+      (snu1 == "Kgatleng District" & country == "Botswana") ~ "KGATLENG",
+      (snu1 == "Kweneng District" & country == "Botswana") ~ "KWENENG",
+      (snu1 == "North East District" & country == "Botswana") ~ "NORTH EAST",
+      (snu1 == "South East District" & country == "Botswana") ~ "SOUTH EAST",
+      (snu1 == "Southern" & country == "Botswana") ~ "SOUTHERN",
+      (snu1 == "Homa Bay County" & country == "Kenya") ~ "HOMA BAY",
+      (snu1 == "Kiambu County" & country == "Kenya") ~ "KIAMBU",
+      (snu1 == "Kisumu County" & country == "Kenya") ~ "KISUMU",
+      (snu1 == "Migori County" & country == "Kenya") ~ "MIGORI",
+      (snu1 == "Mombasa County" & country == "Kenya") ~ "MOMBASA",
+      (snu1 == "Nairobi County" & country == "Kenya") ~ "NAIROBI CITY",
+      (snu1 == "Siaya County" & country == "Kenya") ~ "SIAYA",
+      (snu1 == "Berea" & country == "Lesotho") ~ "BEREA",
+      (snu1 == "Mafeteng" & country == "Lesotho") ~ "MAFETENG",
+      (snu1 == "Maseru" & country == "Lesotho") ~ "MASERU",
+      (snu1 == "Mohale's Hoek" & country == "Lesotho") ~ "MOHALE'S HOEK",
+      (snu1 == "Bulawayo" & country == "Zimbabwe") ~ "BULAWAYO",
+      (snu1 == "Manicaland" & country == "Zimbabwe") ~ "MANICALAND",
+      (snu1 == "Mashonaland Central" & country == "Zimbabwe") ~ "MASHONALAND CENTRAL",
+      (snu1 == "Matabeleland North" & country == "Zimbabwe") ~ "MATABELELAND NORTH",
+      (snu1 == "Matabeleland South" & country == "Zimbabwe") ~ "MATABELELAND SOUTH",
+      (snu1 == "Midlands" & country == "Zimbabwe") ~ "MIDLANDS"
+    )
+  )
+
+choices_recent_countries_all_recent <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Recent/txt/", path_names))
+
+choices_recent_countries_all2_recent <- subset(choices_recent_countries_all_recent, grepl("Botswana|Kenya|Lesotho|Zimbabwe", path_names))
+
+
+my_data_recent <- 
+  lapply(choices_recent_countries_all2_recent$path_names, function(the_file) {
+    
+    print(the_file)
+    
+    # read the data
+    data <- aws.s3::s3read_using(FUN = readr::read_delim, "|", escape_double = FALSE,
+                                 trim_ws = TRUE, col_types = readr::cols(.default = readr::col_character()
+                                 ), 
+                                 bucket = my_bucket,
+                                 object = the_file)
+    
+    res <- data %>% 
+      filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
+      filter(country %in% c("Botswana", "Kenya", "Lesotho", "Zimbabwe")) %>%
+      filter(!is.na(qtr4)) %>%
+      group_by(country, snu1, ageasentered, fiscal_year) %>%
+      summarize(qtr4 = sum(as.numeric(qtr4)))
+    
+  }) %>% 
+  bind_rows() %>%
+  rename(AGYW_PREV = qtr4) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (snu1 == "Central District" & country == "Botswana") ~ "CENTRAL",
+      (snu1 == "Kgatleng District" & country == "Botswana") ~ "KGATLENG",
+      (snu1 == "Kweneng District" & country == "Botswana") ~ "KWENENG",
+      (snu1 == "North East District" & country == "Botswana") ~ "NORTH EAST",
+      (snu1 == "South East District" & country == "Botswana") ~ "SOUTH EAST",
+      (snu1 == "Southern" & country == "Botswana") ~ "SOUTHERN",
+      (snu1 == "Homa Bay County" & country == "Kenya") ~ "HOMA BAY",
+      (snu1 == "Kiambu County" & country == "Kenya") ~ "KIAMBU",
+      (snu1 == "Kisumu County" & country == "Kenya") ~ "KISUMU",
+      (snu1 == "Migori County" & country == "Kenya") ~ "MIGORI",
+      (snu1 == "Mombasa County" & country == "Kenya") ~ "MOMBASA",
+      (snu1 == "Nairobi County" & country == "Kenya") ~ "NAIROBI CITY",
+      (snu1 == "Siaya County" & country == "Kenya") ~ "SIAYA",
+      (snu1 == "Berea" & country == "Lesotho") ~ "BEREA",
+      (snu1 == "Mafeteng" & country == "Lesotho") ~ "MAFETENG",
+      (snu1 == "Maseru" & country == "Lesotho") ~ "MASERU",
+      (snu1 == "Mohale's Hoek" & country == "Lesotho") ~ "MOHALE'S HOEK",
+      (snu1 == "Bulawayo" & country == "Zimbabwe") ~ "BULAWAYO",
+      (snu1 == "Manicaland" & country == "Zimbabwe") ~ "MANICALAND",
+      (snu1 == "Mashonaland Central" & country == "Zimbabwe") ~ "MASHONALAND CENTRAL",
+      (snu1 == "Matabeleland North" & country == "Zimbabwe") ~ "MATABELELAND NORTH",
+      (snu1 == "Matabeleland South" & country == "Zimbabwe") ~ "MATABELELAND SOUTH",
+      (snu1 == "Midlands" & country == "Zimbabwe") ~ "MIDLANDS"
+    )
+  )
+
+my_data <- rbind(my_data_historic, 
+                 my_data_recent)
 
 ### A few basic data checks, if entries are found with no Q4 data, no cumulative data, but Q2 data...
 ### or if found with no data at all, pass on tp data managers for QC
 
-noQ4 <- my_data %>% 
-  filter(is.na(qtr4))
+# noQ4 <- my_data %>% 
+#   filter(is.na(qtr4))
+# 
+# noQ4orCum <- my_data %>% 
+#   filter((is.na(qtr4)&is.na(cumulative)))
+# 
+# Q2only <- my_data %>% 
+#   filter(is.na(qtr4)) %>%
+#   filter(is.na(cumulative)) %>%
+#   filter(!is.na(qtr2))
+# 
+# NoData <- my_data %>% 
+#   filter(is.na(qtr4)) %>%
+#   filter(is.na(cumulative)) %>%
+#   filter(is.na(qtr2))
 
-noQ4orCum <- my_data %>% 
-  filter((is.na(qtr4)&is.na(cumulative)))
+# Q2only %>% 
+#   write.csv(file = 'q2only.csv')
 
-Q2only <- my_data %>% 
-  filter(is.na(qtr4)) %>%
-  filter(is.na(cumulative)) %>%
-  filter(!is.na(qtr2))
 
-NoData <- my_data %>% 
-  filter(is.na(qtr4)) %>%
-  filter(is.na(cumulative)) %>%
-  filter(is.na(qtr2))
+rm(my_data_historic)
+rm(my_data_recent)
+rm(choices_recent_countries)
+rm(choices_recent_countries_all)
+rm(choices_recent_countries_all_historic)
+rm(choices_recent_countries_all_recent)
+rm(choices_recent_countries_all2)
+rm(choices_recent_countries_all2_historic)
+rm(choices_recent_countries_all2_recent)
+rm(my_data_qs_check)
 
 ###
-
-my_data %>% 
-
 
 # writing --------------
 # write to dreams workspace
@@ -111,7 +207,7 @@ my_data %>%
 print("writing to system dreams...")
 s3write_using(my_data, FUN = write.csv,
               bucket = Sys.getenv("TEST_BUCKET_WRITE"),
-              object = "system_dreams_saturation/write_testing.csv"
+              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv"
 )
 
 
@@ -121,6 +217,6 @@ s3write_using(my_data, FUN = write.csv,
 # print("reading dreams data...")
 # read_testing <- s3read_using(FUN = read.csv,
 #              bucket = Sys.getenv("TEST_BUCKET_WRITE"),
-#              object = "system_dreams_saturation/write_testing.csv") %>% 
+#              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
 #   as.data.frame()
 
