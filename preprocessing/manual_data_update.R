@@ -187,7 +187,8 @@ my_data <- rbind(my_data_historic,
 # Q2only %>% 
 #   write.csv(file = 'q2only.csv')
 
-
+rm(choices)
+rm(cleaned_choices)
 rm(my_data_historic)
 rm(my_data_recent)
 rm(choices_recent_countries)
@@ -219,4 +220,6 @@ s3write_using(my_data, FUN = write.csv,
 #              bucket = Sys.getenv("TEST_BUCKET_WRITE"),
 #              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
 #   as.data.frame()
+
+#rm(read_testing)
 

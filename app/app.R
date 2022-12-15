@@ -5,7 +5,12 @@ library(sf)
 library(DT)
 library(tidyverse)
 
-source("data-run.R", encoding = "utf-8")
+#source("data-run.R", encoding = "utf-8") #Gone?
+#source("s3_read.R")
+source("components.R")
+source("functions.R")
+source("params.R")
+source("data_load.R")
 
 ui <- fixedPage(
   
@@ -168,11 +173,6 @@ ui <- fixedPage(
 
 server <- function(input, output, session) {
   
-  AGYW_PREV <- s3read_using(FUN = read.csv,
-                               bucket = Sys.getenv("TEST_BUCKET_WRITE"),
-                               object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
-    as.data.frame()
-  
   params <- reactiveValues(
     country = "Botswana",
     country_SF1 = botADM1.sf,
@@ -243,7 +243,7 @@ server <- function(input, output, session) {
   
   countryDataFiltered <- reactive({
     req(input$country)
-    selected_data <- countryData %>%
+    selected_data <- countryDataJoined %>%
       dplyr::filter(country == input$country)
   })
   
@@ -341,6 +341,25 @@ server <- function(input, output, session) {
   output$params_catchmentModifierFlag <- renderText(params$catchmentModifierFlag)
   output$params_enrollmentModifierFlag <- renderText(params$enrollmentModifierFlag)
   output$params_doubleGradModifierFlag <- renderText(params$doubleGradModifierFlag)
+  
+  ### DOWNLOAD HANDLERS
+  
+  output$blankTemplateDownload <- downloadHandler(
+    filename = function() {
+      'blankTemplate.xlsx'
+    },
+    
+    content = function(file) {
+      file.copy('blankTemplate.xlsx', file)
+    } #removed contentType parameter. Works?
+    
+  )
+  
+
+  
+  
+  
+  
   
   
 }

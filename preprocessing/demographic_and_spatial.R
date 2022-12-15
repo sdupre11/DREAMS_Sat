@@ -573,7 +573,7 @@ merged.6 <- rbind(merged.5a,
 
 ##Export Results
 #For any manual checking
-write_excel_csv(merged.6, file = "BotswanaOutput_Denominators.csv")
+#write_excel_csv(merged.6, file = "BotswanaOutput_Denominators.csv") #purely for external inspection
 #For import to app
 saveRDS(merged.6, file = "BotswanaOutput_Denominators.RDS")
 
@@ -1103,7 +1103,7 @@ merged.6 <- rbind(merged.5a,
 
 ##Export Results
 #For any manual checking
-write_excel_csv(merged.6, file = "KenyaOutput_Denominators.csv")
+#write_excel_csv(merged.6, file = "KenyaOutput_Denominators.csv") #purely for external inspection
 #For import to app
 saveRDS(merged.6,file = "KenyaOutput_Denominators.RDS")
 
@@ -1414,11 +1414,17 @@ merged.5b <- adjust_ages(merged.4b)
 merged.6 <- rbind(merged.5a,
                   merged.5b)
 
+merged.7 <- merged.6 %>%
+  filter((country!="Lesotho" | AREA_NAME %in% c("BEREA", 
+                                                "MAFETENG",
+                                                "MASERU",
+                                                "MOHALE'S HOEK")))
+
 ##Export Results
 #For any manual checking
-write_excel_csv(merged.6, file = "LesothoOutput_Denominators.csv")
+#write_excel_csv(merged.7, file = "LesothoOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6,file = "LesothoOutput_Denominators.RDS")
+saveRDS(merged.7,file = "LesothoOutput_Denominators.RDS")
 
 ###############################
 ####ZIMBABWE
@@ -1896,7 +1902,7 @@ merged.6 <- rbind(merged.5a,
 
 ##Export Results
 #For any manual checking
-write_excel_csv(merged.6, file = "ZimbabweOutput_Denominators.csv")
+#write_excel_csv(merged.6, file = "ZimbabweOutput_Denominators.csv")  #purely for external inspection
 #For import to app
 saveRDS(merged.6,file = "ZimbabweOutput_Denominators.RDS")
 
@@ -1916,7 +1922,9 @@ Zim_Data <- readRDS('data/ZimbabweOutput_Denominators.RDS') %>%
 countryData <- rbind(Bot_Data,
                      Ken_Data,
                      Les_Data,
-                     Zim_Data) %>%
+                     Zim_Data) 
+
+countryData <- countryData %>%
   pivot_longer(
     cols = `2019`:`2022`,
     names_to = c("fiscal_year"), 
@@ -1924,6 +1932,10 @@ countryData <- rbind(Bot_Data,
     values_to = "population"
   )
 
-saveRDS(countryData, file = "data/countryData.RDS")
+countryData$fiscal_year <- countryData$fiscal_year %>%
+  as.numeric()
 
-saveRDS(countryData, file = "data/countryData.RDS")
+saveRDS(countryData, file = "app/data/countryData.RDS")
+
+
+
