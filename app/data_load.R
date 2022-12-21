@@ -17,20 +17,16 @@ botADM1.sf <- readRDS('data/BotswanaADM1.RDS')
 botADM2.sf <- readRDS('data/BotswanaADM2.RDS')
 kenADM1.sf <- readRDS('data/KenyaADM1.RDS')
 kenADM2.sf <- readRDS('data/KenyaADM2.RDS')
-kenADM1.sf <- readRDS('data/LesothoADM1.RDS')
+lesADM1.sf <- readRDS('data/LesothoADM1.RDS')
 zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS')
 zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS')
 
-Ages <- c(10:24) 
-`2018` <- rep(20,15)
-`2019` <- rep(20,15)
-`2020` <- rep(20,15)
-`2021` <- rep(20,15)
-`2022` <- rep(20,15)
+dataParameters_1Year <- dataParametersImportandMutate("www/defaultTemplate_1year.xlsx") %>%
+  dataParametersPivot1Year()
 
-structure_table <- data.frame(Ages,
-                              `2018`,
-                              `2019`,
-                              `2020`,
-                              `2021`,
-                              `2022`)
+dataParameters_5Year  <- dataParametersImportandMutate("www/defaultTemplate_5year.xlsx") %>%
+  dataParametersPivot5Year()
+
+small_countries <- c("Lesotho")
+medium_countries <- c("Zimbabwe")
+large_countries <- c("Botswana", "Kenya")
