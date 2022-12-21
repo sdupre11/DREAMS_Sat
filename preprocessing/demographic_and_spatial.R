@@ -57,31 +57,6 @@ adjust_ages <- function(x) {
       ))
 }
 
-#Age table setup
-Ages <- c(10:24) 
-`2018` <- rep(20,15)
-`2019` <- rep(20,15)
-`2020` <- rep(20,15)
-`2021` <- rep(20,15)
-`2022` <- rep(20,15)
-
-structure_table <- data.frame(Ages,
-                              `2018`,
-                              `2019`,
-                              `2020`,
-                              `2021`,
-                              `2022`)
-
-structure_table_modal <- data.frame(Ages,
-                                    `2018`,
-                                    `2019`,
-                                    `2020`,
-                                    `2021`,
-                                    `2022`)
-
-saveRDS(structure_table, file = "structure_table.RDS")
-saveRDS(structure_table_modal, file = "structure_table_modal.RDS")
-
 ####COTE D'IVOIRE [Not currently in subnat estimates] [Will need to adjust for fact that ADM2s are the PEPFAR units]
 ####ESWATINI [Not currently in subnat estimates]
 ####HAITI
