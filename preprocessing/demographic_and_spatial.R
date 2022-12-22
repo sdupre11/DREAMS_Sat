@@ -65,7 +65,6 @@ adjust_ages <- function(x) {
 ####NAMIBIA
 ####RWANDA
 ####SOUTH AFRICA
-####SOUTH SUDAN [This is from BHA, check format and content]
 ####TANZANIA
 ####UGANDA [Will need to adjust for fact that ADM2s are the PEPFAR units]
 ####ZAMBIA
@@ -1920,6 +1919,9 @@ saveRDS(countryData, file = "app/data/countryData.RDS")
 
 
 #### NEIGHBORS LOOKUP PREPROCESSING ----
+
+neighborsLookupLesotho %>%
+  saveRDS(file='preprocessing/neighborsLookupforFausto_DELETEME.RDS')
 
 neighborsLesotho_Berea <- neighborsLookupLesotho %>%
   filter(BereaNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho)) 

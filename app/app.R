@@ -250,6 +250,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
   ),
   fluidRow(
     column(12,
+           textOutput("testprint"),
            strong("Pop Structure Type:"),
            textOutput("params_popStructureType"),
            strong("Catchment Flag:"),
@@ -271,6 +272,7 @@ server <- function(input, output, session) {
     country_SF2 = botADM2.sf, #Adapt to allow for Lesotho case
     popStructureType = "Default",
     catchmentModifierFlag = FALSE,
+    catchmentModifierFlaggedDistricts = NULL,
     enrollmentModifierFlag = 0,
     doubleGradModifierFlag = 0
   )
@@ -280,6 +282,14 @@ server <- function(input, output, session) {
   )
   
   workingDataPost <- reactiveValues(
+    data = NULL
+  )
+  
+  workingDataTempSelected <- reactiveValues(
+    data = NULL
+  )
+  
+  workingDataTempUnselected <- reactiveValues(
     data = NULL
   )
   
@@ -421,18 +431,26 @@ server <- function(input, output, session) {
     
   )
   
+  catchmentDistricts <- reactive({
+    a = input$checkGroup_catchment
+    return(a)
+  })
+  
+  output$testprint <- renderText(catchmentDistricts())
+  
   observeEvent(input$initializeSelection, {
     req(workingDataPost)
-
+    
     workingDataPost$data <- workingDataPost$data %>%
       mutate(
         IsSelected = case_when(
-          ((PopStructure == popStructureChoice()) & populationtx == popCatchmentChoice()) ~ as.character("Selected"),
+          ((PopStructure == popStructureChoice()) & (AREA_NAME %in% catchmentDistricts()) & (populationtx == "Expanded")) ~ as.character("Selected"),
+          ((PopStructure == popStructureChoice()) & (!(AREA_NAME %in% catchmentDistricts())) & (populationtx == "DistrictOnly")) ~ as.character("Selected"),
           TRUE ~ as.character("Unselected")
         )
       )
   })
-  
+
   data_stats_COP <- eventReactive(input$initializeSelection, {
     
     selected_data <- workingDataPost$data %>%
@@ -634,16 +652,6 @@ server <- function(input, output, session) {
       addFullscreenControl()
   })
   
-  # output$popStructure_NatPlot <- renderPlot({
-  #   req(workingDataPost)
-  #   # make so can select a District for Custom plots
-  #   a <- workingDataPost$data %>%
-  #     ggplot(
-  #       aes(x = )
-  #     )
-  # 
-  # })
-  
   
   output$map_catchments <- leaflet::renderLeaflet({
     a <- leaflet() %>%
@@ -653,11 +661,11 @@ server <- function(input, output, session) {
   catchments_filtered <- reactive(
     a <- neighborsLookup[neighborsLookup$parent %in% input$checkGroup_catchment, ])
 
-  catchmentListener <- reactive({
+  catchmentMapListener <- reactive({
     list(input$country, catchments_filtered())
   })
   
-  observeEvent(catchmentListener(), {
+  observeEvent(catchmentMapListener(), {
     
     if (input$country == "Botswana") {
       selected_country <- botADM1.sf
