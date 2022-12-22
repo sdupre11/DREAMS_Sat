@@ -38,17 +38,36 @@ ui <- fluidPage(#style = "max-width: 800px;",
   ),
   fluidRow(
     column(12,
-           actionButton("useDefaultParameters",
-                        "Use defaults"),
-           actionButton("initializeSelection",
-                        "initialize selection"))
-  ),
-  fluidRow(
-    column(12,
            glide(
-             height = "450px",
+             height = "600px",
              shinyglide::screen(
-               strong("Step 0"),
+               column(4,
+                      strong("Step 0: Select Your Country"),
+                      selectInput("country",
+                                  "Country",
+                                  selected = "Botswana",
+                                  choices = c("Botswana",
+                                              #"Cote d'Ivoire",
+                                              #"Eswatini",
+                                              #"Haiti",
+                                              "Kenya",
+                                              "Lesotho",
+                                              #"Malawi",
+                                              #"Mozambique",
+                                              #"Namibia",
+                                              #"Rwanda",
+                                              #"South Africa",
+                                              #"South Sudan",
+                                              #"Tanzania",
+                                              #"Uganda",
+                                              #"Zambia",
+                                              "Zimbabwe"))),
+               column(8,
+                      h3("DREAMS Districts"),
+                      leafletOutput("map_main"))
+             ),
+             shinyglide::screen(
+               strong("Step 1"),
                br(),
                strong("Import Saved Parameters"),
                br(),
@@ -59,48 +78,57 @@ ui <- fluidPage(#style = "max-width: 800px;",
                             "Import save token?"),
                br(),
                br(),
-               strong("Step 1"),
-               selectInput("country",
-                           "Select Country",
-                           selected = "Botswana",
-                           choices = c("Botswana",
-                                       #"Cote d'Ivoire",
-                                       #"Eswatini",
-                                       #"Haiti",
-                                       "Kenya",
-                                       "Lesotho",
-                                       #"Malawi",
-                                       #"Mozambique",
-                                       #"Namibia",
-                                       #"Rwanda",
-                                       #"South Africa",
-                                       #"South Sudan",
-                                       #"Tanzania",
-                                       #"Uganda",
-                                       #"Zambia",
-                                       "Zimbabwe"))
+               actionButton("useDefaultParameters",
+                            "Use defaults"),
+               br(),
+               br(),
+               actionButton("initializeSelection",
+                            "initialize selection")
              ),
              shinyglide::screen(
-               strong("Step 2"),
-               radioButtons("structure",
-                            "Set Population Structure:",
-                            c("Simplified (Even 20%)" = "Default",
-                              "Match National" = "National",
-                              "Custom" = "Custom")),
-               conditionalPanel(
-                 condition = "input.structure == 'custom'",
-                 strong("Custom Structure step 2a"),
-                 p("Download blank population\nstructure worksheet"),
-                 downloadButton("blankTemplateDownloadStructure",
-                                "Download blank template"),
-                 br(),
-                 br(),
-                 strong("Step 2b"),
-                 p("Open worksheet in Excel, fill out 'proportion' column and save"),
-                 strong("Step 2c"),
-                 p("Upload completed population\nstructure worksheet"),
-                 actionButton("completedTemplateUploadStructure",
-                              "Upload completed template"))
+               column(4, 
+                      strong("Step 2"),
+                      radioButtons("structure",
+                                   "Set Population Structure:",
+                                   c("Default (20%)" = "Default",
+                                     "Match National" = "National",
+                                     "Custom" = "Custom")),
+                      conditionalPanel(
+                        condition = "input.structure == 'Custom'",
+                        strong("Custom Structure step 2a"),
+                        p("Download blank population\nstructure worksheet"),
+                        downloadButton("blankTemplateDownloadStructure",
+                                       "Download blank template"),
+                        br(),
+                        br(),
+                        strong("Step 2b"),
+                        p("Open worksheet in Excel, fill out 'proportion' column and save"),
+                        strong("Step 2c"),
+                        p("Upload completed population\nstructure worksheet"),
+                        actionButton("completedTemplateUploadStructure",
+                                     "Upload completed template"))),
+               column(8, 
+                      fluidRow(
+                        selectInput("popStructureYear",
+                                    "Select a year:",
+                                    selected = 2022,
+                                    choices = c(2019,
+                                                2020,
+                                                2021,
+                                                2022)),
+                        selectInput("popStructureDistrict",
+                                    "Select a district (custom only):",
+                                    selected = "",
+                                    choices = ""
+                        )),
+                      fluidRow(
+                        column(4,
+                               plotOutput("popStructure_DefaultPlot")),
+                        column(4,
+                               plotOutput("popStructure_NationalPlot")),
+                        column(4,
+                               plotOutput("popStructure_CustomPlot"))
+                      ))
                ),
              shinyglide::screen(
                strong("Step 3"),
@@ -199,10 +227,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
     )
   ),
   fluidRow(
-    column(5,
-           h3("DREAMS Districts"),
-           leafletOutput("map_main")),
-    column(7,
+    column(12,
            fluidRow(
              h3("2022 Figures for COP Export"),
              strong("NOTE: Exports will only include displayed content. Set to display all desired content before exporting."),
@@ -286,6 +311,12 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$country, {
+    updateSelectInput(session,
+                      "popStructureDistrict",
+                      choices = districts())
+  })
+  
+  observeEvent(input$country, {
     
     updateCheckboxGroupInput(session, 
                              "checkGroup_eligibility", 
@@ -312,61 +343,6 @@ server <- function(input, output, session) {
       dplyr::filter(country == input$country)
   })
   
-  data_stats_COP <- eventReactive(input$initializeSelection, {
-
-    selected_data <- workingDataPost$data %>%
-      reduceToCOPExport()
-  })
-  
-
-  
-  
-  # Maps ----
-  
-  output$map_main <- leaflet::renderLeaflet({
-    a <- leaflet() %>%
-      #addTiles() %>%
-      setMapWidgetStyle(list(background = "white"))
-  })
-  
-  observeEvent(input$country, {
-    
-    if (input$country == "Botswana") {
-      selected_country <- botADM1.sf
-    } else if (input$country == "Kenya") {
-      selected_country <- kenADM1.sf
-    } else if (input$country == "Lesotho") {
-      selected_country <- lesADM1.sf
-    } else if (input$country == "Zimbabwe") {
-      selected_country <- zimADM1.sf
-    }
-    
-    if (input$country %in% small_countries) {
-      selected_zoom <- 7
-    } else if (input$country %in% medium_countries) {
-      selected_zoom <- 6
-    } else if (input$country %in% large_countries) {
-      selected_zoom <- 5
-    }
-    
-    
-    leafletProxy("map_main",
-                 data = selected_country) %>%
-      clearShapes() %>%
-      addPolygons(color = "#444444",
-                  weight = 1,
-                  opacity = 1,
-                  fillOpacity = 0.8,
-                  fillColor = "#FF6663",
-                  highlightOptions = highlightOptions(color = "white",
-                                                      weight = 3,
-                                                      bringToFront = TRUE)) %>%
-      setView(lng = mean(st_bbox(selected_country)[c(1,3)]),
-              lat = mean(st_bbox(selected_country)[c(2,4)]),
-              zoom = selected_zoom) %>%
-      setMapWidgetStyle(list(background = "white")) %>%
-      addFullscreenControl()
-  })
 
   # Update parameters ----
   observeEvent(input$country, {
@@ -390,7 +366,8 @@ server <- function(input, output, session) {
     workingDataPre$data <- attachParameters_5year(countryDataFiltered(),
                                                dataParameters_5Year) %>%
       reshapeWide() %>%
-      attachParameters_1year(dataParameters_1Year)
+      attachParameters_1year(dataParameters_1Year) %>%
+      merge(SingleYearNatAGYWPops)
     
     
     workingDataPost$data <- workingDataPre$data %>%
@@ -450,6 +427,13 @@ server <- function(input, output, session) {
       )
   })
   
+  data_stats_COP <- eventReactive(input$initializeSelection, {
+    
+    selected_data <- workingDataPost$data %>%
+      reduceToCOPExport()
+  })
+  
+  
   output$workingDataPost_check <- DT::renderDataTable({
     req(workingDataPost)
     
@@ -458,7 +442,7 @@ server <- function(input, output, session) {
     )
   })
   
-  # Render tables
+  # Render tables ----
   
   output$stats_COP <- DT::renderDataTable({
     req(data_stats_COP())
@@ -469,10 +453,194 @@ server <- function(input, output, session) {
               extensions = 'Buttons', 
               options = list(
                 dom = 'Blfrtip',
-                buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                buttons = c('excel', 'pdf'),
                 scrollx = TRUE)
               )
   })
+  
+  # Render plots ----
+
+  output$popStructure_DefaultPlot <- renderPlot({
+
+    age <- c(10:29)
+    prop <- rep(20, 20)
+    sequence <- c("10-14", "15-19", "20-24", "25-29")
+    ageasentered <- rep(sequence, each = 5)
+    
+    defaultDF <- data.frame(age, 
+                            prop,
+                            ageasentered)
+    
+    # make so can select a District for Custom plots
+    a <- defaultDF %>%
+      ggplot(
+        aes(
+          x = age,
+          y = prop,
+          fill = ageasentered)) + 
+      geom_bar(stat="identity") +
+      coord_flip() +
+      scale_fill_manual(
+        values = alpha(c("10-14" = "#FF6663",
+                         "15-19" = "#FFBA49",
+                         "20-24" = "#FF6663",
+                         "25-29" = "#FFBA49"),
+                       .8)
+                   ) +
+      ggtitle("Default",
+              subtitle = "20% distribution") +
+      xlab("Age band") +
+      ylab("Proportion of cohort") +
+      lims(y = c(0, 30)) +
+      theme_plot(legend.position = "none")
+      
+    return(a)
+  })
+  
+  output$popStructure_NationalPlot <- renderPlot({
+    
+    natDF <- SingleYearNatAGYWPops %>%
+      prepQDataforPopStructurePlots() %>%
+      filter(fiscal_year==input$popStructureYear & country == input$country)
+      # filter(fiscal_year==!!input$popStructureYear)
+
+    a <- natDF %>%
+      ggplot(
+        aes(
+          x = age,
+          y = prop,
+          fill = ageasentered)) +
+      geom_bar(stat="identity") +
+      coord_flip() +
+      scale_fill_manual(
+        values = alpha(c("10-14" = "#FF6663",
+                         "15-19" = "#FFBA49",
+                         "20-24" = "#FF6663",
+                         "25-29" = "#FFBA49"),
+                       .8)
+      ) +
+      ggtitle("National",
+              subtitle = "Match national distribution") +
+      xlab("") +
+      ylab("") +
+      lims(y = c(0, 30)) +
+      theme_plot(legend.position = "none")
+
+    return(a)
+  })
+  
+  output$popStructure_CustomPlot <- renderPlot({
+    
+    custDF <- dataParameters_1Year %>%
+      prepQDataforPopStructurePlots() %>%
+      filter(fiscal_year==input$popStructureYear & Country == input$country & District == input$popStructureDistrict)
+    
+    a <- custDF %>%
+      ggplot(
+        aes(
+          x = age,
+          y = prop,
+          fill = ageasentered)) +
+      geom_bar(stat="identity") +
+      coord_flip() +
+      scale_fill_manual(
+        values = alpha(c("10-14" = "#FF6663",
+                         "15-19" = "#FFBA49",
+                         "20-24" = "#FF6663",
+                         "25-29" = "#FFBA49"),
+                       .8)
+      ) +
+      ggtitle("Custom",
+              subtitle = "Uploaded distribution") +
+      xlab("") +
+      ylab("") +
+      lims(y = c(0, 30)) +
+      theme_plot(legend.position = "none")
+    
+    return(a)
+  })
+
+  # Render maps ----
+  
+  output$map_main <- leaflet::renderLeaflet({
+    a <- leaflet() %>%
+      #addTiles() %>%
+      setMapWidgetStyle(list(background = "white"))
+  })
+  
+  observeEvent(input$country, {
+    
+    if (input$country == "Botswana") {
+      selected_country <- botADM1.sf
+    } else if (input$country == "Kenya") {
+      selected_country <- kenADM1.sf
+    } else if (input$country == "Lesotho") {
+      selected_country <- lesADM1.sf
+    } else if (input$country == "Zimbabwe") {
+      selected_country <- zimADM1.sf
+    }
+    
+    selected_country_DREAMS <- selected_country %>%
+      filter(DREAMSDistrict == "Yes")
+    
+    selected_country_NonDREAMS <- selected_country %>%
+      filter(DREAMSDistrict == "No")
+    
+    if (input$country %in% small_countries) {
+      selected_zoom <- 7
+    } else if (input$country %in% medium_countries) {
+      selected_zoom <- 6
+    } else if (input$country %in% large_countries) {
+      selected_zoom <- 5
+    }
+    
+    popup_DREAMS <- paste0("<strong>DREAMS District: </strong>", 
+                           selected_country_DREAMS$AREA_NAME)
+    
+    popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>", 
+                              selected_country_NonDREAMS$AREA_NAME)
+    
+    
+    leafletProxy("map_main"#,
+                 #data = selected_country
+    ) %>%
+      clearShapes() %>%
+      clearControls() %>%
+      addPolygons(data = selected_country_DREAMS,
+                  color = "black",
+                  fillColor = "#FF6663",
+                  weight = 1,
+                  opacity = 1,
+                  fillOpacity = 0.8,
+                  popup = popup_DREAMS,
+                  highlightOptions = highlightOptions(color = "white",
+                                                      weight = 2,
+                                                      bringToFront = TRUE)) %>%
+      addPolygons(data = selected_country_NonDREAMS,
+                  color = "black",
+                  fillColor = "white",
+                  weight = 1,
+                  opacity = 1,
+                  fillOpacity = 0.8,
+                  popup = popup_NonDREAMS) %>%
+      setView(lng = mean(st_bbox(selected_country)[c(1,3)]),
+              lat = mean(st_bbox(selected_country)[c(2,4)]),
+              zoom = selected_zoom) %>%
+      setMapWidgetStyle(list(background = "white")) %>%
+      addFullscreenControl()
+  })
+  
+  # output$popStructure_NatPlot <- renderPlot({
+  #   req(workingDataPost)
+  #   # make so can select a District for Custom plots
+  #   a <- workingDataPost$data %>%
+  #     ggplot(
+  #       aes(x = )
+  #     )
+  # 
+  # })
+
+  
   
   # Download handlers ----
   
