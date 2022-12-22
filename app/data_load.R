@@ -1,3 +1,30 @@
+DREAMS_Districts_Botswana <- c("CENTRAL", 
+                               "KGATLENG", 
+                               "KWENENG", 
+                               "NORTH EAST", 
+                               "SOUTH EAST", 
+                               "SOUTHERN")
+
+DREAMS_Districts_Kenya <- c("HOMA BAY", 
+                            "KIAMBU", 
+                            "KISUMU", 
+                            "MIGORI", 
+                            "MOMBASA", 
+                            "NAIROBI CITY", 
+                            "SIAYA")
+
+DREAMS_Districts_Lesotho <- c("BEREA", 
+                              "MAFETENG",
+                              "MASERU",
+                              "MOHALE'S HOEK")
+
+DREAMS_Districts_Zimbabwe <- c("BULAWAYO", 
+                               "MANICALAND", 
+                               "MASHONALAND CENTRAL", 
+                               "MATABELELAND NORTH", 
+                               "MATABELELAND SOUTH", 
+                               "MIDLANDS")
+
 
 
 countryData <- readRDS("data/countryData.RDS")
@@ -13,19 +40,29 @@ countryDataJoined <- left_join(countryData,
   select(-c("snu1",
             "X"))
 
-botADM1.sf <- readRDS('data/BotswanaADM1.RDS')
-botADM2.sf <- readRDS('data/BotswanaADM2.RDS')
-kenADM1.sf <- readRDS('data/KenyaADM1.RDS')
-kenADM2.sf <- readRDS('data/KenyaADM2.RDS')
-lesADM1.sf <- readRDS('data/LesothoADM1.RDS')
-zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS')
-zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS')
+botADM1.sf <- readRDS('data/BotswanaADM1.RDS') %>%
+  attachDREAMSField("Botswana")
+botADM2.sf <- readRDS('data/BotswanaADM2.RDS') %>%
+  attachDREAMSField("Botswana")
+kenADM1.sf <- readRDS('data/KenyaADM1.RDS') %>%
+  attachDREAMSField("Kenya")
+kenADM2.sf <- readRDS('data/KenyaADM2.RDS') %>%
+  attachDREAMSField("Kenya")
+lesADM1.sf <- readRDS('data/LesothoADM1.RDS') %>%
+  attachDREAMSField("Lesotho")
+zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS') %>%
+  attachDREAMSField("Zimbabwe")
+zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS') %>%
+  attachDREAMSField("Zimbabwe")
 
 dataParameters_1Year <- dataParametersImportandMutate("www/defaultTemplate_1year.xlsx") %>%
   dataParametersPivot1Year()
 
 dataParameters_5Year  <- dataParametersImportandMutate("www/defaultTemplate_5year.xlsx") %>%
   dataParametersPivot5Year()
+
+SingleYearNatAGYWPops <- readRDS('data/SingleYearNationalAGYWPops.RDS')
+
 
 small_countries <- c("Lesotho")
 medium_countries <- c("Zimbabwe")

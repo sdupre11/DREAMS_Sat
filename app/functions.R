@@ -1,4 +1,31 @@
-#CONTENT HERE
+# Attach DREAMS identity field to shapefiles ----
+
+attachDREAMSField <- function(x, y) {
+  a <- x
+  
+  a$DREAMSDistrict <- "No"
+  
+  if (y == "Botswana") {
+    internal_list <- DREAMS_Districts_Botswana
+  } else if (y == "Kenya") {
+    internal_list <- DREAMS_Districts_Kenya
+  } else if  (y == "Lesotho") {
+    internal_list <- DREAMS_Districts_Lesotho
+  } else if (y == "Zimbabwe") {
+    internal_list <- DREAMS_Districts_Zimbabwe
+  }
+  
+  b <- a %>%
+    mutate(
+      DREAMSDistrict = case_when(
+        (ADM1_NAME %in% internal_list) ~ as.character("Yes"),
+        TRUE ~ as.character("No")
+      )
+    )
+    
+    
+}
+
 
 dataParametersImportandMutate <- function(x) {
   
@@ -15,6 +42,8 @@ dataParametersImportandMutate <- function(x) {
 }
 
 ##############################
+
+# Integrate custom data table for population structure ----
 
 dataParametersPivot1Year <- function(x) {
   
@@ -262,7 +291,6 @@ deriveStatisticsPreSat <- function(x) {
   a$DeDuplicatedAGYW_PREV_2022 <- round(a$AGYW_PREV_2022 * ((100-a$PSDC_2022)/100),
                                        0)
 
-  
   return(a)
 }
 
@@ -270,10 +298,13 @@ deriveStatisticsSat <- function(x) {
   
   a <- x
   b <- x
+  c <- x
   
   a$PopStructure <- "Custom"
   
   b$PopStructure <- "Default"
+  
+  c$PopStructure <- "National"
   
   a$Actual_Served_2019 <- round(a$DeDuplicatedAGYW_PREV_2019,
                                    0)
@@ -326,12 +357,42 @@ deriveStatisticsSat <- function(x) {
   b$Sat_2022 <- round(((b$Actual_Served_2022/b$VulnerableNonPLHIV_2022)*100),
                       1)
 
-  c <- rbind(a,
+  
+  c$Actual_Served_2019 <- round(c$DeDuplicatedAGYW_PREV_2019,
+                                0)
+  
+  c$Actual_Served_2020 <- round((c$DeDuplicatedAGYW_PREV_2020 + (c$DeDuplicatedAGYW_PREV_2019*(1-c$fifthQNat_2019))),
+                                0)
+  
+  c$Actual_Served_2021 <- round((c$DeDuplicatedAGYW_PREV_2021 + (c$DeDuplicatedAGYW_PREV_2020*(1-c$fifthQNat_2020)) + (c$DeDuplicatedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019)))),
+                                0)
+  
+  c$Actual_Served_2022 <- round((c$DeDuplicatedAGYW_PREV_2022 + (c$DeDuplicatedAGYW_PREV_2021*(1-c$fifthQNat_2021)) + (c$DeDuplicatedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020))) + (c$DeDuplicatedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019)))),
+                                0)
+  
+  
+  c$Sat_2019 <- round(((c$Actual_Served_2019/c$VulnerableNonPLHIV_2019)*100),
+                      1)
+  
+  c$Sat_2020 <- round(((c$Actual_Served_2020/c$VulnerableNonPLHIV_2020)*100),
+                      1)
+  
+  c$Sat_2021 <- round(((c$Actual_Served_2021/c$VulnerableNonPLHIV_2021)*100),
+                      1)
+  
+  c$Sat_2022 <- round(((c$Actual_Served_2022/c$VulnerableNonPLHIV_2022)*100),
+                      1)
+  
+  d <- rbind(a,
              b)
   
-  c$IsSelected <- "Unselected"
+  e <- rbind(d,
+             c)
   
-  return(c)
+  
+  e$IsSelected <- "Unselected"
+  
+  return(e)
   
 }
 
@@ -455,6 +516,112 @@ reduceToCOPExport <- function(x) {
     
   return(a)
 }
+
+# Plot theme ----
+
+theme_plot <- function(...) {
+  theme(
+    plot.title.position = "plot",
+    #text = element_text(family = "Lato"), #UPDATE THIS ONCE I PICK A FONT
+    
+    # background colors
+    plot.background = element_rect(fill = "transparent",
+                                   color = NA),
+    panel.background = element_rect(fill = "transparent",
+                                   color = NA),
+    legend.background = element_rect(fill = "transparent",
+                                   color = NA),
+    
+    #titles
+    legend.title = element_blank(),
+    legend.text = element_text(size=12,
+                               color = "black",
+                               face = "plain"),
+    plot.title = element_text(size=14,
+                              color = "black",
+                              face = "bold",
+                              lineheight = 1.2),
+    plot.subtitle = element_text(size=13,
+                                 color = "black",
+                                 face = "italic"),
+    plot.caption = element_text(size=8,
+                                color = "black",
+                                vjust = 3),
+    axis.title.x = element_text(size=12,
+                                color = "black",
+                                face = "bold"),
+    axis.title.y = element_text(size=12,
+                                color = "black",
+                                face = "bold"),
+    axis.text.x = element_text(size=8.5,
+                               color = "black"),
+    axis.text.y = element_text(size=9.5,
+                               color = "black"),
+    axis.ticks.y = element_blank(),
+    ...
+  )
+}
+
+# Prep Q data for pop structure plots ----
+
+prepQDataforPopStructurePlots <- function(x) {
   
+  a <- x
+  
+  b <- a %>%
+    tidyr::pivot_longer(
+      cols = contains("Q"),
+      names_to = c("age_quintile", "fiscal_year"), 
+      names_sep = "_",
+      values_to = "prop"
+    ) %>%
+    dplyr::mutate(
+      age_quintile = case_when(
+        (age_quintile == "firstQNat") ~ "firstQ",
+        (age_quintile == "secondQNat") ~ "secondQ",
+        (age_quintile == "thirdQNat") ~ "thirdQ",
+        (age_quintile == "fourthQNat") ~ "fourthQ",
+        (age_quintile == "fifthQNat") ~ "fifthQ",
+        TRUE ~ as.character(age_quintile)
+      )
+    ) %>%
+    dplyr::mutate(
+      age = case_when(
+        (age_quintile == "firstQ" & ageasentered == "10-14") ~ as.numeric(10),
+        (age_quintile == "secondQ" & ageasentered == "10-14") ~ as.numeric(11),
+        (age_quintile == "thirdQ" & ageasentered == "10-14") ~ as.numeric(12),
+        (age_quintile == "fourthQ" & ageasentered == "10-14") ~ as.numeric(13),
+        (age_quintile == "fifthQ" & ageasentered == "10-14") ~ as.numeric(14),
+        (age_quintile == "firstQ" & ageasentered == "15-19") ~ as.numeric(15),
+        (age_quintile == "secondQ" & ageasentered == "15-19") ~ as.numeric(16),
+        (age_quintile == "thirdQ" & ageasentered == "15-19") ~ as.numeric(17),
+        (age_quintile == "fourthQ" & ageasentered == "15-19") ~ as.numeric(18),
+        (age_quintile == "fifthQ" & ageasentered == "15-19") ~ as.numeric(19),
+        (age_quintile == "firstQ" & ageasentered == "20-24") ~ as.numeric(20),
+        (age_quintile == "secondQ" & ageasentered == "20-24") ~ as.numeric(21),
+        (age_quintile == "thirdQ" & ageasentered == "20-24") ~ as.numeric(22),
+        (age_quintile == "fourthQ" & ageasentered == "20-24") ~ as.numeric(23),
+        (age_quintile == "fifthQ" & ageasentered == "20-24") ~ as.numeric(24),
+        (age_quintile == "firstQ" & ageasentered == "25-29") ~ as.numeric(25),
+        (age_quintile == "secondQ" & ageasentered == "25-29") ~ as.numeric(26),
+        (age_quintile == "thirdQ" & ageasentered == "25-29") ~ as.numeric(27),
+        (age_quintile == "fourthQ" & ageasentered == "25-29") ~ as.numeric(28),
+        (age_quintile == "fifthQ" & ageasentered == "25-29") ~ as.numeric(29),
+      )
+    ) %>%
+    dplyr::select(-c("age_quintile")) %>%
+    dplyr::rename()
+  
+  b$prop <- round((b$prop*100),1) 
+  
+  return(b)
+
+}
 
 
+
+
+
+
+
+  
