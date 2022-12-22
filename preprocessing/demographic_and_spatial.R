@@ -4,7 +4,7 @@ library(sf)
 library(spdep)
 library(leaflet)
 
-#CONVENIENCE FUNCTION(S)
+#### CONVENIENCE FUNCTION(S) ----
 sf_check <- function(x) {
   x %>%
     as.data.frame() %>%
@@ -72,21 +72,20 @@ adjust_ages <- function(x) {
 
 
 
-###############################
-####BOTSWANA
+#### BOTSWANA ----
 ###DENOMINATOR: Larger country, ADM1 and 2
 ##Start with District cohort pop by year
 ##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Bot.sf <- st_read('Botswana_adm1_uscb_2019.shp') %>%
+ADM1.1.Bot.sf <- st_read('preprocessing/data/Botswana_adm1_uscb_2019.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-ADM2.1.Bot.sf <- st_read('Botswana_adm2_uscb_2019.shp') %>%
+ADM2.1.Bot.sf <- st_read('preprocessing/data/Botswana_adm2_uscb_2019.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-saveRDS(ADM1.1.Bot.sf, file = "BotswanaADM1.RDS")
-saveRDS(ADM2.1.Bot.sf, file = "BotswanaADM2.RDS")
+saveRDS(ADM1.1.Bot.sf, file = "app/data/BotswanaADM1.RDS")
+saveRDS(ADM2.1.Bot.sf, file = "app/data/BotswanaADM2.RDS")
 
 #NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 
@@ -240,7 +239,7 @@ ADM2.2.Bot.sf <- ADM2.2.Bot.sf %>%
 #sf_check(ADM2.2.Zim.sf)
 
 ##Attach demographic data
-Demographic.1 <- readxl::read_xlsx("Botswana_USCB.xlsx")
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Botswana_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
   select(c("AREA_NAME", 
@@ -550,23 +549,24 @@ merged.6 <- rbind(merged.5a,
 #For any manual checking
 #write_excel_csv(merged.6, file = "BotswanaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6, file = "BotswanaOutput_Denominators.RDS")
+saveRDS(merged.6, file = "preprocessing/data/BotswanaOutput_Denominators.RDS")
 
-###############################
-####KENYA
+
+
+#### KENYA ----
 ###DENOMINATOR: Larger country, ADM1 and 2
 ##Start with District cohort pop by year
 ##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Ken.sf <- st_read('Kenya_adm1_uscb_2020.shp') %>%
+ADM1.1.Ken.sf <- st_read('preprocessing/data/Kenya_adm1_uscb_2020.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-ADM2.1.Ken.sf <- st_read('Kenya_adm2_uscb_2020.shp') %>%
+ADM2.1.Ken.sf <- st_read('preprocessing/data/Kenya_adm2_uscb_2020.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-saveRDS(ADM1.1.Ken.sf, file = "KenyaADM1.RDS")
-saveRDS(ADM2.1.Ken.sf, file = "KenyaADM2.RDS")
+saveRDS(ADM1.1.Ken.sf, file = "app/data/KenyaADM1.RDS")
+saveRDS(ADM2.1.Ken.sf, file = "app/data/KenyaADM2.RDS")
 
 #NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 
@@ -734,7 +734,7 @@ ADM2.2.Ken.sf <- ADM2.2.Ken.sf %>%
 #sf_check(ADM2.2.Zim.sf)
 
 ##Attach demographic data
-Demographic.1 <- readxl::read_xlsx("Kenya_USCB.xlsx")
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Kenya_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
   select(c("AREA_NAME", 
@@ -1080,18 +1080,18 @@ merged.6 <- rbind(merged.5a,
 #For any manual checking
 #write_excel_csv(merged.6, file = "KenyaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6,file = "KenyaOutput_Denominators.RDS")
+saveRDS(merged.6,file = "preprocessing/data/KenyaOutput_Denominators.RDS")
 
-###############################
-####LESOTHO
+
+#### LESOTHO ----
 ###DENOMINATOR: Small country, ADM1 only
 ##Start with District cohort pop by year
 ##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Les.sf <- st_read('Lesotho_adm1_uscb_2020.shp') %>%
+ADM1.1.Les.sf <- st_read('preprocessing/data/Lesotho_adm1_uscb_2020.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-saveRDS(ADM1.1.Les.sf, file = "LesothoADM1.RDS")
+saveRDS(ADM1.1.Les.sf, file = "app/data/LesothoADM1.RDS")
 
 #NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 
@@ -1156,6 +1156,10 @@ ADM1.1.Les.sf$MafetengNeighbor <- c(ADM1.1.Les.sf$MafetengNeighbor)
 ADM1.1.Les.sf$MaseruNeighbor <- c(ADM1.1.Les.sf$MaseruNeighbor)
 ADM1.1.Les.sf$MHoekNeighbor <- c(ADM1.1.Les.sf$MHoekNeighbor)
 
+#Setup lookup table df to be used in filtering app map
+neighborsLookupLesotho <- ADM1.1.Les.sf
+  
+
 ADM1.1.Les.sf$DREAMSneighbors <- ADM1.1.Les.sf$BereaNeighbor + ADM1.1.Les.sf$MafetengNeighbor + ADM1.1.Les.sf$MaseruNeighbor + ADM1.1.Les.sf$MHoekNeighbor
 
 #Set DREAMSneighbors to zero for DREAMS ADM1s, this flags them for non-treatment later
@@ -1188,7 +1192,7 @@ ADM1.2.Les.sf <- ADM1.1.Les.sf %>%
 # poly_check(test1, ADM1.DREAMS.Les.sf.2.Mafeteng)
 
 ##Attach demographic data
-Demographic.1 <- readxl::read_xlsx("Lesotho_USCB.xlsx")
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Lesotho_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
   select(c("AREA_NAME", 
@@ -1390,32 +1394,33 @@ merged.6 <- rbind(merged.5a,
                   merged.5b)
 
 merged.7 <- merged.6 %>%
-  filter((country!="Lesotho" | AREA_NAME %in% c("BEREA", 
-                                                "MAFETENG",
-                                                "MASERU",
-                                                "MOHALE'S HOEK")))
+  filter(AREA_NAME %in% c("BEREA",
+                          "MAFETENG",
+                          "MASERU",
+                          "MOHALE'S HOEK"))
+                                                
 
 ##Export Results
 #For any manual checking
 #write_excel_csv(merged.7, file = "LesothoOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.7,file = "LesothoOutput_Denominators.RDS")
+saveRDS(merged.7,file = "preprocessing/data/LesothoOutput_Denominators.RDS")
 
-###############################
-####ZIMBABWE
+
+#### ZIMBABWE ----
 ###DENOMINATOR: Larger country, ADM1 and 2
 ##Start with District cohort pop by year
 ##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Zim.sf <- st_read('Zimbabwe_adm1_uscb_2022.shp') %>%
+ADM1.1.Zim.sf <- st_read('preprocessing/data/Zimbabwe_adm1_uscb_2022.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-ADM2.1.Zim.sf <- st_read('Zimbabwe_adm2_uscb_2022.shp') %>%
+ADM2.1.Zim.sf <- st_read('preprocessing/data/Zimbabwe_adm2_uscb_2022.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-saveRDS(ADM1.1.Zim.sf, file = "ZimbabweADM1.RDS")
-saveRDS(ADM2.1.Zim.sf, file = "ZimbabweADM2.RDS")
+saveRDS(ADM1.1.Zim.sf, file = "app/data/ZimbabweADM1.RDS")
+saveRDS(ADM2.1.Zim.sf, file = "app/data/ZimbabweADM2.RDS")
 
 #NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 
@@ -1568,7 +1573,7 @@ ADM2.2.Zim.sf <- ADM2.2.Zim.sf %>%
 #sf_check(ADM2.2.Zim.sf)
 
 ##Attach demographic data
-Demographic.1 <- readxl::read_xlsx("Zimbabwe_USCB.xlsx")
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Zimbabwe_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
   select(c("AREA_NAME", 
@@ -1879,19 +1884,20 @@ merged.6 <- rbind(merged.5a,
 #For any manual checking
 #write_excel_csv(merged.6, file = "ZimbabweOutput_Denominators.csv")  #purely for external inspection
 #For import to app
-saveRDS(merged.6,file = "ZimbabweOutput_Denominators.RDS")
+saveRDS(merged.6,file = "preprocessing/data/ZimbabweOutput_Denominators.RDS")
 
 
 
 
-#COMBINE AND PREPROCESS
-Bot_Data <- readRDS('data/BotswanaOutput_Denominators.RDS') %>%
+
+#### COMBINE AND PREPROCESS ----
+Bot_Data <- readRDS('preprocessing/data/BotswanaOutput_Denominators.RDS') %>%
   mutate(country = "Botswana")
-Ken_Data <- readRDS('data/KenyaOutput_Denominators.RDS') %>%
+Ken_Data <- readRDS('preprocessing/data/KenyaOutput_Denominators.RDS') %>%
   mutate(country = "Kenya")
-Les_Data <- readRDS('data/LesothoOutput_Denominators.RDS') %>%
+Les_Data <- readRDS('preprocessing/data/LesothoOutput_Denominators.RDS') %>%
   mutate(country = "Lesotho")
-Zim_Data <- readRDS('data/ZimbabweOutput_Denominators.RDS') %>%
+Zim_Data <- readRDS('preprocessing/data/ZimbabweOutput_Denominators.RDS') %>%
   mutate(country = "Zimbabwe")
 
 countryData <- rbind(Bot_Data,
@@ -1913,4 +1919,41 @@ countryData$fiscal_year <- countryData$fiscal_year %>%
 saveRDS(countryData, file = "app/data/countryData.RDS")
 
 
+#### NEIGHBORS LOOKUP PREPROCESSING ----
 
+neighborsLesotho_Berea <- neighborsLookupLesotho %>%
+  filter(BereaNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho)) 
+
+neighborsLesotho_Mafeteng <- neighborsLookupLesotho %>%
+  filter(MafetengNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+
+neighborsLesotho_Maseru <- neighborsLookupLesotho %>%
+  filter(MaseruNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+
+neighborsLesotho_MHoek <- neighborsLookupLesotho %>%
+  filter(MHoekNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+
+Lesotho_BEREA <- unique(neighborsLesotho_Berea$AREA_NAME)
+Lesotho_BEREA_Names <- rep("BEREA", length(Lesotho_BEREA))
+  
+Lesotho_MAFETENG <- unique(neighborsLesotho_Mafeteng$AREA_NAME)
+Lesotho_MAFETENG_Names <- rep("MAFETENG", length(Lesotho_MAFETENG))
+
+Lesotho_MASERU <- unique(neighborsLesotho_Maseru$AREA_NAME)
+Lesotho_MASERU_Names <- rep("MASERU", length(Lesotho_MASERU))
+
+Lesotho_MHOEK <- unique(neighborsLesotho_MHoek$AREA_NAME)
+Lesotho_MHOEK_Names <- rep("MOHALE'S HOEK", length(Lesotho_MHOEK))
+
+childNamesLesotho <- Lesotho_BEREA %>% append(Lesotho_MAFETENG) %>%
+  append(Lesotho_MASERU) %>%
+  append(Lesotho_MHOEK)
+  
+parentNamesLesotho <- Lesotho_BEREA_Names %>% append(Lesotho_MAFETENG_Names) %>%
+  append(Lesotho_MASERU_Names) %>%
+  append(Lesotho_MHOEK_Names)
+
+neighborsLookupLesotho <- data.frame(parent = parentNamesLesotho,
+           child = childNamesLesotho)
+
+saveRDS(neighborsLookupLesotho, file = "app/data/neighborsLookup.RDS")

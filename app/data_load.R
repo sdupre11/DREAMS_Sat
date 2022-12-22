@@ -67,3 +67,5 @@ SingleYearNatAGYWPops <- readRDS('data/SingleYearNationalAGYWPops.RDS')
 small_countries <- c("Lesotho")
 medium_countries <- c("Zimbabwe")
 large_countries <- c("Botswana", "Kenya")
+
+neighborsLookup <- readRDS("data/neighborsLookup.RDS")

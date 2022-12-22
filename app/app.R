@@ -45,7 +45,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
                       strong("Step 0: Select Your Country"),
                       selectInput("country",
                                   "Country",
-                                  selected = "Botswana",
+                                  selected = "Lesotho",
                                   choices = c("Botswana",
                                               #"Cote d'Ivoire",
                                               #"Eswatini",
@@ -125,19 +125,21 @@ ui <- fluidPage(#style = "max-width: 800px;",
                         column(4,
                                plotOutput("popStructure_DefaultPlot")),
                         column(4,
-                               plotOutput("popStructure_NationalPlot")),
-                        column(4,
-                               plotOutput("popStructure_CustomPlot"))
+                               plotOutput("popStructure_NationalPlot"))#,
+                        # column(4,
+                        #        plotOutput("popStructure_CustomPlot"))
                       ))
                ),
              shinyglide::screen(
                strong("Step 3"),
-               checkboxGroupInput("checkGroup_catchment",
-                                  label = "Apply DREAMS catchment to:",
-                                  choices = ""),
-               checkboxInput("catchment",
-                             "Apply DREAMS catchment modifier (DEV ONLY):",
-                             value = FALSE)#,
+               column(4,
+                      checkboxGroupInput("checkGroup_catchment",
+                                         label = "Apply DREAMS catchment to:",
+                                         choices = ""),
+                      checkboxInput("catchment",
+                                    "Apply DREAMS catchment modifier (DEV ONLY):",
+                                    value = FALSE)#,
+               
                # conditionalPanel(
                #   condition = "input.catchment == 1",
                #   radioButtons("catchment_upordown",
@@ -145,6 +147,10 @@ ui <- fluidPage(#style = "max-width: 800px;",
                #                c("Denominator up" = "dUp",
                #                  "Numerator down" = "nDown"))
                # )
+               ),
+               column(8,
+                      textOutput("testing_catchments"),
+                      leafletOutput("map_catchments"))
              ),
              shinyglide::screen(
                strong("Step 4"),
@@ -488,7 +494,7 @@ server <- function(input, output, session) {
                        .8)
                    ) +
       ggtitle("Default",
-              subtitle = "20% distribution") +
+              subtitle = "Even 20%") +
       xlab("Age band") +
       ylab("Proportion of cohort") +
       lims(y = c(0, 30)) +
@@ -520,7 +526,7 @@ server <- function(input, output, session) {
                        .8)
       ) +
       ggtitle("National",
-              subtitle = "Match national distribution") +
+              subtitle = "Match national") +
       xlab("") +
       ylab("") +
       lims(y = c(0, 30)) +
@@ -551,7 +557,7 @@ server <- function(input, output, session) {
                        .8)
       ) +
       ggtitle("Custom",
-              subtitle = "Uploaded distribution") +
+              subtitle = "Uploaded") +
       xlab("") +
       ylab("") +
       lims(y = c(0, 30)) +
@@ -564,7 +570,6 @@ server <- function(input, output, session) {
   
   output$map_main <- leaflet::renderLeaflet({
     a <- leaflet() %>%
-      #addTiles() %>%
       setMapWidgetStyle(list(background = "white"))
   })
   
@@ -601,8 +606,7 @@ server <- function(input, output, session) {
                               selected_country_NonDREAMS$AREA_NAME)
     
     
-    leafletProxy("map_main"#,
-                 #data = selected_country
+    leafletProxy("map_main"
     ) %>%
       clearShapes() %>%
       clearControls() %>%
@@ -639,8 +643,98 @@ server <- function(input, output, session) {
   #     )
   # 
   # })
-
   
+  
+  output$map_catchments <- leaflet::renderLeaflet({
+    a <- leaflet() %>%
+      setMapWidgetStyle(list(background = "white"))
+  })
+  
+  catchments_filtered <- reactive(
+    a <- neighborsLookup[neighborsLookup$parent %in% input$checkGroup_catchment, ])
+
+  catchmentListener <- reactive({
+    list(input$country, catchments_filtered())
+  })
+  
+  observeEvent(catchmentListener(), {
+    
+    if (input$country == "Botswana") {
+      selected_country <- botADM1.sf
+    } else if (input$country == "Kenya") {
+      selected_country <- kenADM1.sf
+    } else if (input$country == "Lesotho") {
+      selected_country <- lesADM1.sf
+    } else if (input$country == "Zimbabwe") {
+      selected_country <- zimADM1.sf
+    }
+    
+    selected_country_DREAMS <- selected_country %>%
+      filter(DREAMSDistrict == "Yes")
+    
+    selected_country_DREAMSNeighbors <- selected_country %>%
+      filter(ADM1_NAME %in% catchments_filtered()$child)
+    
+    selected_country_NonDREAMS <- selected_country %>%
+      filter(DREAMSDistrict == "No" & (!ADM1_NAME %in% catchments_filtered()$child))
+    
+    if (input$country %in% small_countries) {
+      selected_zoom <- 7
+    } else if (input$country %in% medium_countries) {
+      selected_zoom <- 6
+    } else if (input$country %in% large_countries) {
+      selected_zoom <- 5
+    }
+    
+    popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
+                           selected_country_DREAMS$AREA_NAME)
+    
+    popup_DREAMSNeighbors <- paste0("<strong>DREAMS Neighbor District: </strong>",
+                                    selected_country_DREAMSNeighbors$AREA_NAME)
+    
+    popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>", 
+                              selected_country_NonDREAMS$AREA_NAME)
+    
+    
+    
+    leafletProxy("map_catchments"
+    ) %>%
+      clearShapes() %>%
+      clearControls() %>%
+      addPolygons(data = selected_country_DREAMS,
+                  color = "black",
+                  fillColor = "#FF6663",
+                  weight = 1,
+                  opacity = 1,
+                  fillOpacity = 0.8,
+                  popup = popup_DREAMS,
+                  highlightOptions = highlightOptions(color = "white",
+                                                      weight = 2,
+                                                      bringToFront = TRUE)) %>%
+      addPolygons(data = selected_country_DREAMSNeighbors,
+                  color = "black",
+                  fillColor = "#20A39E",
+                  weight = 1,
+                  opacity = 1,
+                  fillOpacity = 0.8,
+                  popup = popup_DREAMSNeighbors,
+                  highlightOptions = highlightOptions(color = "white",
+                                                      weight = 2,
+                                                      bringToFront = TRUE)) %>%
+      addPolygons(data = selected_country_NonDREAMS,
+                  color = "black",
+                  fillColor = "white",
+                  weight = 1,
+                  opacity = 1,
+                  fillOpacity = 0.8,
+                  popup = popup_NonDREAMS) %>%
+      setView(lng = mean(st_bbox(selected_country)[c(1,3)]),
+              lat = mean(st_bbox(selected_country)[c(2,4)]),
+              zoom = selected_zoom) %>%
+      setMapWidgetStyle(list(background = "white")) %>%
+      addFullscreenControl()
+  })
+
   
   # Download handlers ----
   
