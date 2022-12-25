@@ -68,4 +68,15 @@ small_countries <- c("Lesotho")
 medium_countries <- c("Zimbabwe")
 large_countries <- c("Botswana", "Kenya")
 
-neighborsLookup <- readRDS("data/neighborsLookup.RDS")
+neighborsLookup <- readRDS('data/neighborsLookup.RDS')
+
+default1YearTemplate <- readxl::read_xlsx('www/defaultTemplate_1year.xlsx') 
+default5YearTemplate <- readxl::read_xlsx('www/defaultTemplate_5year.xlsx') %>%
+  mutate(
+    AgeCohort = case_when(
+      (AgeCohort == "10 to 14") ~ as.character("10-14"),
+      (AgeCohort == "15 to 19") ~ as.character("15-19"),
+      (AgeCohort == "20 to 24") ~ as.character("20-24"),
+      (AgeCohort == "25 to 29") ~ as.character("25-29")
+    )
+  )

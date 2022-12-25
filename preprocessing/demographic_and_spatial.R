@@ -1919,43 +1919,153 @@ saveRDS(countryData, file = "app/data/countryData.RDS")
 
 
 #### NEIGHBORS LOOKUP PREPROCESSING ----
+# 
 
-neighborsLookupLesotho %>%
-  saveRDS(file='preprocessing/neighborsLookupforFausto_DELETEME.RDS')
 
-neighborsLesotho_Berea <- neighborsLookupLesotho %>%
-  filter(BereaNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho)) 
+# neighborsLesotho_Berea <- neighborsLookupLesotho %>%
+#   filter(BereaNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# 
+# neighborsLesotho_Mafeteng <- neighborsLookupLesotho %>%
+#   filter(MafetengNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# 
+# neighborsLesotho_Maseru <- neighborsLookupLesotho %>%
+#   filter(MaseruNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# 
+# neighborsLesotho_MHoek <- neighborsLookupLesotho %>%
+#   filter(MHoekNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# 
+# Lesotho_BEREA <- unique(neighborsLesotho_Berea$AREA_NAME)
+# Lesotho_BEREA_Names <- rep("BEREA", length(Lesotho_BEREA))
+# 
+# Lesotho_MAFETENG <- unique(neighborsLesotho_Mafeteng$AREA_NAME)
+# Lesotho_MAFETENG_Names <- rep("MAFETENG", length(Lesotho_MAFETENG))
+# 
+# Lesotho_MASERU <- unique(neighborsLesotho_Maseru$AREA_NAME)
+# Lesotho_MASERU_Names <- rep("MASERU", length(Lesotho_MASERU))
+# 
+# Lesotho_MHOEK <- unique(neighborsLesotho_MHoek$AREA_NAME)
+# Lesotho_MHOEK_Names <- rep("MOHALE'S HOEK", length(Lesotho_MHOEK))
+# 
+# childNamesLesotho <- Lesotho_BEREA %>% append(Lesotho_MAFETENG) %>%
+#   append(Lesotho_MASERU) %>%
+#   append(Lesotho_MHOEK)
+# 
+# parentNamesLesotho <- Lesotho_BEREA_Names %>% append(Lesotho_MAFETENG_Names) %>%
+#   append(Lesotho_MASERU_Names) %>%
+#   append(Lesotho_MHOEK_Names)
+# 
+# neighborsLookupLesotho_p <- data.frame(parent = parentNamesLesotho,
+#            child = childNamesLesotho)
 
-neighborsLesotho_Mafeteng <- neighborsLookupLesotho %>%
-  filter(MafetengNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# saveRDS(neighborsLookupLesotho, file = "app/data/neighborsLookup.RDS")
 
-neighborsLesotho_Maseru <- neighborsLookupLesotho %>%
-  filter(MaseruNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
 
-neighborsLesotho_MHoek <- neighborsLookupLesotho %>%
-  filter(MHoekNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
+# # function for assigning neighbors
+# assignNeighbors <- function(lookup_df, neighbor, dreams_input) {
+#   
+#   # filter regions
+#   res <- lookup_df %>%
+#     filter(get(neighbor) == 1 & (!AREA_NAME %in% dreams_input)) %>%
+#     select(child = AREA_NAME) %>%
+#     unique() %>%
+#     mutate(parent = neighbor) %>%
+#     select(parent, child)
+#   #print(res)
+#   
+#   #pull unique region names
+#   
+#   
+#   return(
+#     res
+#   )
+# }
+# 
+# # lets create a vector to loop through and build 
+# # i would make these match the dreams districts if possible
+# neighbors <- c("BereaNeighbor","MafetengNeighbor","MaseruNeighbor","MHoekNeighbor")
+# 
+# neighborsLookupLesotho_p_functional <- lapply(neighbors, function(x) {
+#   neighbor_df <- assignNeighbors(
+#     lookup_df = neighborsLookupLesotho, 
+#     neighbor = x, 
+#     dreams_input = DREAMS_Districts_Lesotho
+#   )
+# }) %>% dplyr::bind_rows()
+# 
+# # compare (the parent name will need some work)
+# print(neighborsLookupLesotho_p_functional)
+# print(neighborsLookupLesotho_p)
+# 
+# # how do we extend to a country? ----
+# 
+# # we can either do a manual run of the above function on every country
+# # it will be manual but still look a lot cleaner
+# # or we can attempt a loop as shown below
+# 
+# # INPUTS -----
+# 
+# # we can create a multi-country dataframe
+# # here we create a fake congo data frame
+# neighborsLookupCongo <- neighborsLookupLesotho %>%
+#   select(-c(CNTRY_NAME)) %>%
+#   mutate("CNTRY_NAME" = "CONGO") %>%
+#   select(AREA_NAME, CNTRY_NAME, BereaNeighbor, MafetengNeighbor, MaseruNeighbor, MHoekNeighbor)
+# 
+# # imagine a list 16 countries in it each with their own regions
+# # another option is a list of data frames
+# master_geo <- 
+#   list(
+#     LESOTHO = neighborsLookupLesotho,
+#     CONGO = neighborsLookupCongo
+#   )
+# 
+# # imagine a list with all 16 neighbor regions
+# dreams_dristrict_list <- 
+#   list(
+#     LESOTHO = c("BEREA", 
+#                 "MAFETENG",
+#                 "MASERU",
+#                 "MOHALE'S HOEK"),
+#     CONGO = c("BEREA", 
+#               "MAFETENG",
+#               "MASERU",
+#               "MOHALE'S HOEK")
+#   )
+# 
+# neighbors_list <- 
+#   list(
+#     LESOTHO = neighbors,
+#     CONGO = neighbors # each country would get their own list
+#   )
+# 
+# # PROCESS----
+# 
+# master_list <- list()
+# for (country in unique(names(master_geo))) {
+#   
+#   print(paste0("processing for country ", country))
+#   
+#   # in this case we just have one vector for neighbors but we would probably have
+#   # a dataframe or something of a lookup for neighbors as well
+#   neighbors <- neighbors_list[[country]]
+#   df_lookup <- master_geo[[country]]
+#   dreams_districts <- dreams_dristrict_list[[country]]
+#   
+#   
+#   neighbors_result <- lapply(neighbors, function(x) {
+#     neighbor_df <- assignNeighbors(
+#       lookup_df = df_lookup, 
+#       neighbor = x, 
+#       dreams_input = DREAMS_Districts_Lesotho
+#     )
+#   }) %>% dplyr::bind_rows()
+#   
+#   print(neighbors_result)
+#   
+#   master_list[[country]] <- neighbors_result
+#   
+# }
+# 
+# # the final result, you can bind or work with the list
+# dplyr::bind_rows(master_list)
 
-Lesotho_BEREA <- unique(neighborsLesotho_Berea$AREA_NAME)
-Lesotho_BEREA_Names <- rep("BEREA", length(Lesotho_BEREA))
-  
-Lesotho_MAFETENG <- unique(neighborsLesotho_Mafeteng$AREA_NAME)
-Lesotho_MAFETENG_Names <- rep("MAFETENG", length(Lesotho_MAFETENG))
-
-Lesotho_MASERU <- unique(neighborsLesotho_Maseru$AREA_NAME)
-Lesotho_MASERU_Names <- rep("MASERU", length(Lesotho_MASERU))
-
-Lesotho_MHOEK <- unique(neighborsLesotho_MHoek$AREA_NAME)
-Lesotho_MHOEK_Names <- rep("MOHALE'S HOEK", length(Lesotho_MHOEK))
-
-childNamesLesotho <- Lesotho_BEREA %>% append(Lesotho_MAFETENG) %>%
-  append(Lesotho_MASERU) %>%
-  append(Lesotho_MHOEK)
-  
-parentNamesLesotho <- Lesotho_BEREA_Names %>% append(Lesotho_MAFETENG_Names) %>%
-  append(Lesotho_MASERU_Names) %>%
-  append(Lesotho_MHOEK_Names)
-
-neighborsLookupLesotho <- data.frame(parent = parentNamesLesotho,
-           child = childNamesLesotho)
-
-saveRDS(neighborsLookupLesotho, file = "app/data/neighborsLookup.RDS")
