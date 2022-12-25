@@ -5,6 +5,7 @@ library(sf)
 library(DT)
 library(tidyverse)
 library(shinyglide)
+library(writexl)
 
 #source("data-run.R", encoding = "utf-8") #Gone?
 #source("s3_read.R")
@@ -172,8 +173,10 @@ ui <- fluidPage(#style = "max-width: 800px;",
                  p("Open worksheet in Excel, fill out 'eligibility_modifier' column and save"),
                  strong("Step 4c"),
                  p("Upload completed population\nstructure worksheet"),
-                 actionButton("completedTemplateUploadEligibility",
-                              "Upload completed template"))
+                 tableOutput("table_check"),
+                 fileInput("completedTemplateUploadEligibility",
+                           "Upload completed template (.xlsx only)",
+                           accept = ".xlsx"))
              ),
              shinyglide::screen(
                strong("Step 5"),
@@ -324,6 +327,8 @@ server <- function(input, output, session) {
              "MATABELELAND SOUTH", 
              "MIDLANDS")
     }
+    
+    return(a)
   })
   
   observeEvent(input$country, {
@@ -589,6 +594,7 @@ server <- function(input, output, session) {
   output$map_main <- leaflet::renderLeaflet({
     a <- leaflet() %>%
       setMapWidgetStyle(list(background = "white"))
+      # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
   })
   
   observeEvent(input$country, {
@@ -648,14 +654,15 @@ server <- function(input, output, session) {
       setView(lng = mean(st_bbox(selected_country)[c(1,3)]),
               lat = mean(st_bbox(selected_country)[c(2,4)]),
               zoom = selected_zoom) %>%
-      setMapWidgetStyle(list(background = "white")) %>%
-      addFullscreenControl()
+      setMapWidgetStyle(list(background = "white"))
   })
   
   
   output$map_catchments <- leaflet::renderLeaflet({
     a <- leaflet() %>%
-      setMapWidgetStyle(list(background = "white"))
+      setMapWidgetStyle(list(background = "white")) %>%
+      # addResetMapButton() %>% #currently doesn't work correctly, figure out how to set to go to the new polygons
+      addFullscreenControl()
   })
   
   catchments_filtered <- reactive(
@@ -739,29 +746,111 @@ server <- function(input, output, session) {
       setView(lng = mean(st_bbox(selected_country)[c(1,3)]),
               lat = mean(st_bbox(selected_country)[c(2,4)]),
               zoom = selected_zoom) %>%
-      setMapWidgetStyle(list(background = "white")) %>%
-      addFullscreenControl()
+      setMapWidgetStyle(list(background = "white")) 
   })
 
   
   # Download handlers ----
   
-  output$blankTemplateDownload <- downloadHandler(
+  default1YearTemplate_selectedCountry <- reactive({
+      req(input$country)
+    
+    a <- default1YearTemplate %>%
+      filter(Country == input$country)
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownloadStructure <- downloadHandler(
     filename = function() {
-      paste("blankTemplate", 
-            "xlsx",
-            sep = ".")
+      paste("blankStructureTemplate", 
+            ".xlsx",
+            sep = "")
     },
     
     content = function(file) {
-      file.copy('blankTemplate.xlsx', file)
+      write_xlsx(default1YearTemplate_selectedCountry(), 
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
+  default5YearTemplate_selectedCountry_E <- reactive({
+    req(input$country)
+    
+    a <- default5YearTemplate %>%
+      dplyr::filter(Country == input$country) %>%
+      dplyr::select(c("Country",
+                      "District",
+                      "AgeCohort",
+                      "Enrollment_2019",
+                      "Enrollment_2020",
+                      "Enrollment_2021",
+                      "Enrollment_2022"))
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownloadEligibility <- downloadHandler(
+    filename = function() {
+      paste("blankEDCTemplate", 
+            ".xlsx",
+            sep = "")
+    },
+    
+    content = function(file) {
+      write_xlsx(default5YearTemplate_selectedCountry_E(), 
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
+  default5YearTemplate_selectedCountry_DC <- reactive({
+    req(input$country)
+    
+    a <- default5YearTemplate %>%
+      dplyr::filter(Country == input$country) %>%
+      dplyr::select(c("Country",
+                      "District",
+                      "AgeCohort",
+                      "PrimarySecondaryDoubleCounts_2019",
+                      "PrimarySecondaryDoubleCounts_2020",
+                      "PrimarySecondaryDoubleCounts_2021",
+                      "PrimarySecondaryDoubleCounts_2022"))
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownloadDoubleCount <- downloadHandler(
+    filename = function() {
+      paste("blankEDCTemplate", 
+            ".xlsx",
+            sep = "")
+    },
+    
+    content = function(file) {
+      write_xlsx(default5YearTemplate_selectedCountry_DC(), 
+                 path = file)
     },
     contentType = NULL
   )
   
   
-  
-  
+  output$table_check <- renderTable({
+    
+    file <- input$completedTemplateUploadEligibility
+    ext <- tools::file_ext(file$datapath)
+    
+    req (file)
+    validate(need(ext == "xlsx",
+                  "Please upload xlsx file"))
+    
+    readxl::read_xlsx(file$datapath)
+    }
+)
   
   
   

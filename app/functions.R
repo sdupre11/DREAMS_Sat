@@ -306,6 +306,9 @@ deriveStatisticsSat <- function(x) {
   
   c$PopStructure <- "National"
   
+  
+  
+  
   a$Actual_Served_2019 <- round(a$DeDuplicatedAGYW_PREV_2019,
                                    0)
   
@@ -505,6 +508,12 @@ reduceToCOPExport <- function(x) {
                      "NonPLHIV_2022",
                      "DeDuplicatedAGYW_PREV_2022",
                      "Actual_Served_2022")) %>%
+    dplyr::mutate(
+      PopRemaining_2022 = case_when(
+        (PopRemaining_2022 < 0) ~ 0,
+        TRUE ~ as.numeric(PopRemaining_2022)
+      )
+    ) %>%
     dplyr::rename("OU" = "country",
            "Cohort" = "ageasentered",
            "District" = "AREA_NAME",
