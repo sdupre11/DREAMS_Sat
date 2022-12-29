@@ -278,9 +278,10 @@ server <- function(input, output, session) {
                actionButton("focusSaturation",
                             "Saturation"),
                actionButton("focusNumerator",
-                            "Numerator (AGYW_PREV)",
+                            "Numerator"),
                actionButton("focusDenominator",
-                            "Denominator")),
+                            "Denominator")
+               ),
         column(9,
                #DT::dataTableOutput("stats_analytics"),
                selectInput("analyticsDistrict",
@@ -288,11 +289,12 @@ server <- function(input, output, session) {
                            selected = "",
                            choices = ""
                ),
+               uiOutput("incomplete_ui"),
                uiOutput("saturation_ui"),
                uiOutput("numerator_ui"),
                uiOutput("denominator_ui")
         )
-      )#,
+      #,
       # fluidRow(
       #   column(12,
       #          strong("Pop Structure Type:"),
@@ -306,8 +308,25 @@ server <- function(input, output, session) {
     main_ui()
   })
   
+  # output$ui <- renderUI({
+  #   if(!user_input$authenticated){
+  #     auth_ui()#main_ui()#
+  #   }else{
+  #     main_ui()      
+  #   }
+  # })
+  
+  output$incomplete_ui <- renderUI({
+    req(params$focusedAnalytic == "Incomplete")
+    
+    div(
+      h4("Complete saturation calculation first"))
+    
+  })
+  
   output$saturation_ui <- renderUI({
     req(params$focusedAnalytic == "Saturation")
+    req(data_stats_COP())
    
      div(
       h4("Saturation"),
@@ -317,6 +336,7 @@ server <- function(input, output, session) {
   
   output$numerator_ui <- renderUI({
     req(params$focusedAnalytic == "Numerator")
+    req(data_stats_COP())
     
     div(
       h4("Numerator"),
@@ -326,55 +346,20 @@ server <- function(input, output, session) {
   
   output$denominator_ui <- renderUI({
     req(params$focusedAnalytic == "Denominator")
+    req(data_stats_COP())
     
     div(
       h4("Denominator"))
     
   })
   
-  # 
-  # saturation_ui <- function() {
-  #   div(
-  #     h4("Saturation"),
-  #     p("Mapped sat here"))
-  # }
-  # 
-  # numerator_ui <- function() {
-  #   div(
-  #     h4("Numerator"),
-  #     plotOutput("impactOfParametersPlot"))
-  # }
-  # 
-  # denominator_ui <- function() {
-  #   div(
-  #     h4("Denominator"))
-  # }
-  # 
-  # output$analytics <- renderUI({
-  #   if (params$focusedAnalytic == "Saturation") {
-  #     saturation_ui()
-  #   } else if (params$focusedAnalytic == "Numerator") {
-  #     numerator_ui() 
-  #   } else if (params$focusedAnalytic == "Denominator") {
-  #     denominator_ui()
-  #   }
-  #   
-  # })
-  # 
-  # output$ui <- renderUI({
-  #   if(!user_input$authenticated){
-  #     auth_ui()#main_ui()#
-  #   }else{
-  #     main_ui()      
-  #   }
-  # })
-  
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
     country = "Botswana",
     popStructureType = "Default",
-    catchmentModifierFlaggedDistricts = NULL
+    catchmentModifierFlaggedDistricts = NULL,
+    focusedAnalytic = "Incomplete"
   )
   
   workingDataPre <- reactiveValues(
@@ -448,6 +433,21 @@ server <- function(input, output, session) {
   # Update parameters ----
   observeEvent(input$country, {
     params$country = input$country
+  })
+  
+  observeEvent(input$focusSaturation, {
+    req(data_stats_COP())
+    params$focusedAnalytic <- "Saturation"
+  })
+  
+  observeEvent(input$focusNumerator, {
+    req(data_stats_COP())
+    params$focusedAnalytic <- "Numerator"
+  })
+  
+  observeEvent(input$focusDenominator, {
+    req(data_stats_COP())
+    params$focusedAnalytic <- "Denominator"
   })
   
   # Render text elements ----
