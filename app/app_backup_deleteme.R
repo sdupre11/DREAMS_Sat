@@ -113,8 +113,8 @@ ui <- fluidPage(#style = "max-width: 800px;",
                         # br(),
                         # br(),
                         # tableOutput("table_check_pop")
-                        )
-                      ),
+                      )
+               ),
                column(8,
                       fluidRow(
                         selectInput("popStructureYear",
@@ -137,7 +137,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
                         column(4,
                                plotOutput("popStructure_CustomPlot"))
                       ))
-               ),
+             ),
              shinyglide::screen(
                strong("Step 3: Catchment modifier (Default: No catchment modifier)"),
                column(4,
@@ -147,13 +147,13 @@ ui <- fluidPage(#style = "max-width: 800px;",
                       # checkboxInput("catchment",
                       #               "Apply DREAMS catchment modifier (DEV ONLY):",
                       #               value = FALSE)#,
-               # conditionalPanel(
-               #   condition = "input.catchment == 1",
-               #   radioButtons("catchment_upordown",
-               #                "Adjust denominator(s) up or numerator(s) down",
-               #                c("Denominator up" = "dUp",
-               #                  "Numerator down" = "nDown"))
-               # )
+                      # conditionalPanel(
+                      #   condition = "input.catchment == 1",
+                      #   radioButtons("catchment_upordown",
+                      #                "Adjust denominator(s) up or numerator(s) down",
+                      #                c("Denominator up" = "dUp",
+                      #                  "Numerator down" = "nDown"))
+                      # )
                ),
                column(8,
                       # textOutput("testing_catchments"),
@@ -230,8 +230,8 @@ ui <- fluidPage(#style = "max-width: 800px;",
                  )
                )
              )
-
-          )
+             
+           )
     )
   ),
   fluidRow(
@@ -261,7 +261,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
                   h4("Numerator")),
            column(4,
                   h4("Denominator"))
-           )
+    )
   ),
   fluidRow(
     column(12,
@@ -362,12 +362,12 @@ server <- function(input, output, session) {
       dplyr::filter(country == input$country)
   })
   
-
+  
   # Update parameters ----
   observeEvent(input$country, {
     params$country = input$country
   })
-
+  
   
   
   #### PARAMS CHECK PANEL
@@ -383,11 +383,11 @@ server <- function(input, output, session) {
     req(countryDataFiltered())
     
     workingDataPre$data <- attachParameters_5year(countryDataFiltered(),
-                                               dataParameters_5Year) %>%
+                                                  dataParameters_5Year) %>%
       reshapeWide() %>%
       attachParameters_1year(dataParameters_1Year) %>%
       merge(SingleYearNatAGYWPops)
-
+    
     workingDataPost$data <- workingDataPre$data %>%
       deriveStatistics()
     
@@ -452,7 +452,7 @@ server <- function(input, output, session) {
         )
       )
   })
-
+  
   data_stats_COP <- eventReactive(input$initializeSelection, {
     req(!is.null(workingDataPost$data))
     
@@ -480,7 +480,7 @@ server <- function(input, output, session) {
     req(workingDataPre$data)
     
     workingDataPre$data <- left_join(workingDataPre$data,
-                                    customEnrollment(),
+                                     customEnrollment(),
                                      by = c("country" = "Country", 
                                             "AREA_NAME" = "District", 
                                             "ageasentered" = "AgeCohort"))
@@ -489,10 +489,10 @@ server <- function(input, output, session) {
     workingDataPre$data$Enrollment_2020 <- workingDataPre$data$Enrollment_2020_Custom
     workingDataPre$data$Enrollment_2021 <- workingDataPre$data$Enrollment_2021_Custom
     workingDataPre$data$Enrollment_2022 <- workingDataPre$data$Enrollment_2022_Custom
-
+    
     workingDataPost$data <- workingDataPre$data %>%
       deriveStatistics()
-
+    
   })
   
   observeEvent(input$resetToDefaultEnrollment, {
@@ -507,8 +507,8 @@ server <- function(input, output, session) {
       deriveStatistics()
     
   })
-
-
+  
+  
   # output$table_check <- renderTable({
   #   req(customEnrollment())
   #   
@@ -553,7 +553,7 @@ server <- function(input, output, session) {
   #   
   #   customDoubleCount()
   # })
-    
+  
   # Render tables ----
   
   output$stats_COP <- DT::renderDataTable({
@@ -567,13 +567,13 @@ server <- function(input, output, session) {
                 dom = 'Blfrtip',
                 buttons = c('excel', 'pdf'),
                 scrollx = TRUE)
-              )
+    )
   })
   
   # Render plots ----
-
+  
   output$popStructure_DefaultPlot <- renderPlot({
-
+    
     age <- c(10:29)
     prop <- rep(20, 20)
     sequence <- c("10-14", "15-19", "20-24", "25-29")
@@ -598,14 +598,14 @@ server <- function(input, output, session) {
                          "20-24" = "#FF6663",
                          "25-29" = "#FFBA49"),
                        .8)
-                   ) +
+      ) +
       ggtitle("Default",
               subtitle = "Even 20%") +
       xlab("Age band") +
       ylab("Proportion of cohort") +
       lims(y = c(0, 30)) +
       theme_plot(legend.position = "none")
-      
+    
     return(a)
   })
   
@@ -614,8 +614,8 @@ server <- function(input, output, session) {
     natDF <- SingleYearNatAGYWPops %>%
       prepQDataforPopStructurePlots() %>%
       filter(fiscal_year==input$popStructureYear & country == input$country)
-      # filter(fiscal_year==!!input$popStructureYear)
-
+    # filter(fiscal_year==!!input$popStructureYear)
+    
     a <- natDF %>%
       ggplot(
         aes(
@@ -637,7 +637,7 @@ server <- function(input, output, session) {
       ylab("") +
       lims(y = c(0, 30)) +
       theme_plot(legend.position = "none")
-
+    
     return(a)
   })
   
@@ -671,13 +671,13 @@ server <- function(input, output, session) {
     
     return(a)
   })
-
+  
   # Render maps ----
   
   output$map_main <- leaflet::renderLeaflet({
     a <- leaflet() %>%
       setMapWidgetStyle(list(background = "white"))
-      # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
+    # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
   })
   
   observeEvent(input$country, {
@@ -750,7 +750,7 @@ server <- function(input, output, session) {
   
   catchments_filtered <- reactive(
     a <- neighborsLookup[neighborsLookup$parent %in% input$checkGroup_catchment, ])
-
+  
   catchmentMapListener <- reactive({
     list(input$country, catchments_filtered())
   })
@@ -831,7 +831,7 @@ server <- function(input, output, session) {
               zoom = selected_zoom) %>%
       setMapWidgetStyle(list(background = "white")) 
   })
-
+  
   # Save token ----
   ## Download handler (move later)
   
@@ -860,7 +860,7 @@ server <- function(input, output, session) {
       
       save(export_df, file = file)
     },
-
+    
     # content = function(file) {
     #   
     #   save(params, file = file)
@@ -871,17 +871,17 @@ server <- function(input, output, session) {
   ## Import
   importedToken <- reactive({
     req(input$importToken)
-
+    
     file <- input$importToken
     ext <- tools::file_ext(file$datapath)
-
+    
     validate(need(ext == "Rdata",
                   "Please upload Rdata file"))
-
+    
     a <- file$datapath %>%
       load()
-
-
+    
+    
     return(a)
   })
   
@@ -896,14 +896,14 @@ server <- function(input, output, session) {
   #   params$popStructureType <- importedToken()$popStructureType
   # 
   # })
-
-
+  
+  
   
   
   # Download handlers ----
   
   default1YearTemplate_selectedCountry <- reactive({
-      req(input$country)
+    req(input$country)
     
     a <- default1YearTemplate %>%
       filter(Country == input$country)
@@ -1020,7 +1020,7 @@ server <- function(input, output, session) {
              fifthQCustom_2020 = fifthQ_2020,
              fifthQCustom_2021 = fifthQ_2021,
              fifthQCustom_2022 = fifthQ_2022)
-      
+    
     
     return(a)
   })
@@ -1103,7 +1103,7 @@ server <- function(input, output, session) {
              Enrollment_2020_Custom = Enrollment_2020,
              Enrollment_2021_Custom = Enrollment_2021,
              Enrollment_2022_Custom = Enrollment_2022)
-      
+    
     return(a)
   })
   

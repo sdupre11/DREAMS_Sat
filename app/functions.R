@@ -572,6 +572,76 @@ reduceToCOPExport <- function(x) {
   return(a)
 }
 
+# reduceForAnalyticsPlots <- function(x) {
+# 
+#   col_order <- c("OU",
+#                  "District",
+#                  "Cohort",
+#                  "Summed AGYW_PREV",
+#                  "Summed Dedup AGYW_PREV",
+#                  "Summed Enrollment Standardized AGYW_PREV",
+#                  "Actual Served"
+#   )
+#   
+#   a <- x
+#   
+#   a$AGYW_PREV_Sum <- a$AGYW_PREV_2019 + a$AGYW_PREV_2020 + a$AGYW_PREV_2021 + a$AGYW_PREV_2022
+#   a$DeDuplicatedAGYW_PREV_Sum <- a$DeDuplicatedAGYW_PREV_2019 + a$DeDuplicatedAGYW_PREV_2020 + a$DeDuplicatedAGYW_PREV_2021 + a$DeDuplicatedAGYW_PREV_2022
+#   a$EnrollmentStandardizedAGYW_PREV_Sum <- a$EnrollmentStandardizedAGYW_PREV_2019 + a$EnrollmentStandardizedAGYW_PREV_2020 + a$EnrollmentStandardizedAGYW_PREV_2021 + a$EnrollmentStandardizedAGYW_PREV_2022
+#   
+#   b <- a %>%
+#     dplyr::select((-ends_with(c("2019",
+#                                 "2020",
+#                                 "2021")))&(-starts_with(c("first",
+#                                                           "second",
+#                                                           "third",
+#                                                           "fourth",
+#                                                           "fifth")))) %>%
+  
+
+
+#   
+#   a <- x %>%
+#     dplyr::filter(IsSelected == "Selected") %>%
+#     dplyr::select(-c("populationtx", 
+#                      "IsSelected",
+#                      "PopStructure")) %>%
+    # dplyr::select((-ends_with(c("2019",
+    #                             "2020",
+    #                             "2021")))&(-starts_with(c("first",
+    #                                                       "second",
+    #                                                       "third",
+    #                                                       "fourth",
+    #                                                       "fifth")))) %>%
+#     dplyr::select(-c("Prev_2022", 
+#                      "PSDC_2022", 
+#                      "Vuln_2022",
+#                      "Pop_2022",
+#                      "AGYW_PREV_2022",
+#                      "PLHIV_2022",
+#                      "NonPLHIV_2022",
+#                      "DeDuplicatedAGYW_PREV_2022",
+#                      "EnrollmentStandardizedAGYW_PREV_2022",
+#                      "Actual_Served_2022")) %>%
+#     dplyr::mutate(
+#       PopRemaining_2022 = case_when(
+#         (PopRemaining_2022 < 0) ~ 0,
+#         TRUE ~ as.numeric(PopRemaining_2022)
+#       )
+#     ) %>%
+#     dplyr::rename("OU" = "country",
+#                   "Cohort" = "ageasentered",
+#                   "District" = "AREA_NAME",
+#                   "Total DREAMS eligible AGYW" = "VulnerableNonPLHIV_2022",
+#                   "Percent coverage (saturation)" = "Sat_2022",
+#                   "Remaining unserved AGYW" = "PopRemaining_2022")
+#   
+#   a <- a[, col_order]
+#   
+#   return(a)
+# }
+
+
 # Plot theme ----
 
 theme_plot <- function(...) {
