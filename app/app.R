@@ -40,10 +40,26 @@ ui <- fluidPage(#style = "max-width: 800px;",
   fluidRow(
     column(12,
            glide(
-             height = "600px",
+             # height = "600px",
+             shinyglide::screen(
+               strong("Step 0: Welcome"),
+               br(),
+               strong("Import Saved Parameters"),
+               br(),
+               strong("[returning teams]"),
+               br(),
+               br(),
+               fileInput("import",
+                         "Import save token (.RDS)",
+                         accept = ".RDS"),
+               br(),
+               br(),
+               actionButton("useDefaultParameters",
+                            "Use defaults"),
+             ),
              shinyglide::screen(
                column(4,
-                      strong("Step 0: Select Your Country"),
+                      strong("Step 1: Select Your Country"),
                       selectInput("country",
                                   "Country",
                                   selected = "Lesotho",
@@ -68,27 +84,8 @@ ui <- fluidPage(#style = "max-width: 800px;",
                       leafletOutput("map_main"))
              ),
              shinyglide::screen(
-               strong("Step 1"),
-               br(),
-               strong("Import Saved Parameters"),
-               br(),
-               strong("[returning teams]"),
-               br(),
-               br(),
-               actionButton("import",
-                            "Import save token?"),
-               br(),
-               br(),
-               actionButton("useDefaultParameters",
-                            "Use defaults"),
-               br(),
-               br(),
-               actionButton("initializeSelection",
-                            "initialize selection")
-             ),
-             shinyglide::screen(
                column(4, 
-                      strong("Step 2"),
+                      strong("Step 2: Population structure"),
                       radioButtons("structure",
                                    "Set Population Structure:",
                                    c("Default (20%)" = "Default",
@@ -106,8 +103,16 @@ ui <- fluidPage(#style = "max-width: 800px;",
                         p("Open worksheet in Excel, fill out 'proportion' column and save"),
                         strong("Step 2c"),
                         p("Upload completed population\nstructure worksheet"),
-                        actionButton("completedTemplateUploadStructure",
-                                     "Upload completed template"))),
+                        fileInput("completedTemplateUploadPopStructure",
+                                  "Upload completed template (.xlsx only)",
+                                  accept = ".xlsx"),
+                        actionButton("confirmCustomPopStructure",
+                                     "Confirm: use custom upload"),
+                        br(),
+                        br(),
+                        br(),
+                        tableOutput("table_check_pop"))
+                      ),
                column(8, 
                       fluidRow(
                         selectInput("popStructureYear",
@@ -118,7 +123,7 @@ ui <- fluidPage(#style = "max-width: 800px;",
                                                 2021,
                                                 2022)),
                         selectInput("popStructureDistrict",
-                                    "Select a district (custom only):",
+                                    "Select a district (affects custom only):",
                                     selected = "",
                                     choices = ""
                         )),
@@ -126,13 +131,13 @@ ui <- fluidPage(#style = "max-width: 800px;",
                         column(4,
                                plotOutput("popStructure_DefaultPlot")),
                         column(4,
-                               plotOutput("popStructure_NationalPlot"))#,
-                        # column(4,
-                        #        plotOutput("popStructure_CustomPlot"))
+                               plotOutput("popStructure_NationalPlot")),
+                        column(4,
+                               plotOutput("popStructure_CustomPlot"))
                       ))
                ),
              shinyglide::screen(
-               strong("Step 3"),
+               strong("Step 3: Catchment modifier"),
                column(4,
                       checkboxGroupInput("checkGroup_catchment",
                                          label = "Apply DREAMS catchment to:",
@@ -154,61 +159,54 @@ ui <- fluidPage(#style = "max-width: 800px;",
                       leafletOutput("map_catchments"))
              ),
              shinyglide::screen(
-               strong("Step 4"),
-               checkboxGroupInput("checkGroup_eligibility", 
-                                  label = "Apply eligibility modifier to:", 
-                                  choices = ""),
-               checkboxInput("eligibility",
-                             "Apply eligibility modifier (DEV ONLY):",
-                             value = FALSE),
-               conditionalPanel(
-                 condition = "input.eligibility",
-                 strong("Custom Structure step 4a"),
-                 p("Download blank population\nstructure worksheet"),
-                 downloadButton("blankTemplateDownloadEligibility",
-                                "Download blank template"),
-                 br(),
-                 br(),
-                 strong("Step 4b"),
-                 p("Open worksheet in Excel, fill out 'eligibility_modifier' column and save"),
-                 strong("Step 4c"),
-                 p("Upload completed population\nstructure worksheet"),
-                 tableOutput("table_check"),
-                 fileInput("completedTemplateUploadEligibility",
-                           "Upload completed template (.xlsx only)",
-                           accept = ".xlsx"))
+               strong("Step 4: Enrollment modifier"),
+               p("Use default value or upload a custom modifier structure"),
+               strong("Custom Structure step 4a"),
+               p("Download blank enrollment\nmodifier worksheet"),
+               downloadButton("blankTemplateDownloadEnrollment",
+                              "Download blank template"),
+               br(),
+               br(),
+               strong("Step 4b"),
+               p("Open worksheet in Excel, fill out 'Enrollment' columns and save"),
+               strong("Step 4c"),
+               p("Upload completed enrollment\nmodifier worksheet"),
+               tableOutput("table_check"),
+               fileInput("completedTemplateUploadEnrollment",
+                         "Upload completed template (.xlsx only)",
+                         accept = ".xlsx"),
+               actionButton("confirmCustomEnrollment",
+                            "Confirm: use custom upload"),
+               actionButton("resetToDefaultEnrollment",
+                            "Reset: use default modifier")
              ),
              shinyglide::screen(
-               strong("Step 5"),
-               checkboxGroupInput("checkGroup_doubleCount",
-                                  label = "Apply double count modifier to:",
-                                  choices = ""),
-               checkboxInput("doublecount",
-                             "Apply double count modifier (DEV ONLY):",
-                             value = FALSE),
-               conditionalPanel(
-                 condition = "input.doublecount",
-                 strong("Double count modifier step 5a"),
-                 p("Download blank count\nmodifier worksheet"),
-                 downloadButton("blankTemplateDownloadDoubleCount",
-                                "Download blank template"),
-                 br(),
-                 br(),
-                 strong("Step 5b"),
-                 p("Open worksheet in Excel, fill out 'doublecount_modifier' column and save"),
-                 strong("Step 5c"),
-                 p("Upload completed count\nmodifier worksheet"),
-                 actionButton("completedTemplateUploadDoubleCount",
-                              "Upload completed template"))
-              ),
+               strong("Step 5: Double count modifier"),
+               p("Use default value or upload a custom structure"),
+               strong("Custom Structure step 5a"),
+               p("Download blank population\nstructure worksheet"),
+               downloadButton("blankTemplateDownloadDoubleCount",
+                              "Download blank template"),
+               br(),
+               br(),
+               strong("Step 5b"),
+               p("Open worksheet in Excel, fill out 'PrimarySecondaryDoubleCounts_20XX' columns and save"),
+               strong("Step 5c"),
+               p("Upload completed double count\nmodifier worksheet"),
+               tableOutput("table_check_dc"),
+               fileInput("completedTemplateUploadDoubleCount",
+                         "Upload completed template (.xlsx only)",
+                         accept = ".xlsx"),
+               actionButton("confirmCustomDoubleCount",
+                            "Confirm: use custom upload"),
+               actionButton("resetToDefaultDoubleCount",
+                            "Reset: use default modifier")
+             ),
              shinyglide::screen(
                strong("Step 6"),
                br(),
-               actionButton("export_token",
-                            "Save Token Export"),
-               br(),
-               actionButton("export_COP",
-                            "COP Export"),
+               downloadButton("exportToken",
+                              "Export save token"),
                br(),
                br(),
                br(),
@@ -240,6 +238,12 @@ ui <- fluidPage(#style = "max-width: 800px;",
            fluidRow(
              h3("2022 Figures for COP Export"),
              strong("NOTE: Exports will only include displayed content. Set to display all desired content before exporting."),
+             br(),
+             br(),
+             actionButton("initializeSelection",
+                          "Accept parameters and derive/re-derive COP statistics"),
+             br(),
+             br(),
              DT::dataTableOutput("stats_COP")
            ),
            fluidRow(
@@ -340,21 +344,7 @@ server <- function(input, output, session) {
   observeEvent(input$country, {
     
     updateCheckboxGroupInput(session, 
-                             "checkGroup_eligibility", 
-                             choices = districts())
-  })
-  
-  observeEvent(input$country, {
-    
-    updateCheckboxGroupInput(session, 
                              "checkGroup_catchment", 
-                             choices = districts())
-  })
-  
-  observeEvent(input$country, {
-    
-    updateCheckboxGroupInput(session, 
-                             "checkGroup_doubleCount", 
                              choices = districts())
   })
   
@@ -389,8 +379,7 @@ server <- function(input, output, session) {
       reshapeWide() %>%
       attachParameters_1year(dataParameters_1Year) %>%
       merge(SingleYearNatAGYWPops)
-    
-    
+
     workingDataPost$data <- workingDataPre$data %>%
       deriveStatistics()
     
@@ -444,7 +433,7 @@ server <- function(input, output, session) {
   output$testprint <- renderText(catchmentDistricts())
   
   observeEvent(input$initializeSelection, {
-    req(workingDataPost)
+    req(!is.null(workingDataPost$data))
     
     workingDataPost$data <- workingDataPost$data %>%
       mutate(
@@ -457,6 +446,7 @@ server <- function(input, output, session) {
   })
 
   data_stats_COP <- eventReactive(input$initializeSelection, {
+    req(!is.null(workingDataPost$data))
     
     selected_data <- workingDataPost$data %>%
       reduceToCOPExport()
@@ -471,6 +461,85 @@ server <- function(input, output, session) {
     )
   })
   
+  observeEvent(input$confirmCustomEnrollment, {
+    req(customEnrollment())
+    req(workingDataPre$data)
+    
+    workingDataPre$data <- left_join(workingDataPre$data,
+                                    customEnrollment(),
+                                     by = c("country" = "Country", 
+                                            "AREA_NAME" = "District", 
+                                            "ageasentered" = "AgeCohort"))
+    
+    workingDataPre$data$Enrollment_2019 <- workingDataPre$data$Enrollment_2019_Custom
+    workingDataPre$data$Enrollment_2020 <- workingDataPre$data$Enrollment_2020_Custom
+    workingDataPre$data$Enrollment_2021 <- workingDataPre$data$Enrollment_2021_Custom
+    workingDataPre$data$Enrollment_2022 <- workingDataPre$data$Enrollment_2022_Custom
+
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+
+  })
+  
+  observeEvent(input$resetToDefaultEnrollment, {
+    req(workingDataPre$data)
+    
+    workingDataPre$data$Enrollment_2019 <- 3
+    workingDataPre$data$Enrollment_2020 <- 3
+    workingDataPre$data$Enrollment_2021 <- 3
+    workingDataPre$data$Enrollment_2022 <- 3
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+
+
+  output$table_check <- renderTable({
+    req(customEnrollment())
+    
+    customEnrollment()
+  })
+  
+  observeEvent(input$confirmCustomDoubleCount, {
+    req(customDoubleCount())
+    req(workingDataPre$data)
+    
+    workingDataPre$data <- left_join(workingDataPre$data,
+                                     customDoubleCount(),
+                                     by = c("country" = "Country", 
+                                            "AREA_NAME" = "District", 
+                                            "ageasentered" = "AgeCohort"))
+    
+    workingDataPre$data$PSDC_2019 <- workingDataPre$data$PSDC_2019_Custom
+    workingDataPre$data$PSDC_2020 <- workingDataPre$data$PSDC_2020_Custom
+    workingDataPre$data$PSDC_2021 <- workingDataPre$data$PSDC_2021_Custom
+    workingDataPre$data$PSDC_2022 <- workingDataPre$data$PSDC_2022_Custom
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  observeEvent(input$resetToDefaultDoubleCount, {
+    req(workingDataPre$data)
+    
+    workingDataPre$data$PSDC_2019 <- 1
+    workingDataPre$data$PSDC_2020 <- 1
+    workingDataPre$data$PSDC_2021 <- 1
+    workingDataPre$data$PSDC_2022 <- 1
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  output$table_check_dc <- renderTable({
+    req(customDoubleCount())
+    
+    customDoubleCount()
+  })
+    
   # Render tables ----
   
   output$stats_COP <- DT::renderDataTable({
@@ -560,7 +629,7 @@ server <- function(input, output, session) {
   
   output$popStructure_CustomPlot <- renderPlot({
     
-    custDF <- dataParameters_1Year %>%
+    custDF <- customPopStructure() %>%
       prepQDataforPopStructurePlots() %>%
       filter(fiscal_year==input$popStructureYear & Country == input$country & District == input$popStructureDistrict)
     
@@ -749,6 +818,48 @@ server <- function(input, output, session) {
       setMapWidgetStyle(list(background = "white")) 
   })
 
+  # Save token ----
+  ## Download handler (move later)
+
+  output$exportToken <- downloadHandler(
+    filename = function() {
+      paste("DREAMS_Sat_Save_Token",
+            ".Rdata",
+            sep = "")
+    },
+
+    content = function(file) {
+      save(params$data,
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
+  ## Import
+  importedToken <- reactive({
+    req(input$import)
+    
+    file <- input$import
+    ext <- tools::file_ext(file$datapath)
+    
+    validate(need(ext == "RDS",
+                  "Please upload RDS file"))
+    
+    a <- file$datapath %>%
+      readRDS()
+    
+    
+    return(a)
+  })
+  
+  observeEvent(importedToken(), {
+    params$country <- importedToken()$country
+    params$popStructureType <- importedToken()$popStructureType
+    
+  })
+  
+
+  
   
   # Download handlers ----
   
@@ -793,9 +904,9 @@ server <- function(input, output, session) {
     
   })
   
-  output$blankTemplateDownloadEligibility <- downloadHandler(
+  output$blankTemplateDownloadEnrollment <- downloadHandler(
     filename = function() {
-      paste("blankEDCTemplate", 
+      paste("blankEnrollmentTemplate", 
             ".xlsx",
             sep = "")
     },
@@ -826,7 +937,7 @@ server <- function(input, output, session) {
   
   output$blankTemplateDownloadDoubleCount <- downloadHandler(
     filename = function() {
-      paste("blankEDCTemplate", 
+      paste("blankDoubleCountTemplate", 
             ".xlsx",
             sep = "")
     },
@@ -838,19 +949,143 @@ server <- function(input, output, session) {
     contentType = NULL
   )
   
-  
-  output$table_check <- renderTable({
+  customPopStructure <- reactive({
+    req(input$completedTemplateUploadPopStructure)
     
-    file <- input$completedTemplateUploadEligibility
+    file <- input$completedTemplateUploadPopStructure
     ext <- tools::file_ext(file$datapath)
     
-    req (file)
     validate(need(ext == "xlsx",
                   "Please upload xlsx file"))
     
-    readxl::read_xlsx(file$datapath)
-    }
-)
+    a <- file$datapath %>%
+      dataParametersImportandMutate() %>%
+      dataParametersPivot1Year() %>%
+      rename(firstQCustom_2019 = firstQ_2019,
+             firstQCustom_2020 = firstQ_2020,
+             firstQCustom_2021 = firstQ_2021,
+             firstQCustom_2022 = firstQ_2022,
+             secondQCustom_2019 = secondQ_2019,
+             secondQCustom_2020 = secondQ_2020,
+             secondQCustom_2021 = secondQ_2021,
+             secondQCustom_2022 = secondQ_2022,
+             thirdQCustom_2019 = thirdQ_2019,
+             thirdQCustom_2020 = thirdQ_2020,
+             thirdQCustom_2021 = thirdQ_2021,
+             thirdQCustom_2022 = thirdQ_2022,
+             fourthQCustom_2019 = fourthQ_2019,
+             fourthQCustom_2020 = fourthQ_2020,
+             fourthQCustom_2021 = fourthQ_2021,
+             fourthQCustom_2022 = fourthQ_2022,
+             fifthQCustom_2019 = fifthQ_2019,
+             fifthQCustom_2020 = fifthQ_2020,
+             fifthQCustom_2021 = fifthQ_2021,
+             fifthQCustom_2022 = fifthQ_2022)
+      
+    
+    return(a)
+  })
+  
+  output$table_check_pop <- renderTable({
+    req(customPopStructure())
+    
+    customPopStructure()
+  })
+  
+  observeEvent(input$confirmCustomPopStructure, {
+    req(customPopStructure())
+    req(workingDataPre$data)
+    
+    workingDataPre$data <- left_join(workingDataPre$data,
+                                     customPopStructure(),
+                                     by = c("country" = "Country",
+                                            "AREA_NAME" = "District",
+                                            "ageasentered" = "ageasentered"))
+    
+    workingDataPre$data$firstQ_2019 <- workingDataPre$data$firstQCustom_2019
+    workingDataPre$data$firstQ_2020 <- workingDataPre$data$firstQCustom_2020
+    workingDataPre$data$firstQ_2021 <- workingDataPre$data$firstQCustom_2021
+    workingDataPre$data$firstQ_2022 <- workingDataPre$data$firstQCustom_2022
+    workingDataPre$data$secondQ_2019 <- workingDataPre$data$secondQCustom_2019
+    workingDataPre$data$secondQ_2020 <- workingDataPre$data$secondQCustom_2020
+    workingDataPre$data$secondQ_2021 <- workingDataPre$data$secondQCustom_2021
+    workingDataPre$data$secondQ_2022 <- workingDataPre$data$secondQCustom_2022
+    workingDataPre$data$thirdQ_2019 <- workingDataPre$data$thirdQCustom_2019
+    workingDataPre$data$thirdQ_2020 <- workingDataPre$data$thirdQCustom_2020
+    workingDataPre$data$thirdQ_2021 <- workingDataPre$data$thirdQCustom_2021
+    workingDataPre$data$thirdQ_2022 <- workingDataPre$data$thirdQCustom_2022
+    workingDataPre$data$fourthQ_2019 <- workingDataPre$data$fourthQCustom_2019
+    workingDataPre$data$fourthQ_2020 <- workingDataPre$data$fourthQCustom_2020
+    workingDataPre$data$fourthQ_2021 <- workingDataPre$data$fourthQCustom_2021
+    workingDataPre$data$fourthQ_2022 <- workingDataPre$data$fourthQCustom_2022
+    workingDataPre$data$fifthQ_2019 <- workingDataPre$data$fifthQCustom_2019
+    workingDataPre$data$fifthQ_2020 <- workingDataPre$data$fifthQCustom_2020
+    workingDataPre$data$fifthQ_2021 <- workingDataPre$data$fifthQCustom_2021
+    workingDataPre$data$fifthQ_2022 <- workingDataPre$data$fifthQCustom_2022
+    
+    workingDataPre$data <- workingDataPre$data %>%
+      select(-c(firstQCustom_2019,
+                firstQCustom_2020,
+                firstQCustom_2021,
+                firstQCustom_2022,
+                secondQCustom_2019,
+                secondQCustom_2020,
+                secondQCustom_2021,
+                secondQCustom_2022,
+                thirdQCustom_2019,
+                thirdQCustom_2020,
+                thirdQCustom_2021,
+                thirdQCustom_2022,
+                fourthQCustom_2019,
+                fourthQCustom_2020,
+                fourthQCustom_2021,
+                fourthQCustom_2022,
+                fifthQCustom_2019,
+                fifthQCustom_2020,
+                fifthQCustom_2021,
+                fifthQCustom_2022))
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  customEnrollment <- reactive({
+    req(input$completedTemplateUploadEnrollment)
+    
+    file <- input$completedTemplateUploadEnrollment
+    ext <- tools::file_ext(file$datapath)
+    
+    validate(need(ext == "xlsx",
+                  "Please upload xlsx file"))
+    
+    a <- readxl::read_xlsx(file$datapath) %>%
+      rename(Enrollment_2019_Custom = Enrollment_2019,
+             Enrollment_2020_Custom = Enrollment_2020,
+             Enrollment_2021_Custom = Enrollment_2021,
+             Enrollment_2022_Custom = Enrollment_2022)
+      
+    return(a)
+  })
+  
+  customDoubleCount <- reactive({
+    req(input$completedTemplateUploadDoubleCount)
+    
+    file <- input$completedTemplateUploadDoubleCount
+    ext <- tools::file_ext(file$datapath)
+    
+    validate(need(ext == "xlsx",
+                  "Please upload xlsx file"))
+    
+    a <- readxl::read_xlsx(file$datapath) %>%
+      rename(PSDC_2019_Custom = PrimarySecondaryDoubleCounts_2019,
+             PSDC_2020_Custom = PrimarySecondaryDoubleCounts_2020,
+             PSDC_2021_Custom = PrimarySecondaryDoubleCounts_2021,
+             PSDC_2022_Custom = PrimarySecondaryDoubleCounts_2022)
+    
+    return(a)
+  })
+  
   
   
   
