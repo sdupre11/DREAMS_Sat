@@ -30,7 +30,7 @@ attachDREAMSField <- function(x, y) {
 dataParametersImportandMutate <- function(x) {
   
   readxl::read_xlsx(x) %>%
-    mutate(
+    dplyr::mutate(
       ageasentered = case_when(
         (AgeCohort == "10 to 14") ~ as.character("10-14"),
         (AgeCohort == "15 to 19") ~ as.character("15-19"),
@@ -38,7 +38,7 @@ dataParametersImportandMutate <- function(x) {
         (AgeCohort == "25 to 29") ~ as.character("25-29")
       )
     ) %>%
-    select(-"AgeCohort")
+    dplyr::select(-"AgeCohort")
 }
 
 ##############################
@@ -82,11 +82,13 @@ dataParametersPivot1Year <- function(x) {
   
 }
 
+
+
 ##############################
 
 dataParametersPivot5Year <- function(x) {
   Prevalence <- x %>%
-    select(-(7:14)) %>%
+    select(-(7:18)) %>%
     pivot_longer(
       cols = Prevalence_2019:Prevalence_2022,
       names_to = "fiscal_year",
@@ -96,16 +98,26 @@ dataParametersPivot5Year <- function(x) {
   
   Vulnerable <- x %>%
     select(-(3:6)) %>%
-    select(-(7:10)) %>%
+    select(-(7:14)) %>%
     pivot_longer(
       cols = Vulnerable_2019:Vulnerable_2022,
       names_to = "fiscal_year",
       names_prefix = "Vulnerable_",
       values_to = "Vulnerable"
     )
+  
+  Enrollment <- x %>%
+    select(-(3:10)) %>%
+    select(-c(7:10)) %>%
+    pivot_longer(
+      cols = Enrollment_2019:Enrollment_2022,
+      names_to = "fiscal_year",
+      names_prefix = "Enrollment_",
+      values_to = "Enrollment"
+    )
 
   PrimarySecondaryDoubleCounts <- x %>%
-    select(-(3:10)) %>%
+    select(-(3:14)) %>%
     pivot_longer(
       cols = PrimarySecondaryDoubleCounts_2019:PrimarySecondaryDoubleCounts_2022,
       names_to = "fiscal_year",
@@ -117,7 +129,11 @@ dataParametersPivot5Year <- function(x) {
                         Vulnerable,
                         by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
   
-  All <- left_join(PrevVuln,
+  PrevVulnEnro <- left_join(PrevVuln,
+                        Enrollment,
+                        by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
+  
+  All <- left_join(PrevVulnEnro,
                    PrimarySecondaryDoubleCounts,
                    by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
   
@@ -147,6 +163,7 @@ reshapeWide <- function(x) {
   PrevalenceDF <- splitForReshapeWide(x, "Prevalence")
   VulnerableDF <- splitForReshapeWide(x, "Vulnerable")
   PrimarySecondaryDoubleCountsDF <- splitForReshapeWide(x, "PrimarySecondaryDoubleCounts")
+  EnrollmentDF <- splitForReshapeWide(x, "Enrollment")
   PopDF <- splitForReshapeWide(x, "population")
   AGYW_PREVDF <- splitForReshapeWide(x, "AGYW_PREV")
 
@@ -181,6 +198,17 @@ reshapeWide <- function(x) {
       names_from = fiscal_year,
       names_glue = "PSDC_{fiscal_year}",
       values_from = PrimarySecondaryDoubleCounts
+    )
+  
+  EnrollmentDF <- EnrollmentDF %>%
+    pivot_wider(
+      id_cols = c(AREA_NAME,
+                  ageasentered,
+                  country,
+                  populationtx),
+      names_from = fiscal_year,
+      names_glue = "Enrollment_{fiscal_year}",
+      values_from = Enrollment
     )
 
   PopDF <- PopDF %>%
@@ -218,7 +246,15 @@ reshapeWide <- function(x) {
                                "AREA_NAME" = "AREA_NAME", 
                                "ageasentered" = "ageasentered",
                                "populationtx" = "populationtx"))
-  PrevVulnPSDCPop <- left_join(PrevVulnPSDC,
+  
+  PrevVulnPSDCEnrollment <- left_join(PrevVulnPSDC,
+                               EnrollmentDF,
+                               by = c("country" = "country", 
+                                      "AREA_NAME" = "AREA_NAME", 
+                                      "ageasentered" = "ageasentered",
+                                      "populationtx" = "populationtx"))
+  
+  PrevVulnPSDCPop <- left_join(PrevVulnPSDCEnrollment,
                             PopDF,
                             by = c("country" = "country", 
                                    "AREA_NAME" = "AREA_NAME", 
@@ -291,6 +327,18 @@ deriveStatisticsPreSat <- function(x) {
   a$DeDuplicatedAGYW_PREV_2022 <- round(a$AGYW_PREV_2022 * ((100-a$PSDC_2022)/100),
                                        0)
 
+  a$EnrollmentStandardizedAGYW_PREV_2019 <- round(a$DeDuplicatedAGYW_PREV_2019 * ((100-a$Enrollment_2019)/100), 
+                                                                            0)
+  
+  a$EnrollmentStandardizedAGYW_PREV_2020 <- round(a$DeDuplicatedAGYW_PREV_2020 * ((100-a$Enrollment_2020)/100), 
+                                                  0)
+  
+  a$EnrollmentStandardizedAGYW_PREV_2021 <- round(a$DeDuplicatedAGYW_PREV_2021 * ((100-a$Enrollment_2021)/100), 
+                                                  0)
+  
+  a$EnrollmentStandardizedAGYW_PREV_2022 <- round(a$DeDuplicatedAGYW_PREV_2022 * ((100-a$Enrollment_2022)/100), 
+                                                  0)
+  
   return(a)
 }
 
@@ -306,19 +354,16 @@ deriveStatisticsSat <- function(x) {
   
   c$PopStructure <- "National"
   
-  
-  
-  
-  a$Actual_Served_2019 <- round(a$DeDuplicatedAGYW_PREV_2019,
+  a$Actual_Served_2019 <- round(a$EnrollmentStandardizedAGYW_PREV_2019,
                                    0)
   
-  a$Actual_Served_2020 <- round((a$DeDuplicatedAGYW_PREV_2020 + (a$DeDuplicatedAGYW_PREV_2019*(1-a$fifthQ_2019))),
+  a$Actual_Served_2020 <- round((a$EnrollmentStandardizedAGYW_PREV_2020 + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-a$fifthQ_2019))),
                                    0)
   
-  a$Actual_Served_2021 <- round((a$DeDuplicatedAGYW_PREV_2021 + (a$DeDuplicatedAGYW_PREV_2020*(1-a$fifthQ_2020)) + (a$DeDuplicatedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019)))),
+  a$Actual_Served_2021 <- round((a$EnrollmentStandardizedAGYW_PREV_2021 + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-a$fifthQ_2020)) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019)))),
                                    0)
   
-  a$Actual_Served_2022 <- round((a$DeDuplicatedAGYW_PREV_2022 + (a$DeDuplicatedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$DeDuplicatedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020))) + (a$DeDuplicatedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019)))),
+  a$Actual_Served_2022 <- round((a$EnrollmentStandardizedAGYW_PREV_2022 + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019)))),
                                    0)
   
   
@@ -335,16 +380,16 @@ deriveStatisticsSat <- function(x) {
                       1)
 
   
-  b$Actual_Served_2019 <- round(b$DeDuplicatedAGYW_PREV_2019,
+  b$Actual_Served_2019 <- round(b$EnrollmentStandardizedAGYW_PREV_2019,
                       0)
   
-  b$Actual_Served_2020 <- round((b$DeDuplicatedAGYW_PREV_2020+(b$DeDuplicatedAGYW_PREV_2019*.8)),
+  b$Actual_Served_2020 <- round((b$EnrollmentStandardizedAGYW_PREV_2020+(b$EnrollmentStandardizedAGYW_PREV_2019*.8)),
                       0)
   
-  b$Actual_Served_2021 <- round((b$DeDuplicatedAGYW_PREV_2021 + (b$DeDuplicatedAGYW_PREV_2020*.8) + (b$DeDuplicatedAGYW_PREV_2019*.6)),
+  b$Actual_Served_2021 <- round((b$EnrollmentStandardizedAGYW_PREV_2021 + (b$EnrollmentStandardizedAGYW_PREV_2020*.8) + (b$EnrollmentStandardizedAGYW_PREV_2019*.6)),
                       0)
   
-  b$Actual_Served_2022 <- round((b$DeDuplicatedAGYW_PREV_2022 + (b$DeDuplicatedAGYW_PREV_2021*.8) + (b$DeDuplicatedAGYW_PREV_2020*.6) + (b$DeDuplicatedAGYW_PREV_2019*.4)),
+  b$Actual_Served_2022 <- round((b$EnrollmentStandardizedAGYW_PREV_2022 + (b$EnrollmentStandardizedAGYW_PREV_2021*.8) + (b$EnrollmentStandardizedAGYW_PREV_2020*.6) + (b$EnrollmentStandardizedAGYW_PREV_2019*.4)),
                       0)
   
   
@@ -361,16 +406,16 @@ deriveStatisticsSat <- function(x) {
                       1)
 
   
-  c$Actual_Served_2019 <- round(c$DeDuplicatedAGYW_PREV_2019,
+  c$Actual_Served_2019 <- round(c$EnrollmentStandardizedAGYW_PREV_2019,
                                 0)
   
-  c$Actual_Served_2020 <- round((c$DeDuplicatedAGYW_PREV_2020 + (c$DeDuplicatedAGYW_PREV_2019*(1-c$fifthQNat_2019))),
+  c$Actual_Served_2020 <- round((c$EnrollmentStandardizedAGYW_PREV_2020 + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-c$fifthQNat_2019))),
                                 0)
   
-  c$Actual_Served_2021 <- round((c$DeDuplicatedAGYW_PREV_2021 + (c$DeDuplicatedAGYW_PREV_2020*(1-c$fifthQNat_2020)) + (c$DeDuplicatedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019)))),
+  c$Actual_Served_2021 <- round((c$EnrollmentStandardizedAGYW_PREV_2021 + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-c$fifthQNat_2020)) + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019)))),
                                 0)
   
-  c$Actual_Served_2022 <- round((c$DeDuplicatedAGYW_PREV_2022 + (c$DeDuplicatedAGYW_PREV_2021*(1-c$fifthQNat_2021)) + (c$DeDuplicatedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020))) + (c$DeDuplicatedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019)))),
+  c$Actual_Served_2022 <- round((c$EnrollmentStandardizedAGYW_PREV_2022 + (c$EnrollmentStandardizedAGYW_PREV_2021*(1-c$fifthQNat_2021)) + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020))) + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019)))),
                                 0)
   
   
@@ -507,6 +552,7 @@ reduceToCOPExport <- function(x) {
                      "PLHIV_2022",
                      "NonPLHIV_2022",
                      "DeDuplicatedAGYW_PREV_2022",
+                     "EnrollmentStandardizedAGYW_PREV_2022",
                      "Actual_Served_2022")) %>%
     dplyr::mutate(
       PopRemaining_2022 = case_when(
@@ -591,6 +637,11 @@ prepQDataforPopStructurePlots <- function(x) {
         (age_quintile == "thirdQNat") ~ "thirdQ",
         (age_quintile == "fourthQNat") ~ "fourthQ",
         (age_quintile == "fifthQNat") ~ "fifthQ",
+        (age_quintile == "firstQCustom") ~ "firstQ",
+        (age_quintile == "secondQCustom") ~ "secondQ",
+        (age_quintile == "thirdQCustom") ~ "thirdQ",
+        (age_quintile == "fourthQCustom") ~ "fourthQ",
+        (age_quintile == "fifthQCustom") ~ "fifthQ",
         TRUE ~ as.character(age_quintile)
       )
     ) %>%
