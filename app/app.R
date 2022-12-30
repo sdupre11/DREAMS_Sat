@@ -75,11 +75,14 @@ server <- function(input, output, session) {
                    fileInput("importToken",
                              "Import save token (.RData)",
                              accept = ".RData"),
+                   actionButton("import_button",
+                                "press me"),
                    br(),
                    br(),
+                   textOutput("params_popStructureType"),
                    actionButton("useDefaultParameters",
-                                "Use defaults")#,
-                   #tableOutput("table_check_import")
+                                "Use defaults"),
+                   tableOutput("table_check_import")
                  ),
                  shinyglide::screen(
                    column(4,
@@ -161,9 +164,9 @@ server <- function(input, output, session) {
                           strong("Step 3: Population structure (Default: 20%)"),
                           radioButtons("structure",
                                        "Set Population Structure:",
-                                       c("Default (20%)" = "Default",
-                                         "Match National" = "National",
-                                         "Custom" = "Custom")),
+                                       choices = c("Default (20%)" = "Default",
+                                                   "Match National" = "National",
+                                                   "Custom" = "Custom")),
                           conditionalPanel(
                             condition = "input.structure == 'Custom'",
                             strong("Custom Structure step 2a"),
@@ -396,7 +399,7 @@ server <- function(input, output, session) {
   params <- reactiveValues(
     country = "Botswana",
     popStructureType = "Default",
-    catchmentModifierFlaggedDistricts = NULL,
+    catchmentsSelected = character(0),
     focusedAnalytic = "Incomplete"
   )
   
@@ -443,6 +446,28 @@ server <- function(input, output, session) {
     return(a)
   })
   
+  # Update elements ----
+  ## Run updateSelectInput() functions ----
+  observeEvent(input$importToken, {
+    updateSelectInput(session,
+                      "country",
+                      selected = importedToken()$country[1])
+
+    updateCheckboxGroupInput(session,
+                             "checkGroup_catchment",
+                             selected = importedToken()$catchmentsSelected)
+    
+    updateRadioButtons(session,
+                       "structure",
+                       selected = importedToken()$popStructure[1])
+    
+    
+    #Export the existing pre/post data entirely and update it?
+    
+    #Export analytics button choice
+    
+  })
+  
   observeEvent(input$country, {
     updateSelectInput(session,
                       "popStructureDistrict",
@@ -456,7 +481,6 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$country, {
-    
     updateCheckboxGroupInput(session, 
                              "checkGroup_catchment", 
                              choices = districts())
@@ -468,9 +492,13 @@ server <- function(input, output, session) {
       dplyr::filter(country == input$country)
   })
   
-  # Update parameters ----
+  ## Update parameters ----
   observeEvent(input$country, {
     params$country = input$country
+  })
+  
+  observeEvent(input$checkGroup_catchment, {
+    params$catchmentsSelected = input$checkGroup_catchment
   })
   
   observeEvent(input$focusSaturation, {
@@ -1041,16 +1069,17 @@ server <- function(input, output, session) {
 
   catchments_filtered <- reactive(
     a <- neighborsLookup[neighborsLookup$parent %in% input$checkGroup_catchment, ])
-
-  catchmentMapListener <- reactive({
-    list(input$country,
-         catchments_filtered())
-  })
+# 
+#   catchmentMapListener <- reactive({
+# 
+#     list(input$country,
+#          catchments_filtered())
+#   })
 
   # observeEvent(catchmentMapListener(), {
   # # observeEvent(c(input$country,
   # #                catchments_filtered()), {
-  #   
+  # 
   #   if (input$country == "Botswana") {
   #     selected_country <- botADM1.sf
   #   } else if (input$country == "Kenya") {
@@ -1060,6 +1089,8 @@ server <- function(input, output, session) {
   #   } else if (input$country == "Zimbabwe") {
   #     selected_country <- zimADM1.sf
   #   }
+  # 
+  #   selected_country <- botADM1.sf
   # 
   #   selected_country_DREAMS <- selected_country %>%
   #     filter(DREAMSDistrict == "Yes")
@@ -1123,7 +1154,7 @@ server <- function(input, output, session) {
   #             zoom = selected_zoom) %>%
   #     setMapWidgetStyle(list(background = "white"))
   # })
-  # 
+
   # Save token ----
   ## Export ----
   exportCountryListener <- reactive({
@@ -1134,6 +1165,14 @@ server <- function(input, output, session) {
     params$popStructureType
   })
   
+  exportCatchmentsListener <- reactive({
+    params$catchmentsSelected
+  })
+  
+  exportAnalyticListener <- reactive({
+    params$focusedAnalytic
+  })
+  
   output$exportToken <- downloadHandler(
     filename = function() {
       paste("DREAMS_Sat_Save_Token",
@@ -1142,51 +1181,63 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       
-      country <- exportCountryListener()
-      popStructure <- exportPopStructureListener()
-      
-      export_df <- data.frame(
+      params_df <- data.frame(
         country = exportCountryListener(),
-        popStructure = exportPopStructureListener())
+        popStructureType = exportPopStructureListener(),
+        catchmentsSelected = exportCatchmentsListener(),
+        focusedAnalytic = exportAnalyticListener())
       
-      save(export_df, file = file)
+      save(params_df, file = file)
     },
     
-    # content = function(file) {
-    #   
-    #   save(params, file = file)
-    # },
     contentType = NULL
   )
   
   ## Import ----
-  importedToken <- reactive({
-    req(input$importToken)
+  
+  importedToken <- eventReactive(input$importToken, {
+    if ( is.null(input$importToken)) return(NULL)
     
-    file <- input$importToken
-    ext <- tools::file_ext(file$datapath)
+    load(input$importToken$datapath)
     
-    validate(need(ext == "Rdata",
-                  "Please upload Rdata file"))
-    
-    a <- file$datapath %>%
-      load()
-    
-    
+    a <- params_df
+
     return(a)
+    
+  })
+  
+  observeEvent(input$import_button, {
+    req(importedToken())
+
+    print(importedToken()$catchmentsSelected)
+    print(importedToken()$focusedAnalytic)
+    print(params$catchmentsSelected)
+    print(params$focusedAnalytic)
+    print(importedToken()$popStructureType[1])
+    print(importedToken()$country[1])
+    print(params$popStructureType)
+    print(params$country)
+    
+    print(class(importedToken()$country[1]))
+    print(class(importedToken()$popStructureType))
+    print(class(importedToken()$catchmentsSelected))
+    print(class(importedToken()$focusedAnalytic))
+
   })
   
   output$table_check_import <- renderTable({
     req(importedToken())
-    
+
     importedToken()
   })
   
-  # observeEvent(importedToken(), {
-  #   params$country <- importedToken()$country
-  #   params$popStructureType <- importedToken()$popStructureType
-  # 
-  # })
+  observeEvent(importedToken(), {
+    params$country <- importedToken()$country[1]
+    params$popStructureType <- importedToken()$popStructureType[1]
+    params$catchmentsSelected <- importedToken()$catchmentsSelected
+    params$focusedAnalytic <- importedToken()$focusedAnalytic[1]
+
+  })
   
   # DownloadHandlers ----
   ## Downloads ----
