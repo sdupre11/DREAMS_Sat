@@ -14,7 +14,20 @@ library(jsonlite)
 library(shinyWidgets)
 library(datimutils)
 
+# if logged in now source functions
+source("functions.R")
+source("params.R")
 
+# connect to S3
+tryCatch({
+  s3_connect()
+},
+error = function(e) {
+  print(e)
+})
+
+# allow reading of data now that we are connected and authorized
+source("data_load.R")
 
 # css <- "
 # .container-fluid {
@@ -169,9 +182,8 @@ server <- function(input, output, session) {
       # DISALLOW USER ACCESS TO THE APP-----
       
       # store data so call is made only once
-      userGroups$streams <-  datimutils::getMyStreams()
+      user <- list()
       user$type <- datimutils::getMyUserType()
-      mechanisms$my_cat_ops <- datimutils::listMechs()
       
       # if a user is not to be allowed deny them entry
       if (!user$type %in% c(USG_USERS, PARTNER_USERS)) {
@@ -259,7 +271,7 @@ server <- function(input, output, session) {
     # Returns to the log in screen without the authorization code at top
     updateQueryString("?", mode = "replace", session = session)
     flog.info(paste0("User ", user_input$d2_session$me$userCredentials$username, " logged out."))
-    ready$ok <- FALSE
+    #ready$ok <- FALSE
     user_input$authenticated  <-  FALSE
     user_input$user_name <- ""
     user_input$authorized  <-  FALSE
@@ -284,7 +296,7 @@ server <- function(input, output, session) {
   #   )
   # }
   
-  uiAuthenticated <- renderUI({
+  main_ui <- function() {
     fluidPage(
       titlePanel(title = div(h1("Welcome to DREAMS Sat", style="margin: 0;"), 
                              h4('Saturation calculation application', style="margin: 0;")), 
@@ -577,7 +589,7 @@ server <- function(input, output, session) {
                DT::dataTableOutput("workingDataPost_check")))
       )
     )
-  })
+  }
   
   #output$ui <- renderUI({
   #  main_ui()
@@ -597,8 +609,7 @@ server <- function(input, output, session) {
     if(user_input$authenticated == FALSE) {
       uiOutput("uiLogin")
     } else {
-      uiOutput("uiAuthenticated")
-      #main_ui()
+      main_ui()
     }
   })
     
