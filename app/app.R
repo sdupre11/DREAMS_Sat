@@ -108,8 +108,57 @@ server <- function(input, output, session) {
                           leafletOutput("map_main"))
                  ),
                  shinyglide::screen(
+                   strong("Step 2: Prevalence (Default: 2%) and Vulnerability (Default: 85%)"),
+                   br(),
+                   p("Use default values or upload custom values (highly recommended)"),
+                   br(),
+                   br(),
+                   column(6,
+                          strong("Prevalence"),
+                          strong("Custom Structure step 2a"),
+                          p("Download blank prevalence\nworksheet"),
+                          downloadButton("blankTemplateDownloadPrevalence",
+                                         "Download blank template"),
+                          br(),
+                          br(),
+                          strong("Step 2b"),
+                          p("Open worksheet in Excel, fill out 'Prevalence_20XX' columns and save"),
+                          strong("Step 2c"),
+                          p("Upload completed prevalence\n worksheet"),
+                          fileInput("completedTemplateUploadPrevalence",
+                                    "Upload completed template (.xlsx only)",
+                                    accept = ".xlsx"),
+                          DT::dataTableOutput("customPrevalenceTable"),
+                          actionButton("confirmCustomPrevalence",
+                                       "Confirm: use custom upload"),
+                          actionButton("resetToDefaultPrevalence",
+                                       "Reset: use default values")
+                          ),
+                   column(6,
+                          strong("Vulnerability"),
+                          strong("Custom Structure step 2d"),
+                          p("Download blank vulnerability\nworksheet"),
+                          downloadButton("blankTemplateDownloadVulnerability",
+                                         "Download blank template"),
+                          br(),
+                          br(),
+                          strong("Step 2e"),
+                          p("Open worksheet in Excel, fill out 'Vulnerable_20XX' columns and save"),
+                          strong("Step 2f"),
+                          p("Upload completed vulnerability\nworksheet"),
+                          fileInput("completedTemplateUploadVulnerability",
+                                    "Upload completed template (.xlsx only)",
+                                    accept = ".xlsx"),
+                          DT::dataTableOutput("customVulnerabilityTable"),
+                          actionButton("confirmCustomVulnerability",
+                                       "Confirm: use custom upload"),
+                          actionButton("resetToDefaultVulnerability",
+                                       "Reset: use default values")
+                   )
+                 ),
+                 shinyglide::screen(
                    column(4,
-                          strong("Step 2: Population structure (Default: 20%)"),
+                          strong("Step 3: Population structure (Default: 20%)"),
                           radioButtons("structure",
                                        "Set Population Structure:",
                                        c("Default (20%)" = "Default",
@@ -123,9 +172,9 @@ server <- function(input, output, session) {
                                            "Download blank template"),
                             br(),
                             br(),
-                            strong("Step 2b"),
+                            strong("Step 3b"),
                             p("Open worksheet in Excel, fill out 'proportion' column and save"),
-                            strong("Step 2c"),
+                            strong("Step 3c"),
                             p("Upload completed population\nstructure worksheet"),
                             fileInput("completedTemplateUploadPopStructure",
                                       "Upload completed template (.xlsx only)",
@@ -159,28 +208,20 @@ server <- function(input, output, session) {
                  ),
                  shinyglide::screen(
                    fluidRow(
-                     strong("Step 3: Catchment modifier (Default: No catchment modifier)")),
+                     strong("Step 4: Catchment modifier (Default: No catchment modifier)")),
                    fluidRow(
                      column(4,
                             br(),
                             br(),
                             checkboxGroupInput("checkGroup_catchment",
                                                label = "Apply DREAMS catchment to:",
-                                               choices = "")#,
-                            # conditionalPanel(
-                            #   condition = "input.catchment == 1",
-                            #   radioButtons("catchment_upordown",
-                            #                "Adjust denominator(s) up or numerator(s) down",
-                            #                c("Denominator up" = "dUp",
-                            #                  "Numerator down" = "nDown"))
-                            # )
+                                               choices = "")
                      ),
                      column(8,
-                            # textOutput("testing_catchments"),
                             leafletOutput("map_catchments")))
                  ),
                  shinyglide::screen(
-                   strong("Step 4: Enrollment modifier (Default: 3%)"),
+                   strong("Step 5: Enrollment modifier (Default: 3%)"),
                    p("Use default value or upload a custom modifier structure"),
                    strong("Custom Structure step 4a"),
                    p("Download blank enrollment\nmodifier worksheet"),
@@ -188,9 +229,9 @@ server <- function(input, output, session) {
                                   "Download blank template"),
                    br(),
                    br(),
-                   strong("Step 4b"),
+                   strong("Step 5b"),
                    p("Open worksheet in Excel, fill out 'Enrollment' columns and save"),
-                   strong("Step 4c"),
+                   strong("Step 5c"),
                    p("Upload completed enrollment\nmodifier worksheet"),
                    DT::dataTableOutput("customEnrollmentTable"),
                    fileInput("completedTemplateUploadEnrollment",
@@ -202,7 +243,7 @@ server <- function(input, output, session) {
                                 "Reset: use default modifier")
                  ),
                  shinyglide::screen(
-                   strong("Step 5: Double count modifier (Default: 1%)"),
+                   strong("Step 6: Double count modifier (Default: 1%)"),
                    p("Use default value or upload a custom structure"),
                    strong("Custom Structure step 5a"),
                    p("Download blank population\nstructure worksheet"),
@@ -210,9 +251,9 @@ server <- function(input, output, session) {
                                   "Download blank template"),
                    br(),
                    br(),
-                   strong("Step 5b"),
+                   strong("Step 6b"),
                    p("Open worksheet in Excel, fill out 'PrimarySecondaryDoubleCounts_20XX' columns and save"),
-                   strong("Step 5c"),
+                   strong("Step 6c"),
                    p("Upload completed double count\nmodifier worksheet"),
                    DT::dataTableOutput("customPSDCTable"),
                    fileInput("completedTemplateUploadDoubleCount",
@@ -224,7 +265,7 @@ server <- function(input, output, session) {
                                 "Reset: use default modifier")
                  ),
                  shinyglide::screen(
-                   strong("Step 6"),
+                   strong("Step 7"),
                    br(),
                    downloadButton("exportToken",
                                   "Export save token"),
@@ -293,13 +334,10 @@ server <- function(input, output, session) {
                uiOutput("saturation_ui"),
                uiOutput("numerator_ui"),
                uiOutput("denominator_ui")
-        )
-      #,
-      # fluidRow(
-      #   column(12,
-      #          strong("Pop Structure Type:"),
-      #          textOutput("params_popStructureType"),
-      #          DT::dataTableOutput("workingDataPost_check"))
+        ),
+      fluidRow(
+        column(12,
+               DT::dataTableOutput("workingDataPost_check")))
       )
     )
   }
@@ -521,6 +559,72 @@ server <- function(input, output, session) {
       reduceForAnalyticsPlots() 
   })
   
+  observeEvent(input$confirmCustomPrevalence, {
+    req(customPrevalence())
+    req(workingDataPre$data)
+    
+    workingDataPre$data <- left_join(workingDataPre$data,
+                                     customPrevalence(),
+                                     by = c("country" = "Country", 
+                                            "AREA_NAME" = "District", 
+                                            "ageasentered" = "AgeCohort"))
+    
+    workingDataPre$data$Prev_2019 <- workingDataPre$data$Prevalence_2019_Custom
+    workingDataPre$data$Prev_2020 <- workingDataPre$data$Prevalence_2020_Custom
+    workingDataPre$data$Prev_2021 <- workingDataPre$data$Prevalence_2021_Custom
+    workingDataPre$data$Prev_2022 <- workingDataPre$data$Prevalence_2022_Custom
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  observeEvent(input$resetToDefaultPrevalence, {
+    req(workingDataPre$data)
+    
+    workingDataPre$data$Prev_2019 <- 2
+    workingDataPre$data$Prev_2020 <- 2
+    workingDataPre$data$Prev_2021 <- 2
+    workingDataPre$data$Prev_2022 <- 2
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  observeEvent(input$confirmCustomVulnerability, {
+    req(customVulnerability())
+    req(workingDataPre$data)
+    
+    workingDataPre$data <- left_join(workingDataPre$data,
+                                     customVulnerability(),
+                                     by = c("country" = "Country", 
+                                            "AREA_NAME" = "District", 
+                                            "ageasentered" = "AgeCohort"))
+    
+    workingDataPre$data$Vuln_2019 <- workingDataPre$data$Vulnerable_2019_Custom
+    workingDataPre$data$Vuln_2020 <- workingDataPre$data$Vulnerable_2020_Custom
+    workingDataPre$data$Vuln_2021 <- workingDataPre$data$Vulnerable_2021_Custom
+    workingDataPre$data$Vuln_2022 <- workingDataPre$data$Vulnerable_2022_Custom
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
+  observeEvent(input$resetToDefaultVulnerability, {
+    req(workingDataPre$data)
+    
+    workingDataPre$data$Vuln_2019 <- 85
+    workingDataPre$data$Vuln_2020 <- 85
+    workingDataPre$data$Vuln_2021 <- 85
+    workingDataPre$data$Vuln_2022 <- 85
+    
+    workingDataPost$data <- workingDataPre$data %>%
+      deriveStatistics()
+    
+  })
+  
   observeEvent(input$confirmCustomEnrollment, {
     req(customEnrollment())
     req(workingDataPre$data)
@@ -654,6 +758,30 @@ server <- function(input, output, session) {
     )
   })
   
+  output$customPrevalenceTable <- DT::renderDataTable({
+    req(customPrevalence())
+    
+    datatable(customPrevalence(),
+              rownames = FALSE,
+              selection = 'none',
+              options = list(
+                dom = 'Blfrtip',
+                scrollx = TRUE)
+    )
+  })
+  
+  output$customVulnerabilityTable <- DT::renderDataTable({
+    req(customVulnerability())
+    
+    datatable(customVulnerability(),
+              rownames = FALSE,
+              selection = 'none',
+              options = list(
+                dom = 'Blfrtip',
+                scrollx = TRUE)
+    )
+  })
+  
   output$customEnrollmentTable <- DT::renderDataTable({
     req(customEnrollment())
 
@@ -746,7 +874,6 @@ server <- function(input, output, session) {
     natDF <- SingleYearNatAGYWPops %>%
       prepQDataforPopStructurePlots() %>%
       filter(fiscal_year==input$popStructureYear & country == input$country)
-    # filter(fiscal_year==!!input$popStructureYear)
     
     a <- natDF %>%
       ggplot(
@@ -1063,6 +1190,73 @@ server <- function(input, output, session) {
   
   # DownloadHandlers ----
   ## Downloads ----
+  ### Prevalence ----
+  default5YearTemplate_selectedCountry_P <- reactive({
+    req(input$country)
+    
+    a <- default5YearTemplate %>%
+      dplyr::filter(Country == input$country) %>%
+      dplyr::select(c("Country",
+                      "District",
+                      "AgeCohort",
+                      "Prevalence_2019",
+                      "Prevalence_2020",
+                      "Prevalence_2021",
+                      "Prevalence_2022"))
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownloadPrevalence <- downloadHandler(
+    filename = function() {
+      paste("blankPrevalenceTemplate", 
+            ".xlsx",
+            sep = "")
+    },
+    
+    content = function(file) {
+      write_xlsx(default5YearTemplate_selectedCountry_P(), 
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
+  
+  ### Vulnerability ----
+  default5YearTemplate_selectedCountry_V <- reactive({
+    req(input$country)
+    
+    a <- default5YearTemplate %>%
+      dplyr::filter(Country == input$country) %>%
+      dplyr::select(c("Country",
+                      "District",
+                      "AgeCohort",
+                      "Vulnerable_2019",
+                      "Vulnerable_2020",
+                      "Vulnerable_2021",
+                      "Vulnerable_2022"))
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownloadVulnerability <- downloadHandler(
+    filename = function() {
+      paste("blankVulnerabilityTemplate", 
+            ".xlsx",
+            sep = "")
+    },
+    
+    content = function(file) {
+      write_xlsx(default5YearTemplate_selectedCountry_V(), 
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
+  
+  ### Population structure ----
   default1YearTemplate_selectedCountry <- reactive({
     req(input$country)
     
@@ -1087,6 +1281,7 @@ server <- function(input, output, session) {
     contentType = NULL
   )
   
+  ### Enrollment ----
   default5YearTemplate_selectedCountry_E <- reactive({
     req(input$country)
     
@@ -1118,6 +1313,7 @@ server <- function(input, output, session) {
     contentType = NULL
   )
   
+  ### Primary/Secondary Double Count ----
   default5YearTemplate_selectedCountry_DC <- reactive({
     req(input$country)
     
@@ -1150,6 +1346,45 @@ server <- function(input, output, session) {
   )
   
   ## Uploads ----
+  ### Prevalence ----
+  customPrevalence <- reactive({
+    req(input$completedTemplateUploadPrevalence)
+    
+    file <- input$completedTemplateUploadPrevalence
+    ext <- tools::file_ext(file$datapath)
+    
+    validate(need(ext == "xlsx",
+                  "Please upload xlsx file"))
+    
+    a <- readxl::read_xlsx(file$datapath) %>%
+      rename(Prevalence_2019_Custom = Prevalence_2019,
+             Prevalence_2020_Custom = Prevalence_2020,
+             Prevalence_2021_Custom = Prevalence_2021,
+             Prevalence_2022_Custom = Prevalence_2022)
+    
+    return(a)
+  })
+  
+  ### Vulnerability ----
+  customVulnerability <- reactive({
+    req(input$completedTemplateUploadVulnerability)
+    
+    file <- input$completedTemplateUploadVulnerability
+    ext <- tools::file_ext(file$datapath)
+    
+    validate(need(ext == "xlsx",
+                  "Please upload xlsx file"))
+    
+    a <- readxl::read_xlsx(file$datapath) %>%
+      rename(Vulnerable_2019_Custom = Vulnerable_2019,
+             Vulnerable_2020_Custom = Vulnerable_2020,
+             Vulnerable_2021_Custom = Vulnerable_2021,
+             Vulnerable_2022_Custom = Vulnerable_2022)
+    
+    return(a)
+  })
+  
+  ### Population structure ----
   customPopStructure <- reactive({
     req(input$completedTemplateUploadPopStructure)
     
@@ -1187,6 +1422,7 @@ server <- function(input, output, session) {
     return(a)
   })
   
+  ### Enrollment ----
   customEnrollment <- reactive({
     req(input$completedTemplateUploadEnrollment)
     
@@ -1205,6 +1441,7 @@ server <- function(input, output, session) {
     return(a)
   })
   
+  ### Primary/secondary double count ----
   customDoubleCount <- reactive({
     req(input$completedTemplateUploadDoubleCount)
     
