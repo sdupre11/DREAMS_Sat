@@ -70,7 +70,8 @@ server <- function(input, output, session) {
                    conditionalPanel(
                      condition = "output.paramsUploaded == true",
                      p("You've uploaded data for:"),
-                     textOutput("importedCountry"),
+                     strong(textOutput("importedCountry"),
+                     br(),
                      p("Is this correct?"),
                      br(),
                      actionButton("importButtonParams",
