@@ -1,0 +1,134 @@
+<metadata xml:lang="en"><Esri><CreaDate>2021-12-07T10:15:27</CreaDate><CreaTime>00000000</CreaTime><ArcGISFormat>1.0</ArcGISFormat><ArcGISstyle>North American Profile of ISO19115 2003</ArcGISstyle><SyncOnce>FALSE</SyncOnce><DataProperties><itemProps><itemName Sync="TRUE">South_Africa_adm3_uscb_2022</itemName><nativeExtBox><westBL Sync="TRUE">16.454451</westBL><eastBL Sync="TRUE">32.893638</eastBL><southBL Sync="TRUE">-34.835140</southBL><northBL Sync="TRUE">-22.125424</northBL><exTypeCode Sync="TRUE">1</exTypeCode></nativeExtBox><itemSize Sync="TRUE">14.727</itemSize><itemLocation Sync="FALSE"><linkage Sync="FALSE"/><protocol Sync="FALSE"/></itemLocation><imsContentType Sync="TRUE">002</imsContentType></itemProps><coordRef><type Sync="TRUE">Geographic</type><geogcsn Sync="TRUE">GCS_WGS_1984</geogcsn><csUnits Sync="TRUE">Angular Unit: Degree (0.017453)</csUnits><peXml Sync="TRUE">&lt;GeographicCoordinateSystem xsi:type='typens:GeographicCoordinateSystem' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/10.8'&gt;&lt;WKT&gt;GEOGCS[&amp;quot;GCS_WGS_1984&amp;quot;,DATUM[&amp;quot;D_WGS_1984&amp;quot;,SPHEROID[&amp;quot;WGS_1984&amp;quot;,6378137.0,298.257223563]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433],AUTHORITY[&amp;quot;EPSG&amp;quot;,4326]]&lt;/WKT&gt;&lt;XOrigin&gt;-400&lt;/XOrigin&gt;&lt;YOrigin&gt;-400&lt;/YOrigin&gt;&lt;XYScale&gt;11258999068426.238&lt;/XYScale&gt;&lt;ZOrigin&gt;-100000&lt;/ZOrigin&gt;&lt;ZScale&gt;10000&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;8.983152841195215e-09&lt;/XYTolerance&gt;&lt;ZTolerance&gt;0.001&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.001&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;LeftLongitude&gt;-180&lt;/LeftLongitude&gt;&lt;WKID&gt;4326&lt;/WKID&gt;&lt;LatestWKID&gt;4326&lt;/LatestWKID&gt;&lt;/GeographicCoordinateSystem&gt;</peXml></coordRef><copyHistory Sync="FALSE"/></DataProperties><SyncDate>20220112</SyncDate><SyncTime>11432000</SyncTime><ModDate>20220112</ModDate><ModTime>11432000</ModTime><scaleRange><minScale>150000000</minScale><maxScale>5000</maxScale></scaleRange><ArcGISProfile>ISO19139</ArcGISProfile></Esri><eainfo><detailed Name="South_Africa_adm3_uscb_2022" xmlns=""><enttyp><enttypl Sync="TRUE">South_Africa_adm3_uscb_2022</enttypl><enttypt Sync="TRUE">Feature Class</enttypt><enttypc Sync="TRUE">234</enttypc></enttyp><attr xmlns=""><attrlabl Sync="TRUE">FID</attrlabl><attalias Sync="TRUE">FID</attalias><attrtype Sync="TRUE">OID</attrtype><attwidth Sync="TRUE">4</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Internal feature number.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom></attrdomv></attr><attr xmlns=""><attrlabl Sync="TRUE">Shape</attrlabl><attalias Sync="TRUE">Shape</attalias><attrtype Sync="TRUE">Geometry</attrtype><attwidth Sync="TRUE">0</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Feature geometry.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Coordinates defining the features.</udom></attrdomv></attr><attr xmlns=""><attrlabl Sync="TRUE">Shape_Leng</attrlabl><attalias Sync="FALSE">Shape_Length</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">19</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef>Length of feature in internal units.</attrdef><attrdefs>Esri</attrdefs><attrdomv><udom>Positive real numbers that are automatically generated.</udom></attrdomv></attr><attr xmlns=""><attrlabl Sync="TRUE">Shape_Area</attrlabl><attalias Sync="TRUE">Shape_Area</attalias><attrtype Sync="TRUE">Double</attrtype><attwidth Sync="TRUE">19</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Area of feature in internal units squared.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Positive real numbers that are automatically generated.</udom></attrdomv></attr><attr xmlns=""><attrlabl>AREA_NAME</attrlabl><attrdef>Name of the country or subnational area (administrative division).</attrdef><attrdefs>U.S. Board on Geographic Names, 2021; Statistics South Africa, 2011</attrdefs><attalias Sync="TRUE">AREA_NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">254</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>GEO_CONCAT</attrlabl><attrdef>Concatenation of all administrative division names separated by underscores ("_"), beginning with the country name and ending with the division name for the lowest subnational administrative order (level). The field serves as one for name sorting and ordering.</attrdef><attrdefs>Population Division, U.S. Census Bureau</attrdefs><attalias Sync="TRUE">GEO_CONCAT</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">254</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>GEO_MATCH</attrlabl><attrdef>Identical subnational area identifiers in the Excel table, geospatial data file, and Unicode text table, enabling linkage (joining) of the table records to the geospatial data file polygons as attributes.</attrdef><attrdefs>Population Division, U.S. Census Bureau</attrdefs><attalias Sync="TRUE">GEO_MATCH</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">254</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>CNTRY_NAME</attrlabl><attrdef>Country name.</attrdef><attrdefs>U.S. Board on Geographic Names, 2021</attrdefs><attalias Sync="TRUE">CNTRY_NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">100</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>ADM1_NAME</attrlabl><attrdef>First-order administrative division name (ADM1), i.e., provinces.</attrdef><attrdefs>U.S. Board on Geographic Names, 2021</attrdefs><attalias Sync="TRUE">ADM1_NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">100</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>ADM2_NAME</attrlabl><attrdef>Second-order administrative division name (ADM2), i.e., districts.</attrdef><attrdefs>U.S. Board on Geographic Names, 2021</attrdefs><attalias Sync="TRUE">ADM2_NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">100</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>ADM3_NAME</attrlabl><attrdef>Third-order administrative division name (ADM3), i.e., municipalities.</attrdef><attrdefs>U.S. Board on Geographic Names, 2021; Statistics South Africa, 2011</attrdefs><attalias Sync="TRUE">ADM3_NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">100</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>ADM_LEVEL</attrlabl><attrdef>Administrative level "0" (ADM0/country); administrative level  "1"  (ADM1); administrative level "2" (ADM2); administrative level "3" (ADM3); administrative level "4" (ADM4).</attrdef><attrdefs>Population Division, U.S. Census Bureau</attrdefs><attalias Sync="TRUE">ADM_LEVEL</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">15</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr xmlns=""><attrlabl>NSO_CODE</attrlabl><attrdef>Code used by the Statistics South Africa for a subnational administrative division.</attrdef><attrdefs>Statistics South Africa, 2011</attrdefs><attalias Sync="TRUE">NSO_CODE</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">20</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr></detailed></eainfo><mdLang><languageCode value="eng"/><countryCode Sync="TRUE" value="USA"/></mdLang><mdChar><CharSetCd value="004"/></mdChar><mdHrLv><ScopeCd value="005"/></mdHrLv><mdDateSt Sync="TRUE">20220112</mdDateSt><mdStanName>ArcGIS Metadata</mdStanName><mdStanVer>1.0</mdStanVer><distInfo><distFormat><formatName Sync="TRUE">Shapefile</formatName><formatVer>1</formatVer></distFormat><distTranOps><transSize Sync="TRUE">14.727</transSize></distTranOps></distInfo><dataIdInfo><idCitation><resTitle Sync="FALSE">South Africa: Third-Order Administrative Divisions</resTitle><date><createDate>2021-12-07T10:15:27</createDate></date><citRespParty><rpIndName>Population Division</rpIndName><rpOrgName>U.S. Census Bureau</rpOrgName><rpCntInfo><cntAddress addressType="postal"><delPoint>4600 Silver Hill Rd</delPoint><city>Washington</city><adminArea>DC</adminArea><postCode>20233-8800</postCode><eMailAdd>pop.global.map.list@census.gov</eMailAdd><country>US</country></cntAddress></rpCntInfo><role><RoleCd value="011">11</RoleCd></role></citRespParty><presForm><PresFormCd value="005"/></presForm></idCitation><idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Annual Five-Year Age Group Population Estimates by Sex for 2015 to 2030 for the national and first-, second-, and third-order administrative division levels of South Africa were prepared by the U.S. Census Bureau for joining (linking) to shapefiles as attribute data. The estimates are consistent with the midyear national projections from the U.S. Census Bureau International Data Base (IDB).&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs><idPurp>The U.S. Census Bureau is providing annual subnational five-year age group population estimates by sex for South Africa for 2015-2030 in a geographic information system (GIS) for users of the Spatial Data Repository, funded by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR).</idPurp><idCredit>CENSUS DATA
+2011 Age-Sex Data: Census 2011 Municipal Reports, Appendix: Age and Sex Structure. Statistics South Africa. Available online at http://www.statssa.gov.za/?page_id=3955 (province level PDFs must be downloaded individually, accessed December 07, 2021).
+
+2001 Population Total Data: Census 2011 Municipal Reports, Appendix: Age and Sex Structure. Statistics South Africa. Available online at http://www.statssa.gov.za/?page_id=3955 (province level PDFs must be downloaded individually, 2011 census publications include 2001 population totals, accessed December 07, 2021).
+
+The U.S. Census Bureau cannot guarantee the accuracy of non-U.S. census and survey data.
+
+GEOSPATIAL BOUNDARIES
+International boundaries coincide with the Large Scale International Boundaries (LSIB) dataset from the U.S. Department of State, Office of the Geographer and Global Issues. Available online at http://geonode.state.gov (accessed December 07, 2021).
+
+Geospatial data for the third-order administrative divisions of South Africa were downloaded from the Database of Global Administrative Areas (GADM), available online at http://gadm.org/download_country.html, "South Africa" (accessed December 07, 2021).
+
+The U.S. Census Bureau cannot guarantee the accuracy of boundary placements.
+
+NATIONAL ESTIMATES AND PROJECTIONS
+U.S. Census Bureau, Population Division. International Data Base, December 2020 release, available online at http://www.census.gov/data-tools/demo/idb/ (accessed December 06, 2021).
+
+NATIONAL AND SUBNATIONAL AREA NAMES AND CODES
+(1) U.S. National Geospatial-Intelligence Agency. NGA GEOnet Names Server (GNS), available at http://geonames.nga.mil/gns/html/ (accessed December 06, 2021). Contains geographic area names from the U.S. Board on Geographic Names and the U.S. Government Federal Information Processing System (FIPS) codes.
+(2) U.S. Government Geopolitical Entities, Names, and Codes (GENC) Standard. NSG Standards Registry, available at http://nsgreg.nga.mil/genc/discovery (accessed December 06, 2021).</idCredit><placeKeys><keyword>South Africa, Municipality</keyword></placeKeys><tempKeys><keyword>2021</keyword></tempKeys><themeKeys><keyword>Subnational Divisions</keyword></themeKeys><searchKeys><keyword>Geospatial Boundaries</keyword><keyword>South Africa</keyword><keyword>Third-Order Administrative Divisions</keyword><keyword>Municipality</keyword></searchKeys><resConst><Consts><useLimit>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;U.S. Census Bureau population estimates: None. Acknowledgment of the Census Bureau would be appreciated in products derived from its population estimates. The subnational boundaries used for this shapefile were downloaded by the U.S. Census Bureau from a publicly available source for this product. The international boundaries are derived from the Large Scale International Boundaries (LSIB) dataset (public domain).&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</useLimit></Consts></resConst><spatRpType><SpatRepTypCd value="001"/></spatRpType><dataLang><languageCode value="eng"/><countryCode Sync="TRUE" value="USA"/></dataLang><dataChar><CharSetCd value="004"/></dataChar><envirDesc Sync="FALSE"/><suppInfo>SUBNATIONAL DIVISIONS
+South Africa's third-order administrative divisions: 234 municipalities as of the 2011 census.
+
+SHAPEFILES
+The original shapefile downloaded from the Database of Global Administrative Areas (GADM) had 234 polygons and matched the 2011 census municipalities (third-order administrative divisions) with no changes to the subnational boundaries made by USCB staff. The U.S. Census Bureau aligned the shapefile's national boundary to the Large Scale International Boundary Line (LSIB) polygon file from the U.S. Department of State, Office of the Geographer and Global Issues.
+
+FEATURE AND ATTRIBUTE DETAILS
+The 2015-2030 population estimates for South Africa's administrative divisions are provided in the following two tables:
+(1) The Unicode tab-delimited text file (table) "South Africa_5yr_age_sex_2015-2030_uscb_feb2022.txt," which can be joined to the shapefile via the common field "GEO_MATCH."
+(2) The Excel table "South Africa_5yr_age_sex_2015-2030_508_uscb_feb2022.xlsx," formatted for accessibility in compliance with Section 508 of the U.S. Government's Federal Rehabilitation Act.
+
+Details on processing of the census data and calculation of 2015-2030 estimates are provided in the "Census Metadata" tab of the Excel file and "Methods for Calculating 5-Year Age Group Population Estimates by Sex for Subnational Areas" document. For the subnational areas, the U.S. Board on Geographic Names (BGN) "approved" names from the NGA GEOnet Names Server (cited in the "Credits") were used. For any area that a BGN name was not available, the name from the national census was used. Official codes for the subnational areas from the country's national statistical office, when available, are entered in the "NSO_CODE" field in both the text and Excel tables. Information on any alternative area names or recent name or boundary changes is entered in the "USCBCMNT" field. A partial list of the fields in the Excel and Unicode text files, including all fields identifying geographic names and codes, is provided in the Excel file's "Data Dictionary" tab. More detail on the U.S. Census Bureau subnational age and sex group estimates and maps for PEPFAR can be found in the document "Subnational Population Estimates Components for the Spatial Data Repository." It includes a data dictionary that is similar to that in the Excel table.
+
+METHODOLOGY
+For more information, see the following methodology documents in the Spatial Data Repository:
+(1) "U.S. Census Bureau Methodology for SDR Subnational Population Estimates."
+(2) "U.S. Census Bureau Methods for Calculating 5-Year Age Group Population Estimates by Sex for Subnational Areas."
+(3) "Instructions for Joining Subnational Population Data to Shapefiles."
+
+ACCESS
+The U.S. Census Bureau’s products for PEPFAR can be accessed from the Spatial Data Repository at http://spatialdata.dhsprogram.com/home/, which also provides access to data and maps from the DHS (Demographic and Health Surveys) Program. A zipped file containing shapefiles with metadata, an Excel workbook with subnational population estimates, and a Unicode tab-delimited text file is available for each country. PEPFAR products are also available on the Census Bureau website at http://www.census.gov/geographies/mapping-files/time-series/demo/international-programs/subnationalpopulation.html for download.</suppInfo><idPoC><rpIndName>Population Division</rpIndName><rpOrgName>U.S. Census Bureau</rpOrgName><rpCntInfo><cntAddress addressType="postal"><delPoint>4600 Silver Hill Rd</delPoint><city>Washington</city><adminArea>DC</adminArea><postCode>20233-8800</postCode><eMailAdd>pop.global.map.list@census.gov</eMailAdd><country>US</country></cntAddress></rpCntInfo><role><RoleCd value="011">11</RoleCd></role><displayName>U.S. Census Bureau</displayName></idPoC><dataExt><geoEle xmlns=""><GeoBndBox esriExtentType="search"><exTypeCode Sync="TRUE">1</exTypeCode><westBL Sync="TRUE">16.454451</westBL><eastBL Sync="TRUE">32.893638</eastBL><northBL Sync="TRUE">-22.125424</northBL><southBL Sync="TRUE">-34.835140</southBL></GeoBndBox></geoEle></dataExt><tpCat><TopicCatCd value="016"/></tpCat><tpCat><TopicCatCd value="013"/></tpCat></dataIdInfo><mdMaint><maintFreq><MaintFreqCd value="009">9</MaintFreqCd></maintFreq></mdMaint><spatRepInfo><VectSpatRep><geometObjs Name="South_Africa_adm3_uscb_2022"><geoObjTyp><GeoObjTypCd value="002" Sync="TRUE"></GeoObjTypCd></geoObjTyp><geoObjCnt Sync="TRUE">234</geoObjCnt></geometObjs><topLvl><TopoLevCd value="001" Sync="TRUE"></TopoLevCd></topLvl></VectSpatRep></spatRepInfo><refSysInfo><RefSystem dimension="horizontal"><refSysID><identCode code="4326"/><idCodeSpace Sync="TRUE">EPSG</idCodeSpace><idVersion Sync="TRUE">6.14(3.0.1)</idVersion></refSysID></RefSystem></refSysInfo><mdHrLvName Sync="TRUE">dataset</mdHrLvName><spdoinfo><ptvctinf><esriterm Name="South_Africa_adm3_uscb_2022"><efeatyp Sync="TRUE">Simple</efeatyp><efeageom code="4" Sync="TRUE"></efeageom><esritopo Sync="TRUE">FALSE</esritopo><efeacnt Sync="TRUE">234</efeacnt><spindex Sync="TRUE">TRUE</spindex><linrefer Sync="TRUE">FALSE</linrefer></esriterm></ptvctinf></spdoinfo><Binary><Thumbnail><Data EsriPropertyType="PictureX">/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCACFAMgDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKZJNHCAZHC5OBnqT6D1qnd3rLPHDEQFLbZZBg
+7OOB9Sfyz71FcxOqPcLNK0yIdpPI/wC+enbtzXNWxUab5d2Uo3Ln26AEhmdQOrNGyqPxIxUpljVA
+7SIFPRieDVFVuSqlJ0YHnLxfl0IqhB8ztNJ9lgnDHO9MFSf9nI64POTnnFc8cc+qHynQUVnWeILk
+Rv5SSSpkxxngEenr1PPsK0a7aVRVIqSJasFFFFaCCiiigAooooAKKKKACiiigAopCQoJJAA5JNAI
+YAggg8gigBaKKKACiiigAoopHdY0Z3YKqjJYnAAoAWswzyXs9xCHMMUbbPl+/IOhPPQZyOOfl61P
+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</Data></Thumbnail></Binary><mdContact><rpIndName>Population Division</rpIndName><rpOrgName>U.S. Census Bureau</rpOrgName><rpCntInfo><cntAddress addressType="postal"><delPoint>4600 Silver Hill Rd</delPoint><city>Washington</city><adminArea>DC</adminArea><postCode>20233-8800</postCode><eMailAdd>pop.global.map.list@census.gov</eMailAdd><country>US</country></cntAddress></rpCntInfo><role><RoleCd value="011">11</RoleCd></role><displayName>U.S. Census Bureau</displayName></mdContact></metadata>
