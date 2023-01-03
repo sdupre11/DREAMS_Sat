@@ -5384,7 +5384,7 @@
   },
   "files": {
     ".Rprofile": {
-      "checksum": "08769d456873a4fbd0a0fa31ef66a9d8"
+      "checksum": "f1e90cd33ad72a0d5abad607b59fab1e"
     },
     "app.R": {
       "checksum": "45f50ab58f76a81083d2b593a0f43220"
@@ -5442,6 +5442,9 @@
     },
     "functions.R": {
       "checksum": "7810dcff2cc977a7e69566ae92a2000e"
+    },
+    "params.R": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "preprocessing/build_national_pop_structure.R": {
       "checksum": "fa0f604c7ce8e41a0e0ec294cc1f5ab4"
