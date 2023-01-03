@@ -1,6 +1,3 @@
-
-# load("app/www/importtokentesting.Rdata")
-
 DREAMS_Districts_Botswana <- c("CENTRAL", 
                                "KGATLENG", 
                                "KWENENG", 
@@ -21,6 +18,15 @@ DREAMS_Districts_Lesotho <- c("BEREA",
                               "MASERU",
                               "MOHALE'S HOEK")
 
+DREAMS_Districts_Malawi <- c("BLANTYRE", 
+                              "MACHINGA",
+                              "ZOMBA")
+
+DREAMS_Districts_SouthAfrica <- c("")
+
+DREAMS_Districts_Tanzania <- c("MWANZA",
+                               "KAGERA")
+
 DREAMS_Districts_Zimbabwe <- c("BULAWAYO", 
                                "MANICALAND", 
                                "MASHONALAND CENTRAL", 
@@ -39,7 +45,10 @@ AGYW_PREV <- s3read_using(FUN = read.csv,
 
 countryDataJoined <- left_join(countryData,
                                AGYW_PREV,
-                               by = c("AREA_NAME" = "AREA_NAME", "fiscal_year" = "fiscal_year", "country" = "country", "ageasentered" = "ageasentered")) %>%
+                               by = c("AREA_NAME" = "AREA_NAME", 
+                                      "fiscal_year" = "fiscal_year", 
+                                      "country" = "country", 
+                                      "ageasentered" = "ageasentered")) %>%
   select(-c("snu1",
             "X"))
 
@@ -53,6 +62,16 @@ kenADM2.sf <- readRDS('data/KenyaADM2.RDS') %>%
   attachDREAMSField("Kenya")
 lesADM1.sf <- readRDS('data/LesothoADM1.RDS') %>%
   attachDREAMSField("Lesotho")
+# malADM1.sf <- readRDS('data/MalawiADM1.RDS') %>%
+#   attachDREAMSField("Malawi")
+# safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
+#   attachDREAMSField("South Africa")
+# safADM2.sf <- readRDS('data/SAfricaADM2.RDS') %>%
+#   attachDREAMSField("South Africa")
+# tanADM1.sf <- readRDS('data/TanzaniaADM1.RDS') %>%
+#   attachDREAMSField("Tanzania")
+# tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
+#   attachDREAMSField("Tanzania")
 zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS') %>%
   attachDREAMSField("Zimbabwe")
 zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS') %>%
@@ -68,10 +87,10 @@ SingleYearNatAGYWPops <- readRDS('data/SingleYearNationalAGYWPops.RDS')
 
 
 small_countries <- c("Lesotho")
-medium_countries <- c("Zimbabwe")
-large_countries <- c("Botswana", "Kenya")
+medium_countries <- c("Malawi", "Tanzania", "Zimbabwe")
+large_countries <- c("Botswana", "Kenya", "South Africa")
 
-neighborsLookup <- readRDS('data/neighborsLookup.RDS')
+neighborsLookup <- readRDS('data/neighborsLookupAll.RDS')
 
 default1YearTemplate <- readxl::read_xlsx('www/defaultTemplate_1year.xlsx') 
 default5YearTemplate <- readxl::read_xlsx('www/defaultTemplate_5year.xlsx') %>%
@@ -83,3 +102,26 @@ default5YearTemplate <- readxl::read_xlsx('www/defaultTemplate_5year.xlsx') %>%
       (AgeCohort == "25 to 29") ~ as.character("25-29")
     )
   )
+
+defaultData <- attachParameters_5year(countryDataJoined,
+                                      dataParameters_5Year) %>%
+  reshapeWide() %>%
+  attachParameters_1year(dataParameters_1Year) %>%
+  merge(SingleYearNatAGYWPops) %>%
+  deriveStatistics()
+  
+defaultStatsCOP <- defaultData %>%
+  mutate(
+    IsSelected = case_when(
+      (PopStructure == "Default" & populationtx == "DistrictOnly") ~ as.character("Selected"),
+      TRUE ~ as.character("Unselected")
+    )
+  ) %>%
+  reduceToCOPExport()
+  
+  
+rm(countryData)
+rm(countryDataJoined)
+rm(AGYW_PREV)
+
+

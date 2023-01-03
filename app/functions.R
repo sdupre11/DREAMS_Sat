@@ -11,6 +11,12 @@ attachDREAMSField <- function(x, y) {
     internal_list <- DREAMS_Districts_Kenya
   } else if  (y == "Lesotho") {
     internal_list <- DREAMS_Districts_Lesotho
+  } else if  (y == "Malawi") {
+    internal_list <- DREAMS_Districts_Malawi
+  } else if  (y == "South Africa") {
+    internal_list <- DREAMS_Districts_SouthAfrica
+  } else if  (y == "Tanzania") {
+    internal_list <- DREAMS_Districts_Tanzania
   } else if (y == "Zimbabwe") {
     internal_list <- DREAMS_Districts_Zimbabwe
   }
@@ -524,7 +530,7 @@ attachParameters_1year <- function(x, y) {
 
 reduceToCOPExport <- function(x) {
   
-  col_order <- c("OU",
+  col_order <- c("Country",
                  "District",
                  "Cohort",
                  "Total DREAMS eligible AGYW",
@@ -560,7 +566,7 @@ reduceToCOPExport <- function(x) {
         TRUE ~ as.numeric(PopRemaining_2022)
       )
     ) %>%
-    dplyr::rename("OU" = "country",
+    dplyr::rename("Country" = "country",
            "Cohort" = "ageasentered",
            "District" = "AREA_NAME",
            "Total DREAMS eligible AGYW" = "VulnerableNonPLHIV_2022",
@@ -573,15 +579,6 @@ reduceToCOPExport <- function(x) {
 }
 
 reduceForAnalyticsPlots <- function(x) {
-
-  col_order <- c("OU",
-                 "District",
-                 "Cohort",
-                 "Summed AGYW_PREV",
-                 "Summed Dedup AGYW_PREV",
-                 "Summed Enrollment Standardized AGYW_PREV",
-                 "Actual Served"
-  )
 
   a <- x
 
@@ -596,50 +593,17 @@ reduceForAnalyticsPlots <- function(x) {
                                                           "second",
                                                           "third",
                                                           "fourth",
-                                                          "fifth"))))
+                                                          "fifth")))) %>%
+    dplyr::select(-c("country",
+                     "AGYW_PREV_2022",
+                     "DeDuplicatedAGYW_PREV_2022",
+                     "EnrollmentStandardizedAGYW_PREV_2022",
+                     "PopRemaining_2022",
+                     "populationtx",
+                     "PopStructure"))
 }
 
 
-#   
-#   a <- x %>%
-#     dplyr::filter(IsSelected == "Selected") %>%
-#     dplyr::select(-c("populationtx", 
-#                      "IsSelected",
-#                      "PopStructure")) %>%
-    # dplyr::select((-ends_with(c("2019",
-    #                             "2020",
-    #                             "2021")))&(-starts_with(c("first",
-    #                                                       "second",
-    #                                                       "third",
-    #                                                       "fourth",
-    #                                                       "fifth")))) %>%
-#     dplyr::select(-c("Prev_2022", 
-#                      "PSDC_2022", 
-#                      "Vuln_2022",
-#                      "Pop_2022",
-#                      "AGYW_PREV_2022",
-#                      "PLHIV_2022",
-#                      "NonPLHIV_2022",
-#                      "DeDuplicatedAGYW_PREV_2022",
-#                      "EnrollmentStandardizedAGYW_PREV_2022",
-#                      "Actual_Served_2022")) %>%
-#     dplyr::mutate(
-#       PopRemaining_2022 = case_when(
-#         (PopRemaining_2022 < 0) ~ 0,
-#         TRUE ~ as.numeric(PopRemaining_2022)
-#       )
-#     ) %>%
-#     dplyr::rename("OU" = "country",
-#                   "Cohort" = "ageasentered",
-#                   "District" = "AREA_NAME",
-#                   "Total DREAMS eligible AGYW" = "VulnerableNonPLHIV_2022",
-#                   "Percent coverage (saturation)" = "Sat_2022",
-#                   "Remaining unserved AGYW" = "PopRemaining_2022")
-#   
-#   a <- a[, col_order]
-#   
-#   return(a)
-# }
 
 
 # Plot theme ----
@@ -747,5 +711,6 @@ prepQDataforPopStructurePlots <- function(x) {
   return(b)
 
 }
+
 
 
