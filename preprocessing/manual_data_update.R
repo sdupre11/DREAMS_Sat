@@ -54,7 +54,7 @@ rownames(choices) <- NULL
 
 choices_recent_countries_all_historic <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Historic/txt/", path_names))
 
-choices_recent_countries_all2_historic <- subset(choices_recent_countries_all_historic, grepl("Botswana|Kenya|Lesotho|Zimbabwe", path_names))
+choices_recent_countries_all2_historic <- subset(choices_recent_countries_all_historic, grepl("Botswana|Kenya|Lesotho|Malawi|South Africa|Tanzania|Zimbabwe", path_names))
 
 
 my_data_historic <- 
@@ -71,7 +71,7 @@ my_data_historic <-
 
     res <- data %>% 
       filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
-      filter(country %in% c("Botswana", "Kenya", "Lesotho", "Zimbabwe")) %>%
+      filter(country %in% c("Botswana", "Kenya", "Lesotho", "Malawi", "South Africa", "Tanzania", "Zimbabwe")) %>%
       filter(!is.na(qtr4)) %>%
       group_by(country, snu1, ageasentered, fiscal_year) %>%
       summarize(qtr4 = sum(as.numeric(qtr4)))
@@ -109,7 +109,7 @@ my_data_historic <-
 
 choices_recent_countries_all_recent <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Recent/txt/", path_names))
 
-choices_recent_countries_all2_recent <- subset(choices_recent_countries_all_recent, grepl("Botswana|Kenya|Lesotho|Zimbabwe", path_names))
+choices_recent_countries_all2_recent <- subset(choices_recent_countries_all_recent, grepl("Botswana|Kenya|Lesotho|Malawi|South Africa|Tanzania|Zimbabwe", path_names))
 
 
 my_data_recent <- 
@@ -126,7 +126,7 @@ my_data_recent <-
     
     res <- data %>% 
       filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
-      filter(country %in% c("Botswana", "Kenya", "Lesotho", "Zimbabwe")) %>%
+      filter(country %in% c("Botswana", "Kenya", "Lesotho", "Malawi", "South Africa", "Tanzania", "Zimbabwe")) %>%
       filter(!is.na(qtr4)) %>%
       group_by(country, snu1, ageasentered, fiscal_year) %>%
       summarize(qtr4 = sum(as.numeric(qtr4)))
