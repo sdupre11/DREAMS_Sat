@@ -571,8 +571,8 @@ server <- function(input, output, session) {
   
   output$ui <- renderUI({
     if(!user_input$authenticated){
-      # auth_ui()
-      main_ui()
+       auth_ui()
+      #main_ui()
     }else{
       main_ui()
     }
