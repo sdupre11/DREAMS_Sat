@@ -7,9 +7,30 @@ library(tidyverse)
 library(shinyglide)
 library(writexl)
 library(shinyjs)
+library(aws.s3)
+library(futile.logger)
+library(readxl)
+library(paws)
+library(jsonlite)
+library(shinyWidgets)
+library(datimutils)
 
+# source("functions.R")
+# source("data_load.R")
+
+
+
+# uncomment when running manually ------
 source("functions.R")
+
+tryCatch({
+  s3_connect()
+},
+error = function(e) {
+  print(e)
+})
 source("data_load.R")
+
 
 
 USG_USERS = c("Agency", "Interagency", "Global Agency", "Global") 
@@ -70,7 +91,7 @@ server <- function(input, output, session) {
                    conditionalPanel(
                      condition = "output.paramsUploaded == true",
                      p("You've uploaded data for:"),
-                     strong(textOutput("importedCountry"),
+                     strong(textOutput("importedCountry")),
                      br(),
                      p("Is this correct?"),
                      br(),
