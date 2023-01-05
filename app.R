@@ -69,6 +69,10 @@ server <- function(input, output, session) {
         tags$link(rel = "stylesheet", 
         type = "text/css",
         href = "style.css")),
+      tags$style(".progress-bar{
+                 background-color: #20A39E;
+                 }
+                 "),
       shinyjs::useShinyjs(),
       titlePanel(title = div(h1("Welcome to DREAMS Sat", style="margin: 0;"), 
                              h4('Saturation calculation application', style="margin: 0;")), 
@@ -122,7 +126,6 @@ server <- function(input, output, session) {
                                          #"Namibia",
                                          #"Rwanda",
                                          "South Africa",
-                                         #"South Sudan",
                                          "Tanzania",
                                          #"Uganda",
                                          #"Zambia",
@@ -635,17 +638,21 @@ server <- function(input, output, session) {
   observeEvent(input$focusSaturation, {
     req(data_stats_COP$data)
     reactiveButtons$focusedAnalytic <- "Saturation"
+    
+    shinyjs::click("initializeSelection")
   })
   
   observeEvent(input$focusNumerator, {
     req(data_stats_COP$data)
     reactiveButtons$focusedAnalytic <- "Numerator"
+    
+    shinyjs::click("initializeSelection")
   })
   
-  observeEvent(input$focusDenominator, {
-    req(data_stats_COP$data)
-    reactiveButtons$focusedAnalytic <- "Denominator"
-  })
+  # observeEvent(input$focusDenominator, {
+  #   req(data_stats_COP$data)
+  #   reactiveButtons$focusedAnalytic <- "Denominator"
+  # })
   
   # Render text elements ----
   output$importedCountry <- renderText(
@@ -906,21 +913,6 @@ server <- function(input, output, session) {
   })
   
   # Render table elements ----
-  output$workingDataPost_check <- DT::renderDataTable({
-    req(workingDataPost)
-
-    datatable(workingDataPost$data,
-              options = list(scrollx = TRUE)
-    )
-  })
-  
-  output$workingDataExport_check <- DT::renderDataTable({
-    req(importedTokenData())
-    
-    datatable(importedTokenData(),
-              options = list(scrollx = TRUE)
-    )
-  })
   # 
   output$customPrevalenceTable <- DT::renderDataTable({
     req(customPrevalence())
@@ -928,9 +920,11 @@ server <- function(input, output, session) {
     datatable(customPrevalence(),
               rownames = FALSE,
               selection = 'none',
-              options = list(
-                dom = 'Blfrtip',
-                scrollx = TRUE)
+              colnames = c("Age Cohort" = "AgeCohort",
+                           `2019` = "Prevalence_2019_Custom",
+                           `2020` = "Prevalence_2020_Custom",
+                           `2021` = "Prevalence_2021_Custom",
+                           `2022` = "Prevalence_2022_Custom")
     )
   })
   
@@ -940,9 +934,11 @@ server <- function(input, output, session) {
     datatable(customVulnerability(),
               rownames = FALSE,
               selection = 'none',
-              options = list(
-                dom = 'Blfrtip',
-                scrollx = TRUE)
+              colnames = c("Age Cohort" = "AgeCohort",
+                           `2019` = "Vulnerable_2019_Custom",
+                           `2020` = "Vulnerable_2020_Custom",
+                           `2021` = "Vulnerable_2021_Custom",
+                           `2022` = "Vulnerable_2022_Custom")
     )
   })
   
@@ -952,9 +948,11 @@ server <- function(input, output, session) {
     datatable(customEnrollment(),
               rownames = FALSE,
               selection = 'none',
-              options = list(
-                dom = 'Blfrtip',
-                scrollx = TRUE)
+              colnames = c("Age Cohort" = "AgeCohort",
+                           `2019` = "Enrollment_2019_Custom",
+                           `2020` = "Enrollment_2020_Custom",
+                           `2021` = "Enrollment_2021_Custom",
+                           `2022` = "Enrollment_2022_Custom")
     )
   })
   
@@ -964,9 +962,11 @@ server <- function(input, output, session) {
     datatable(customDoubleCount(),
               rownames = FALSE,
               selection = 'none',
-              options = list(
-                dom = 'Blfrtip',
-                scrollx = TRUE)
+              colnames = c("Age Cohort" = "AgeCohort",
+                           `2019` = "PSDC_2019_Custom",
+                           `2020` = "PSDC_2020_Custom",
+                           `2021` = "PSDC_2021_Custom",
+                           `2022` = "PSDC_2022_Custom")
     )
   })
   
@@ -1194,8 +1194,9 @@ server <- function(input, output, session) {
       ylab("Number of people") +
       xlab("Stage of the process") + 
       facet_wrap(~Cohort) +
-      theme_plot(legend.position = "none") +
-      scale_x_discrete(guide = guide_axis(n.dodge = 2))
+      scale_x_discrete(guide = guide_axis(n.dodge = 2)) + 
+      theme_minimal() +
+      theme_plot(legend.position = "none")
 
 
     return(a)
