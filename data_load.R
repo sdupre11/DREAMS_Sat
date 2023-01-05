@@ -22,7 +22,30 @@ DREAMS_Districts_Malawi <- c("BLANTYRE",
                               "MACHINGA",
                               "ZOMBA")
 
-DREAMS_Districts_SouthAfrica <- c("")
+DREAMS_Districts_SouthAfrica <- c("ALFRED NZO",
+                                  "BOJANALA",
+                                  "BUFFALO CITY",
+                                  "CAPRICORN",
+                                  "CITY OF CAPE TOWN",
+                                  "CITY OF JOHANNESBURG",
+                                  "CITY OF TSHWANE",
+                                  "DOCTOR KENNETH KAUNDA",
+                                  "EHLANZENI",
+                                  "EKURHULENI",
+                                  "ETHEKWINI",
+                                  "GERT SIBANDE",
+                                  "LEJWELEPUTSWA",
+                                  "MOPANI",
+                                  "NGAKA MODIRI MOLEMA",
+                                  "NKANGALA",
+                                  "O.R. TAMBO",
+                                  "SEDIBENG",
+                                  "THABO MOFUTSANYANE",
+                                  "UGU",
+                                  "UMGUNGUNDLOVU",
+                                  "UTHUKELA",
+                                  "UTHUNGULU",
+                                  "ZULULAND")
 
 DREAMS_Districts_Tanzania <- c("MWANZA",
                                "KAGERA")
@@ -33,8 +56,6 @@ DREAMS_Districts_Zimbabwe <- c("BULAWAYO",
                                "MATABELELAND NORTH", 
                                "MATABELELAND SOUTH", 
                                "MIDLANDS")
-
-
 
 countryData <- readRDS("data/countryData.RDS")
 
@@ -62,16 +83,16 @@ kenADM2.sf <- readRDS('data/KenyaADM2.RDS') %>%
   attachDREAMSField("Kenya")
 lesADM1.sf <- readRDS('data/LesothoADM1.RDS') %>%
   attachDREAMSField("Lesotho")
-# malADM1.sf <- readRDS('data/MalawiADM1.RDS') %>%
-#   attachDREAMSField("Malawi")
-# safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
-#   attachDREAMSField("South Africa")
-# safADM2.sf <- readRDS('data/SAfricaADM2.RDS') %>%
-#   attachDREAMSField("South Africa")
-# tanADM1.sf <- readRDS('data/TanzaniaADM1.RDS') %>%
-#   attachDREAMSField("Tanzania")
-# tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
-#   attachDREAMSField("Tanzania")
+malADM1.sf <- readRDS('data/MalawiADM1.RDS') %>%
+  attachDREAMSField("Malawi")
+safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
+  attachDREAMSField("South Africa")
+safADM2.sf <- readRDS('data/SAfricaADM2.RDS') %>%
+  attachDREAMSField("South Africa")
+tanADM1.sf <- readRDS('data/TanzaniaADM1.RDS') %>%
+  attachDREAMSField("Tanzania")
+tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
+  attachDREAMSField("Tanzania")
 zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS') %>%
   attachDREAMSField("Zimbabwe")
 zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS') %>%
@@ -86,9 +107,21 @@ dataParameters_5Year  <- dataParametersImportandMutate("www/defaultTemplate_5yea
 SingleYearNatAGYWPops <- readRDS('data/SingleYearNationalAGYWPops.RDS')
 
 
-small_countries <- c("Lesotho")
-medium_countries <- c("Malawi", "Tanzania", "Zimbabwe")
-large_countries <- c("Botswana", "Kenya", "South Africa")
+small_countries <- c("Cote d'Ivoire",
+                     "Eswatini",
+                     "Haiti",
+                     "Lesotho",
+                     "Rwanda")
+medium_countries <- c("Malawi",
+                      "Mozambique",
+                      "Uganda",
+                      "Zambia",
+                      "Zimbabwe")
+large_countries <- c("Botswana", 
+                     "Kenya", 
+                     "Namibia",
+                     "South Africa", 
+                     "Tanzania")
 
 neighborsLookup <- readRDS('data/neighborsLookupAll.RDS')
 

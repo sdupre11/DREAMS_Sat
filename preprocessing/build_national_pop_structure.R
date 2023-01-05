@@ -53,7 +53,7 @@ SingleYearNationalAGYWPops <- Joined %>%
 rm(CohortPops)
 rm(Joined)
 
-saveRDS(SingleYearNationalAGYWPops, file = "app/data/SingleYearNationalAGYWPops.RDS")
+saveRDS(SingleYearNationalAGYWPops, file = "data/SingleYearNationalAGYWPops.RDS")
 
 
 
