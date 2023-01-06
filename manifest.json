@@ -5384,13 +5384,13 @@
   },
   "files": {
     ".Rprofile": {
-      "checksum": "f1e90cd33ad72a0d5abad607b59fab1e"
+      "checksum": "7c5f6e733f578ba0b894f3912f6a2255"
     },
     "app.R": {
-      "checksum": "45f50ab58f76a81083d2b593a0f43220"
+      "checksum": "d75ba7cc2540eccbd12174ca7af6a4a6"
     },
     "data_load.R": {
-      "checksum": "25a72088792d1600cded72245db39445"
+      "checksum": "549e32ed89d7204ee27c335afb708a5f"
     },
     "data/BotswanaADM1.RDS": {
       "checksum": "f317cef178b1cb0b60eaf43b65ab215a"
@@ -5399,7 +5399,7 @@
       "checksum": "d10041b5708de4dd762e8ee01d7d9fcd"
     },
     "data/countryData.RDS": {
-      "checksum": "8777e009e731c7dd68019e820b17c92a"
+      "checksum": "4cad8be57af5891035ff62f21e6ace76"
     },
     "data/KenyaADM1.RDS": {
       "checksum": "a3a903824630c492287dd3967d21427d"
@@ -5411,28 +5411,28 @@
       "checksum": "6aa406a93b9257fd9c7eaa66405bf725"
     },
     "data/MalawiADM1.RDS": {
-      "checksum": "40081ceb5808ab22016c8e3760a31cc8"
+      "checksum": "6795c9e4064d5c65f02877b5a0a5e152"
     },
     "data/neighborsLookup.RDS": {
       "checksum": "a7e69de8b664926f872cd977b9106193"
     },
     "data/neighborsLookupAll.RDS": {
-      "checksum": "4f01171f9c5bebf26145e8fce54f0c02"
+      "checksum": "773ce136c48638d932f4302104c346fa"
     },
     "data/SAfricaADM1.RDS": {
-      "checksum": "1e5e3caa61a276c6f3013801d01875de"
+      "checksum": "cc52fdb741e86a508e0de1267d96d2a3"
     },
     "data/SAfricaADM2.RDS": {
-      "checksum": "3516faf29d07a1402f0935a72fa93f4e"
+      "checksum": "60b77afb9a1fbac3c4f7c31ebe9072a9"
     },
     "data/SingleYearNationalAGYWPops.RDS": {
-      "checksum": "10776611180df9c5f514ff2a6eb493d7"
+      "checksum": "c44ddcdf04aeb3af1c6cc46c87bf550e"
     },
     "data/TanzaniaADM1.RDS": {
-      "checksum": "d91d651ee8caf6fe7811346b269479bb"
+      "checksum": "46f0aa22ea772df68c2ea931dccd1474"
     },
     "data/TanzaniaADM2.RDS": {
-      "checksum": "a340d64b0951c4b6582a3dbdb36b115e"
+      "checksum": "6f581fdfaf57a008e21138b45c8ed787"
     },
     "data/ZimbabweADM1.RDS": {
       "checksum": "0fd18a024295af38a282de4fc0ad0b12"
@@ -5447,7 +5447,7 @@
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "preprocessing/build_national_pop_structure.R": {
-      "checksum": "fa0f604c7ce8e41a0e0ec294cc1f5ab4"
+      "checksum": "190020e6676e32d45acf472159c98512"
     },
     "preprocessing/data/Botswana_adm1_uscb_2019.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
@@ -5504,7 +5504,7 @@
       "checksum": "c75247753189e701532f75c54fd6acfa"
     },
     "preprocessing/data/Census_IDB_1Year.xlsx": {
-      "checksum": "7c16158678cb507a48650f5d1c0c10f7"
+      "checksum": "04cd5834947053683b967aa089b0fea8"
     },
     "preprocessing/data/Kenya_adm1_uscb_2020.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
@@ -5621,7 +5621,7 @@
       "checksum": "724bbfeccbc75bc6dfeb96f645265c1e"
     },
     "preprocessing/data/MalawiOutput_Denominators.RDS": {
-      "checksum": "aa63f598a0e5e773b8081ba44551593d"
+      "checksum": "a2c2b75b4287d48ef24fdc2975edfaef"
     },
     "preprocessing/data/South_Africa_adm2_uscb_2022.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
@@ -5673,6 +5673,9 @@
     },
     "preprocessing/data/SouthAfrica_USCB.xlsx": {
       "checksum": "da4c56b712831695d4dc2a5b1f435371"
+    },
+    "preprocessing/data/SouthAfricaOutput_Denominators.RDS": {
+      "checksum": "66b6a91f3110ee511bc2a67b51837483"
     },
     "preprocessing/data/Tanzania_adm1_uscb_2022.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
@@ -5726,7 +5729,7 @@
       "checksum": "1cd634ea16d7787dbcb0a795689b29bf"
     },
     "preprocessing/data/TanzaniaOutput_Denominators.RDS": {
-      "checksum": "d23f28c808a267faf6a2b41fb6f3108e"
+      "checksum": "e4ee5b1f3bb41aeacd54cd08999155b9"
     },
     "preprocessing/data/Zimbabwe_adm1_uscb_2022.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
@@ -5783,10 +5786,10 @@
       "checksum": "1fb29a857d0915ab277b4ae6e72f6366"
     },
     "preprocessing/demographic_and_spatial.R": {
-      "checksum": "1f6cea8c823f2f9c6adba0ce45b62d9e"
+      "checksum": "825e177dd642d8bbc1a0cc6bf80cc7fd"
     },
     "preprocessing/manual_data_update.R": {
-      "checksum": "338a03d681e7209657ac41ae962d0a6b"
+      "checksum": "e059fd57acc1317f8c9afd9d5f139603"
     },
     "preprocessing/s3_read.R": {
       "checksum": "dc70ac0e554ec64023fd63173b05b579"
@@ -5801,7 +5804,7 @@
       "checksum": "f22610c9dd5bca2d96350596e8328224"
     },
     "www/style.css": {
-      "checksum": "ef0b69be4abeb3ab79b7853dd51e2975"
+      "checksum": "e59584cdb5b9872f89dc8b2fd6656a6e"
     }
   },
   "users": null
