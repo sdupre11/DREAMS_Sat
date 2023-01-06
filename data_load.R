@@ -47,8 +47,8 @@ DREAMS_Districts_SouthAfrica <- c("ALFRED NZO",
                                   "UTHUNGULU",
                                   "ZULULAND")
 
-DREAMS_Districts_Tanzania <- c("MWANZA",
-                               "KAGERA")
+# DREAMS_Districts_Tanzania <- c("MWANZA",
+#                                "KAGERA")
 
 DREAMS_Districts_Zimbabwe <- c("BULAWAYO", 
                                "MANICALAND", 
@@ -71,6 +71,7 @@ countryDataJoined <- left_join(countryData,
                                       "country" = "country", 
                                       "ageasentered" = "ageasentered")) %>%
   select(-c("snu1",
+            "psnu",
             "X"))
 
 botADM1.sf <- readRDS('data/BotswanaADM1.RDS') %>%
@@ -86,13 +87,19 @@ lesADM1.sf <- readRDS('data/LesothoADM1.RDS') %>%
 malADM1.sf <- readRDS('data/MalawiADM1.RDS') %>%
   attachDREAMSField("Malawi")
 safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
-  attachDREAMSField("South Africa")
+  attachDREAMSField("South Africa") %>%
+  mutate(
+    AREA_NAME = case_when(
+      (AREA_NAME == "OR TAMBO") ~ "O.R. TAMBO",
+      TRUE ~ as.character(AREA_NAME)
+    )
+  )
 safADM2.sf <- readRDS('data/SAfricaADM2.RDS') %>%
-  attachDREAMSField("South Africa")
-tanADM1.sf <- readRDS('data/TanzaniaADM1.RDS') %>%
-  attachDREAMSField("Tanzania")
-tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
-  attachDREAMSField("Tanzania")
+  attachDREAMSField("South Africa") 
+# tanADM1.sf <- readRDS('data/TanzaniaADM1.RDS') %>%
+#   attachDREAMSField("Tanzania")
+# tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
+#   attachDREAMSField("Tanzania")
 zimADM1.sf <- readRDS('data/ZimbabweADM1.RDS') %>%
   attachDREAMSField("Zimbabwe")
 zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS') %>%
