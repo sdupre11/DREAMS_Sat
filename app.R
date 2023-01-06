@@ -4,7 +4,7 @@ library(leaflet.extras)
 library(sf)
 library(DT)
 library(tidyverse)
-library(shinyglide)
+#library(shinyglide)
 library(writexl)
 library(shinyjs)
 library(aws.s3)
@@ -63,6 +63,16 @@ server <- function(input, output, session) {
     )
   }
   
+  ##########DELETE ME
+  
+  output$workingDataExport_check <- DT::renderDataTable({
+    req(workingDataPost$data)
+    
+    datatable(workingDataPost$data,
+              options = list(scrollx = TRUE)
+    )
+  })
+  ##########DELETE ME
   main_ui <- function() {
     fluidPage(
       tags$head(
@@ -77,6 +87,12 @@ server <- function(input, output, session) {
       titlePanel(title = div(h1("Welcome to DREAMS Sat", style="margin: 0;"), 
                              h4('Saturation calculation application', style="margin: 0;")), 
                  windowTitle = "DREAMS Sat"),
+      fluidRow(
+        column(12,
+      #          DT::dataTableOutput("workingDataExport_check"))
+      strong("Please note, this is a pilot/development version of the DREAMS Sat app. Testing is ongoing. Some links may not work yet. Please focus on the user experience and the process in your testing, do not use the numbers produced through the app for actual programming until the app is fully released."),
+      strong("To help improve the final app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to samuel.i.dupre@census.gov."),
+      )),
       fluidRow(
         column(12,
                h3("Let's Get Started"),
@@ -111,6 +127,8 @@ server <- function(input, output, session) {
                    )
                  ),
                h3("Step 1 of 9: Select Your Country"),
+               h4("Once selected, the application will pull population data by 5-year age cohort for each individual year for each subnational unit from the U.S. Census Bureau PEPFAR subnational estimates."),
+               h4("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
                wellPanel(
                  selectInput("country",
                              "Country",
@@ -126,7 +144,7 @@ server <- function(input, output, session) {
                                          #"Namibia",
                                          #"Rwanda",
                                          "South Africa",
-                                         "Tanzania",
+                                         #"Tanzania",
                                          #"Uganda",
                                          #"Zambia",
                                          "Zimbabwe")
@@ -138,6 +156,7 @@ server <- function(input, output, session) {
                           leafletOutput("map_main")))
                  ),
                h3("Step 2 of 9: Set Prevalence"),
+               h4("This is used to derive HIV-negative population for each cohort."),
                wellPanel(
                    strong("Prevalence default: 2%"),
                    br(),
@@ -165,6 +184,7 @@ server <- function(input, output, session) {
                                 "Reset: use default values")
                  ),
                h3("Step 3 of 9: Set Vulnerability"),
+               h4("This is used to derive the number of DREAMS-eligible HIV-negative girls from the population counts and prevalence numbers previously entered."),
                wellPanel(
                  strong("Vulnerability default: 85%"),
                  br(),
@@ -192,6 +212,8 @@ server <- function(input, output, session) {
                               "Reset: use default values")
                ),
                h3("Step 4 of 9: Set Population Structure"),
+               h4("This step addresses the aging-in/aging-out challenge, wherein AGYW_PREV accounting does allow for telling which people from a previous year cohort AGYW_PREV number are still in that age cohort."),
+               h4("To address this, we apply a proxy population structure to each year's DREAMS cohort. Option 1 is to say default '20% of 10-14 girls were 10, 20% were 11, etc'. Option 2 is to say that your DREAMS population structure matches the national population structure. Option 3 is to apply your own custom population structure based on your expert contextual knowledge about your DREAMS graduating cohorts."),
                wellPanel(
                  fluidRow(
                    column(3,
@@ -242,6 +264,8 @@ server <- function(input, output, session) {
                           )))
                  ),
                h3("Step 5 of 9: Set Catchment Modifier"),
+               h4("This is used to address enrollment of girls from outside the DREAMS district within that district."),
+               h4("PLEASE NOTE: This step currently adjusts the denominator up to account for additional girls. However, we are likely to change this pre-COP to adjust the numerator (AGYW_PREV) down instead. This will not change the saturation number, but will change the number of remaining girls and would better-reflect DREAMS messaging/goals. We welcome feedback on either approach."),
                wellPanel(
                    strong("Catchment modifier default: no modifier)"),
                    fluidRow(
@@ -254,6 +278,7 @@ server <- function(input, output, session) {
                             leafletOutput("map_catchments")))
                  ),
                h3("Step 6 of 9: Set Enrollment Modifier"),
+               h4("This addresses mismatches in enrollment criteria from vulnerability criteria, e.g., food insecurity may allow for enrollment, but would not have qualified that same person for 'vulnerability' in the denominator."),
                wellPanel(
                    strong("Enrollment modifier default: 3%"),
                    p("Use default value or upload a custom modifier structure"),
@@ -281,6 +306,7 @@ server <- function(input, output, session) {
                    )
                  ),
                h3("Step 7 of 9: Set Double Count Modifier"),
+               h4("This addresses duplication, where a person may complete primary programming while 12 in 2020 and then secondary while 13 in 2021. Without being addressed, she would appear as two counts in AGYW_PREV."),
                wellPanel(
                    strong("Double count modifier default: 1%"),
                    p("Use default value or upload a custom structure"),
@@ -471,6 +497,8 @@ server <- function(input, output, session) {
       spatial$sf1 <- lesADM1.sf
     } else if (input$country == "Malawi") {
       spatial$sf1 <- malADM1.sf
+    } else if (input$country == "South Africa") {
+      spatial$sf1 <- safADM1.sf
     } else if (input$country == "Zimbabwe") {
       spatial$sf1 <- zimADM1.sf
     }
@@ -483,6 +511,8 @@ server <- function(input, output, session) {
       spatial$sf2 <- lesADM1.sf 
     } else if (input$country == "Malawi") { # for Malawi, we treat ADM1 as ADM2 too
       spatial$sf2 <- malADM1.sf 
+    } else if (input$country == "South Africa") {
+      spatial$sf2 <- safADM2.sf
     } else if (input$country == "Zimbabwe") {
       spatial$sf2 <- zimADM2.sf
     }
@@ -542,6 +572,31 @@ server <- function(input, output, session) {
       a <- c("BLANTYRE", 
              "MACHINGA",
              "ZOMBA")
+    } else if (input$country == "South Africa") {
+      a <- c("ALFRED NZO",
+             "BOJANALA",
+             "BUFFALO CITY",
+             "CAPRICORN",
+             "CITY OF CAPE TOWN",
+             "CITY OF JOHANNESBURG",
+             "CITY OF TSHWANE",
+             "DOCTOR KENNETH KAUNDA",
+             "EHLANZENI",
+             "EKURHULENI",
+             "ETHEKWINI",
+             "GERT SIBANDE",
+             "LEJWELEPUTSWA",
+             "MOPANI",
+             "NGAKA MODIRI MOLEMA",
+             "NKANGALA",
+             "O.R. TAMBO",
+             "SEDIBENG",
+             "THABO MOFUTSANYANE",
+             "UGU",
+             "UMGUNGUNDLOVU",
+             "UTHUKELA",
+             "UTHUNGULU",
+             "ZULULAND")
     } else if (input$country == "Zimbabwe") {
       a <- c("BULAWAYO", 
              "MANICALAND", 
