@@ -89,7 +89,7 @@ server <- function(input, output, session) {
                  windowTitle = "DREAMS Sat"),
       fluidRow(
         column(12,
-      #          DT::dataTableOutput("workingDataExport_check"))
+      #          DT::dataTableOutput("workingDataExport_check"),
       strong("Please note, this is a pilot/development version of the DREAMS Sat app. Testing is ongoing. Some links may not work yet. Please focus on the user experience and the process in your testing, do not use the numbers produced through the app for actual programming until the app is fully released."),
       strong("To help improve the final app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to samuel.i.dupre@census.gov."),
       )),
@@ -329,21 +329,22 @@ server <- function(input, output, session) {
                    actionButton("resetToDefaultDoubleCount",
                                 "Reset: use default modifier")
                  ),
-               h3("Step 8 of 9: Save Your Work"),
+               h3("Step 8 of 9: Accept Parameters and Save Your Work"),
                wellPanel(
-                   downloadButton("exportTokenParameters",
-                                  "Export save token - parameters"),
-                   br(),
-                   br(),
-                   downloadButton("exportTokenData",
-                                  "Export save token - data"),
-                   br(),
-                   br(),
-                   
+                 actionButton("initializeSelection",
+                              "Accept parameters and derive/re-derive statistics"),
+                 br(),
+                 br(),
+                 downloadButton("exportTokenParameters",
+                                "Export save token - parameters"),
+                 br(),
+                 br(),
+                 downloadButton("exportTokenData",
+                                "Export save token - data"),
+                 br(),
+                 br()
                  ),
                h3("Step 9 of 9: Review Your Results"),
-               actionButton("initializeSelection",
-                            "Accept parameters and derive/re-derive statistics"),
                strong("Select a focus"),
                actionButton("focusCOP",
                             "COP"),
@@ -425,8 +426,10 @@ server <- function(input, output, session) {
                               "20-24",
                               "25-29")),
       fluidRow(
-        column(7, leafletOutput("map_saturation")),
-        column(5, DT::dataTableOutput("table_saturation")))
+        column(12, leafletOutput("map_saturation")))
+      # fluidRow(
+      #   column(7, leafletOutput("map_saturation")),
+      #   column(5, DT::dataTableOutput("table_saturation")))
 
   )})
 
@@ -441,8 +444,9 @@ server <- function(input, output, session) {
                   selected = "",
                   choices = ""
       ),
-      plotOutput("impactOfParametersPlot"),
-      DT::dataTableOutput("table_numerator"))
+      plotOutput("impactOfParametersPlot"))
+      # plotOutput("impactOfParametersPlot"),
+      # DT::dataTableOutput("table_numerator"))
 
   })
 
@@ -1028,7 +1032,16 @@ server <- function(input, output, session) {
   output$stats_COP <- DT::renderDataTable({
     req(data_stats_COP$data)
     
-    datatable(data_stats_COP$data %>%
+    a <- data_stats_COP$data %>%
+      group_by(Country,
+               District,
+               Cohort) %>%
+      dplyr::filter(Country == input$country) %>%
+      summarize(`Total DREAMS eligible AGYW` = mean(`Total DREAMS eligible AGYW`),
+                `Percent coverage (saturation)` = mean(`Percent coverage (saturation)`),
+                `Remaining unserved AGYW` = mean(`Remaining unserved AGYW`)) 
+    
+    datatable(a %>%
                 dplyr::select(-c("Country")),
               rownames = FALSE,
               selection = 'none',
@@ -1039,73 +1052,94 @@ server <- function(input, output, session) {
                 scrollx = TRUE)
     )
   })
-  
-  output$table_saturation <- DT::renderDataTable({
-    req(data_stats_analytics())
-    
-    col_order <- c("District",
-                   "Saturation"
-    )
-    
-    a <- data_stats_analytics() %>%
-      dplyr::filter(IsSelected == "Selected" & Cohort == input$saturationCohort) %>%
-      dplyr::select(-c("Cohort",
-                       "Prev_2022",
-                       "Vuln_2022",
-                       "PSDC_2022",
-                       "Enrollment_2022",
-                       "IsSelected",
-                       "Pop_2022",
-                       "PLHIV_2022",
-                       "NonPLHIV_2022",
-                       "VulnerableNonPLHIV_2022",
-                       "AGYW_PREV total",
-                       "P/S* deduplicated AGYW",
-                       "Enrollment standardized AGYW",
-                       "AGYW completed")) %>%
-      dplyr::rename(Saturation = Sat_2022)
-    
-    a <- a[, col_order]
-    
-    datatable(
-      a,
-      rownames = FALSE
-    )
-  })
-  
-  output$table_numerator <- DT::renderDataTable({
-    req(data_stats_analytics())
-    
-    col_order <- c("Cohort",
-                   "AGYW_PREV total",
-                   "P/S* deduplicated AGYW",
-                   "Enrollment standardized AGYW",
-                   "AGYW completed"
-    )
-    
-    a <- data_stats_analytics() %>%
-      dplyr::filter(IsSelected == "Selected" & District == input$numeratorsDistrict) %>%
-      dplyr::select(-c("District",
-                       "Sat_2022",
-                       "Prev_2022",
-                       "Vuln_2022",
-                       "PSDC_2022",
-                       "Enrollment_2022",
-                       "IsSelected",
-                       "Pop_2022",
-                       "PLHIV_2022",
-                       "NonPLHIV_2022",
-                       "VulnerableNonPLHIV_2022"))
-    
-    a <- a[, col_order]
-    
-    datatable(
-      a,
-      rownames = FALSE,
-      caption = "*Primary/Secondary"
-    )
-    
-  })
+  # 
+  # output$table_saturation <- DT::renderDataTable({
+  #   req(data_stats_analytics())
+  #   
+  #   a <- data_stats_analytics() %>%
+  #     group_by(IsSelected,
+  #              District,
+  #              Cohort) %>%
+  #     # dplyr::filter(Country == input$country) %>%
+  #     summarize(Prev_2022 = mean(Prev_2022),
+  #               Vuln_2022 = mean(Vuln_2022),
+  #               PSDC_2022 = mean(PSDC_2022),
+  #               Enrollment_2022 = mean(Enrollment_2022),
+  #               Pop_2022 = mean(Pop_2022),
+  #               PLHIV_2022 = mean(PLHIV_2022),
+  #               NonPLHIV_2022 = mean(NonPLHIV_2022),
+  #               VulnerableNonPLHIV_2022 = mean(VulnerableNonPLHIV_2022),
+  #               `AGYW_PREV total` = mean(`AGYW_PREV total`),
+  #               `P/S* deduplicated AGYW` = mean(`P/S* deduplicated AGYW`),
+  #               `Enrollment standardized AGYW` = mean(`Enrollment standardized AGYW`),
+  #               `AGYW completed` = mean(`AGYW completed`),
+  #               `Total DREAMS eligible AGYW` = mean(`Total DREAMS eligible AGYW`),
+  #               `Percent coverage (saturation)` = mean(`Percent coverage (saturation)`),
+  #               `Remaining unserved AGYW` = mean(`Remaining unserved AGYW`)) 
+  #   
+  #   col_order <- c("District",
+  #                  "Saturation"
+  #   )
+  #   
+  #   b <- a %>%
+  #     dplyr::filter(IsSelected == "Selected" & Cohort == input$saturationCohort) %>%
+  #     dplyr::select(-c("Cohort",
+  #                      "Prev_2022",
+  #                      "Vuln_2022",
+  #                      "PSDC_2022",
+  #                      "Enrollment_2022",
+  #                      "IsSelected",
+  #                      "Pop_2022",
+  #                      "PLHIV_2022",
+  #                      "NonPLHIV_2022",
+  #                      "VulnerableNonPLHIV_2022",
+  #                      "AGYW_PREV total",
+  #                      "P/S* deduplicated AGYW",
+  #                      "Enrollment standardized AGYW",
+  #                      "AGYW completed")) %>%
+  #     dplyr::rename(Saturation = Sat_2022)
+  #   
+  #   b <- b[, col_order]
+  #   
+  #   datatable(
+  #     b,
+  #     rownames = FALSE
+  #   )
+  # })
+  # 
+  # output$table_numerator <- DT::renderDataTable({
+  #   req(data_stats_analytics())
+  #   
+  #   col_order <- c("Cohort",
+  #                  "AGYW_PREV total",
+  #                  "P/S* deduplicated AGYW",
+  #                  "Enrollment standardized AGYW",
+  #                  "AGYW completed"
+  #   )
+  #   
+  #   a <- data_stats_analytics() %>%
+  #     dplyr::filter(IsSelected == "Selected" & District == input$numeratorsDistrict) %>%
+  #     dplyr::select(-c("District",
+  #                      "Sat_2022",
+  #                      "Prev_2022",
+  #                      "Vuln_2022",
+  #                      "PSDC_2022",
+  #                      "Enrollment_2022",
+  #                      "IsSelected",
+  #                      "Pop_2022",
+  #                      "PLHIV_2022",
+  #                      "NonPLHIV_2022",
+  #                      "VulnerableNonPLHIV_2022"))
+  #   
+  #   a <- a[, col_order]
+  #   
+  #   datatable(
+  #     a,
+  #     rownames = FALSE,
+  #     caption = "*Primary/Secondary"
+  #   )
+  #   
+  # })
   
   
   # Render plot elements ----
