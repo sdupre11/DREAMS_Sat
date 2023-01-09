@@ -1779,14 +1779,23 @@ saveRDS(merged.7,file = "preprocessing/data/MalawiOutput_Denominators.RDS")
 ##Add surrounding ADM2s to cohort pop by year
 ADM1.1.SAf.sf <- st_read('preprocessing/data/South_Africa_adm2_uscb_2022.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326) 
+
+ADM1.1.SAf.sf.export <- ADM1.1.SAf.sf %>%
+  select(-c("ADM1_NAME")) %>%
+  rename("ADM1_NAME" = "ADM2_NAME")
 
 ADM2.1.SAf.sf <- st_read('preprocessing/data/South_Africa_adm3_uscb_2022.shp') %>%
   st_as_sf() %>%
   st_transform(crs = 4326)
 
-saveRDS(ADM1.1.SAf.sf, file = "data/SAfricaADM1.RDS")
-saveRDS(ADM2.1.SAf.sf, file = "data/SAfricaADM2.RDS")
+ADM2.1.SAf.sf.export <- ADM2.1.SAf.sf %>%
+  select(-c("ADM1_NAME")) %>%
+  rename("ADM1_NAME" = "ADM2_NAME") %>%
+  rename("ADM2_NAME" = "ADM3_NAME")
+
+saveRDS(ADM1.1.SAf.sf.export, file = "data/SAfricaADM1.RDS")
+saveRDS(ADM2.1.SAf.sf.export, file = "data/SAfricaADM2.RDS")
 
 #NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 

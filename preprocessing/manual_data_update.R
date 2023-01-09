@@ -30,6 +30,7 @@ Sys.setenv(AWS_ACCESS_KEY_ID = see$aws_access_key,
 rm(see)
 rm(svc)
 
+
 # read from the main read bucket -----------------------------------------------
 my_bucket <- Sys.getenv("TEST_BUCKET")
 
@@ -56,8 +57,62 @@ choices_recent_countries_all_historic <- subset(choices, grepl("MER_Structured_D
 
 choices_recent_countries_all2_historic <- subset(choices_recent_countries_all_historic, grepl("Botswana|Cote d'Ivoire|Eswatini|Haiti|Kenya|Lesotho|Malawi|Mozambique|Namibia|Rwanda|South Africa|Tanzania|Uganda|Zambia|Zimbabwe", path_names))
 
+my_data_historic_psnus <-
+  lapply(choices_recent_countries_all2_historic$path_names, function(the_file) {
 
-my_data_historic <- 
+    print(the_file)
+
+    # read the data
+    data <- aws.s3::s3read_using(FUN = readr::read_delim, "|", escape_double = FALSE,
+                                 trim_ws = TRUE, col_types = readr::cols(.default = readr::col_character()
+                                 ),
+                                 bucket = my_bucket,
+                                 object = the_file)
+
+    res <- data %>%
+      filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
+      filter(country %in% c("Malawi",
+                            "South Africa")) %>%
+      filter(!is.na(qtr4)) %>%
+      group_by(country, snu1, psnu, ageasentered, fiscal_year) %>%
+      summarize(qtr4 = sum(as.numeric(qtr4)))
+
+  }) %>%
+  bind_rows() %>%
+  rename(AGYW_PREV = qtr4) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (psnu == "Blantyre District" & country == "Malawi") ~ "BLANTYRE", #psnu for Malawi
+      (psnu == "Machinga District" & country == "Malawi") ~ "MACHINGA", #psnu for Malawi
+      (psnu == "Zomba District" & country == "Malawi") ~ "ZOMBA", #psnu for Malawi
+      (psnu == "ec Alfred Nzo District Municipality" & country == "South Africa") ~ "ALFRED NZO", #psnu for South Africa
+      (psnu == "nw Bojanala Platinum District Municipality" & country == "South Africa") ~ "BOJANALA", #psnu for South Africa
+      (psnu == "ec Buffalo City Metropolitan Municipality" & country == "South Africa") ~ "BUFFALO CITY", #psnu for South Africa
+      (psnu == "lp Capricorn District Municipality" & country == "South Africa") ~ "CAPRICORN", #psnu for South Africa
+      (psnu == "wc City of Cape Town Metropolitan Municipality" & country == "South Africa") ~ "CITY OF CAPE TOWN", #psnu for South Africa
+      (psnu == "gp City of Johannesburg Metropolitan Municipality" & country == "South Africa") ~ "CITY OF JOHANNESBURG", #psnu for South Africa
+      (psnu == "gp City of Tshwane Metropolitan Municipality" & country == "South Africa") ~ "CITY OF TSHWANE", #psnu for South Africa
+      (psnu == "nw Dr Kenneth Kaunda District Municipality" & country == "South Africa") ~ "DOCTOR KENNETH KAUNDA", #psnu for South Africa
+      (psnu == "mp Ehlanzeni District Municipality" & country == "South Africa") ~ "EHLANZENI", #psnu for South Africa
+      (psnu == "gp Ekurhuleni Metropolitan Municipality" & country == "South Africa") ~ "EKURHULENI", #psnu for South Africa
+      (psnu == "kz eThekwini Metropolitan Municipality" & country == "South Africa") ~ "ETHEKWINI", #psnu for South Africa
+      (psnu == "mp Gert Sibande District Municipality" & country == "South Africa") ~ "GERT SIBANDE", #psnu for South Africa
+      (psnu == "fs Lejweleputswa District Municipality" & country == "South Africa") ~ "LEJWELEPUTSWA", #psnu for South Africa
+      (psnu == "lp Mopani District Municipality" & country == "South Africa") ~ "MOPANI", #psnu for South Africa
+      (psnu == "nw Ngaka Modiri Molema District Municipality" & country == "South Africa") ~ "NGAKA MODIRI MOLEMA", #psnu for South Africa
+      (psnu == "mp Nkangala District Municipality" & country == "South Africa") ~ "NKANGALA", #psnu for South Africa
+      (psnu == "ec Oliver Tambo District Municipality" & country == "South Africa") ~ "O.R. TAMBO", #psnu for South Africa
+      (psnu == "gp Sedibeng District Municipality" & country == "South Africa") ~ "SEDIBENG", #psnu for South Africa
+      (psnu == "fs Thabo Mofutsanyane District Municipality" & country == "South Africa") ~ "THABO MOFUTSANYANE", #psnu for South Africa
+      (psnu == "kz Ugu District Municipality" & country == "South Africa") ~ "UGU", #psnu for South Africa
+      (psnu == "kz uMgungundlovu District Municipality" & country == "South Africa") ~ "UMGUNGUNDLOVU", #psnu for South Africa
+      (psnu == "kz Uthukela District Municipality" & country == "South Africa") ~ "UTHUKELA", #psnu for South Africa
+      (psnu == "kz King Cetshwayo District Municipality" & country == "South Africa") ~ "UTHUNGULU", #psnu for South Africa
+      (psnu == "kz Zululand District Municipality" & country == "South Africa") ~ "ZULULAND" #psnu for South Africa
+    )
+  )
+
+my_data_historic_snu1s <-
   lapply(choices_recent_countries_all2_historic$path_names, function(the_file) {
     
     print(the_file)
@@ -65,32 +120,30 @@ my_data_historic <-
     # read the data
     data <- aws.s3::s3read_using(FUN = readr::read_delim, "|", escape_double = FALSE,
                                  trim_ws = TRUE, col_types = readr::cols(.default = readr::col_character()
-                                 ), 
+                                 ),
                                  bucket = my_bucket,
                                  object = the_file)
-
-    res <- data %>% 
+    
+    res <- data %>%
       filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
-      filter(country %in% c("Botswana", 
+      filter(country %in% c("Botswana",
                             "Cote d'Ivoire",
                             "Eswatini",
                             "Haiti",
-                            "Kenya", 
-                            "Lesotho", 
-                            "Malawi",
+                            "Kenya",
+                            "Lesotho",
                             "Mozambique",
                             "Namibia",
                             "Rwanda",
-                            "South Africa", 
-                            "Tanzania", 
+                            "Tanzania",
                             "Uganda",
                             "Zambia",
                             "Zimbabwe")) %>%
       filter(!is.na(qtr4)) %>%
       group_by(country, snu1, ageasentered, fiscal_year) %>%
       summarize(qtr4 = sum(as.numeric(qtr4)))
-        
-  }) %>% 
+    
+  }) %>%
   bind_rows() %>%
   rename(AGYW_PREV = qtr4) %>%
   mutate(
@@ -112,33 +165,6 @@ my_data_historic <-
       (snu1 == "Mafeteng" & country == "Lesotho") ~ "MAFETENG",
       (snu1 == "Maseru" & country == "Lesotho") ~ "MASERU",
       (snu1 == "Mohale's Hoek" & country == "Lesotho") ~ "MOHALE'S HOEK",
-      (snu3 == "Blantyre District" & country == "Malawi") ~ "BLANTYRE", #SNU3 for Malawi
-      (snu3 == "Machinga District" & country == "Malawi") ~ "MACHINGA", #SNU3 for Malawi
-      (snu3 == "Zomba District" & country == "Malawi") ~ "ZOMBA", #SNU3 for Malawi
-      (snu2 == "ec Alfred Nzo District Municipality" & country == "South Africa") ~ "ALFRED NZO", #SNU2 for South Africa
-      (snu2 == "nw Bojanala Platinum District Municipality" & country == "South Africa") ~ "BOJANALA", #SNU2 for South Africa
-      (snu2 == "ec Buffalo City Metropolitan Municipality" & country == "South Africa") ~ "BUFFALO CITY", #SNU2 for South Africa
-      (snu2 == "lp Capricorn District Municipality" & country == "South Africa") ~ "CAPRICORN", #SNU2 for South Africa
-      (snu2 == "wc City of Cape Town Metropolitan Municipality" & country == "South Africa") ~ "CITY OF CAPE TOWN", #SNU2 for South Africa
-      (snu2 == "gp City of Johannesburg Metropolitan Municipality" & country == "South Africa") ~ "CITY OF JOHANNESBURG", #SNU2 for South Africa
-      (snu2 == "gp City of Tshwane Metropolitan Municipality" & country == "South Africa") ~ "CITY OF TSHWANE", #SNU2 for South Africa
-      (snu2 == "nw Dr Kenneth Kaunda District Municipality" & country == "South Africa") ~ "DOCTOR KENNETH KAUNDA", #SNU2 for South Africa
-      (snu2 == "mp Ehlanzeni District Municipality" & country == "South Africa") ~ "EHLANZENI", #SNU2 for South Africa
-      (snu2 == "gp Ekurhuleni Metropolitan Municipality" & country == "South Africa") ~ "EKURHULENI", #SNU2 for South Africa
-      (snu2 == "kz eThekwini Metropolitan Municipality" & country == "South Africa") ~ "ETHEKWINI", #SNU2 for South Africa
-      (snu2 == "mp Gert Sibande District Municipality" & country == "South Africa") ~ "GERT SIBANDE", #SNU2 for South Africa
-      (snu2 == "fs Lejweleputswa District Municipality" & country == "South Africa") ~ "LEJWELEPUTSWA", #SNU2 for South Africa
-      (snu2 == "lp Mopani District Municipality" & country == "South Africa") ~ "MOPANI", #SNU2 for South Africa
-      (snu2 == "nw Ngaka Modiri Molema District Municipality" & country == "South Africa") ~ "NGAKA MODIRI MOLEMA", #SNU2 for South Africa
-      (snu2 == "mp Nkangala District Municipality" & country == "South Africa") ~ "NKANGALA", #SNU2 for South Africa
-      (snu2 == "ec Oliver Tambo District Municipality" & country == "South Africa") ~ "O.R. TAMBO", #SNU2 for South Africa
-      (snu2 == "gp Sedibeng District Municipality" & country == "South Africa") ~ "SEDIBENG", #SNU2 for South Africa
-      (snu2 == "fs Thabo Mofutsanyane District Municipality" & country == "South Africa") ~ "THABO MOFUTSANYANE", #SNU2 for South Africa
-      (snu2 == "kz Ugu District Municipality" & country == "South Africa") ~ "UGU", #SNU2 for South Africa
-      (snu2 == "kz uMgungundlovu District Municipality" & country == "South Africa") ~ "UMGUNGUNDLOVU", #SNU2 for South Africa
-      (snu2 == "kz Uthukela District Municipality" & country == "South Africa") ~ "UTHUKELA", #SNU2 for South Africa
-      (snu2 == "kz King Cetshwayo District Municipality" & country == "South Africa") ~ "UTHUNGULU", #SNU2 for South Africa
-      (snu2 == "kz Zululand District Municipality" & country == "South Africa") ~ "ZULULAND", #SNU2 for South Africa
       (snu1 == "Mwanza" & country == "Tanzania") ~ "MWANZA",
       (snu1 == "Kagera" & country == "Tanzania") ~ "KAGERA",
       (snu1 == "Bulawayo" & country == "Zimbabwe") ~ "BULAWAYO",
@@ -150,12 +176,71 @@ my_data_historic <-
     )
   )
 
+my_data_historic <- rbind(my_data_historic_snu1s, 
+                 my_data_historic_psnus)
+
 choices_recent_countries_all_recent <- subset(choices, grepl("MER_Structured_Datasets/Current_Frozen/PSNU_Recent/txt/", path_names))
 
 choices_recent_countries_all2_recent <- subset(choices_recent_countries_all_recent, grepl("Botswana|Cote d'Ivoire|Eswatini|Haiti|Kenya|Lesotho|Malawi|Mozambique|Namibia|Rwanda|South Africa|Tanzania|Uganda|Zambia|Zimbabwe", path_names))
 
 
-my_data_recent <- 
+my_data_recent_psnus <- 
+  lapply(choices_recent_countries_all2_recent$path_names, function(the_file) {
+    
+    print(the_file)
+    
+    # read the data
+    data <- aws.s3::s3read_using(FUN = readr::read_delim, "|", escape_double = FALSE,
+                                 trim_ws = TRUE, col_types = readr::cols(.default = readr::col_character()
+                                 ), 
+                                 bucket = my_bucket,
+                                 object = the_file)
+    
+    res <- data %>% 
+      filter(indicator == "AGYW_PREV" & sex == "Female" & (standardizeddisaggregate == "Age/Sex/Time/Complete" |standardizeddisaggregate == "Age/Sex/Time/Complete+")) %>%
+      filter(country %in% c("Malawi",
+                            "South Africa")) %>%
+      filter(!is.na(qtr4)) %>%
+      group_by(country, snu1, psnu, ageasentered, fiscal_year) %>%
+      summarize(qtr4 = sum(as.numeric(qtr4)))
+    
+  }) %>% 
+  bind_rows() %>%
+  rename(AGYW_PREV = qtr4) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (psnu == "Blantyre District" & country == "Malawi") ~ "BLANTYRE", #psnu for Malawi
+      (psnu == "Machinga District" & country == "Malawi") ~ "MACHINGA", #psnu for Malawi
+      (psnu == "Zomba District" & country == "Malawi") ~ "ZOMBA", #psnu for Malawi
+      (psnu == "ec Alfred Nzo District Municipality" & country == "South Africa") ~ "ALFRED NZO", #psnu for South Africa
+      (psnu == "nw Bojanala Platinum District Municipality" & country == "South Africa") ~ "BOJANALA", #psnu for South Africa
+      (psnu == "ec Buffalo City Metropolitan Municipality" & country == "South Africa") ~ "BUFFALO CITY", #psnu for South Africa
+      (psnu == "lp Capricorn District Municipality" & country == "South Africa") ~ "CAPRICORN", #psnu for South Africa
+      (psnu == "wc City of Cape Town Metropolitan Municipality" & country == "South Africa") ~ "CITY OF CAPE TOWN", #psnu for South Africa
+      (psnu == "gp City of Johannesburg Metropolitan Municipality" & country == "South Africa") ~ "CITY OF JOHANNESBURG", #psnu for South Africa
+      (psnu == "gp City of Tshwane Metropolitan Municipality" & country == "South Africa") ~ "CITY OF TSHWANE", #psnu for South Africa
+      (psnu == "nw Dr Kenneth Kaunda District Municipality" & country == "South Africa") ~ "DOCTOR KENNETH KAUNDA", #psnu for South Africa
+      (psnu == "mp Ehlanzeni District Municipality" & country == "South Africa") ~ "EHLANZENI", #psnu for South Africa
+      (psnu == "gp Ekurhuleni Metropolitan Municipality" & country == "South Africa") ~ "EKURHULENI", #psnu for South Africa
+      (psnu == "kz eThekwini Metropolitan Municipality" & country == "South Africa") ~ "ETHEKWINI", #psnu for South Africa
+      (psnu == "mp Gert Sibande District Municipality" & country == "South Africa") ~ "GERT SIBANDE", #psnu for South Africa
+      (psnu == "fs Lejweleputswa District Municipality" & country == "South Africa") ~ "LEJWELEPUTSWA", #psnu for South Africa
+      (psnu == "lp Mopani District Municipality" & country == "South Africa") ~ "MOPANI", #psnu for South Africa
+      (psnu == "nw Ngaka Modiri Molema District Municipality" & country == "South Africa") ~ "NGAKA MODIRI MOLEMA", #psnu for South Africa
+      (psnu == "mp Nkangala District Municipality" & country == "South Africa") ~ "NKANGALA", #psnu for South Africa
+      (psnu == "ec Oliver Tambo District Municipality" & country == "South Africa") ~ "O.R. TAMBO", #psnu for South Africa
+      (psnu == "gp Sedibeng District Municipality" & country == "South Africa") ~ "SEDIBENG", #psnu for South Africa
+      (psnu == "fs Thabo Mofutsanyane District Municipality" & country == "South Africa") ~ "THABO MOFUTSANYANE", #psnu for South Africa
+      (psnu == "kz Ugu District Municipality" & country == "South Africa") ~ "UGU", #psnu for South Africa
+      (psnu == "kz uMgungundlovu District Municipality" & country == "South Africa") ~ "UMGUNGUNDLOVU", #psnu for South Africa
+      (psnu == "kz Uthukela District Municipality" & country == "South Africa") ~ "UTHUKELA", #psnu for South Africa
+      (psnu == "kz King Cetshwayo District Municipality" & country == "South Africa") ~ "UTHUNGULU", #psnu for South Africa
+      (psnu == "kz Zululand District Municipality" & country == "South Africa") ~ "ZULULAND" #psnu for South Africa
+    )
+  )
+
+
+my_data_recent_snu1s <- 
   lapply(choices_recent_countries_all2_recent$path_names, function(the_file) {
     
     print(the_file)
@@ -175,11 +260,9 @@ my_data_recent <-
                             "Haiti",
                             "Kenya", 
                             "Lesotho", 
-                            "Malawi",
                             "Mozambique",
                             "Namibia",
                             "Rwanda",
-                            "South Africa", 
                             "Tanzania", 
                             "Uganda",
                             "Zambia",
@@ -210,33 +293,6 @@ my_data_recent <-
       (snu1 == "Mafeteng" & country == "Lesotho") ~ "MAFETENG",
       (snu1 == "Maseru" & country == "Lesotho") ~ "MASERU",
       (snu1 == "Mohale's Hoek" & country == "Lesotho") ~ "MOHALE'S HOEK",
-      (snu3 == "Blantyre District" & country == "Malawi") ~ "BLANTYRE", #SNU3 for Malawi
-      (snu3 == "Machinga District" & country == "Malawi") ~ "MACHINGA", #SNU3 for Malawi
-      (snu3 == "Zomba District" & country == "Malawi") ~ "ZOMBA", #SNU3 for Malawi
-      (snu2 == "ec Alfred Nzo District Municipality" & country == "South Africa") ~ "ALFRED NZO", #SNU2 for South Africa
-      (snu2 == "nw Bojanala Platinum District Municipality" & country == "South Africa") ~ "BOJANALA", #SNU2 for South Africa
-      (snu2 == "ec Buffalo City Metropolitan Municipality" & country == "South Africa") ~ "BUFFALO CITY", #SNU2 for South Africa
-      (snu2 == "lp Capricorn District Municipality" & country == "South Africa") ~ "CAPRICORN", #SNU2 for South Africa
-      (snu2 == "wc City of Cape Town Metropolitan Municipality" & country == "South Africa") ~ "CITY OF CAPE TOWN", #SNU2 for South Africa
-      (snu2 == "gp City of Johannesburg Metropolitan Municipality" & country == "South Africa") ~ "CITY OF JOHANNESBURG", #SNU2 for South Africa
-      (snu2 == "gp City of Tshwane Metropolitan Municipality" & country == "South Africa") ~ "CITY OF TSHWANE", #SNU2 for South Africa
-      (snu2 == "nw Dr Kenneth Kaunda District Municipality" & country == "South Africa") ~ "DOCTOR KENNETH KAUNDA", #SNU2 for South Africa
-      (snu2 == "mp Ehlanzeni District Municipality" & country == "South Africa") ~ "EHLANZENI", #SNU2 for South Africa
-      (snu2 == "gp Ekurhuleni Metropolitan Municipality" & country == "South Africa") ~ "EKURHULENI", #SNU2 for South Africa
-      (snu2 == "kz eThekwini Metropolitan Municipality" & country == "South Africa") ~ "ETHEKWINI", #SNU2 for South Africa
-      (snu2 == "mp Gert Sibande District Municipality" & country == "South Africa") ~ "GERT SIBANDE", #SNU2 for South Africa
-      (snu2 == "fs Lejweleputswa District Municipality" & country == "South Africa") ~ "LEJWELEPUTSWA", #SNU2 for South Africa
-      (snu2 == "lp Mopani District Municipality" & country == "South Africa") ~ "MOPANI", #SNU2 for South Africa
-      (snu2 == "nw Ngaka Modiri Molema District Municipality" & country == "South Africa") ~ "NGAKA MODIRI MOLEMA", #SNU2 for South Africa
-      (snu2 == "mp Nkangala District Municipality" & country == "South Africa") ~ "NKANGALA", #SNU2 for South Africa
-      (snu2 == "ec Oliver Tambo District Municipality" & country == "South Africa") ~ "O.R. TAMBO", #SNU2 for South Africa
-      (snu2 == "gp Sedibeng District Municipality" & country == "South Africa") ~ "SEDIBENG", #SNU2 for South Africa
-      (snu2 == "fs Thabo Mofutsanyane District Municipality" & country == "South Africa") ~ "THABO MOFUTSANYANE", #SNU2 for South Africa
-      (snu2 == "kz Ugu District Municipality" & country == "South Africa") ~ "UGU", #SNU2 for South Africa
-      (snu2 == "kz uMgungundlovu District Municipality" & country == "South Africa") ~ "UMGUNGUNDLOVU", #SNU2 for South Africa
-      (snu2 == "kz Uthukela District Municipality" & country == "South Africa") ~ "UTHUKELA", #SNU2 for South Africa
-      (snu2 == "kz King Cetshwayo District Municipality" & country == "South Africa") ~ "UTHUNGULU", #SNU2 for South Africa
-      (snu2 == "kz Zululand District Municipality" & country == "South Africa") ~ "ZULULAND", #SNU2 for South Africa
       (snu1 == "Mwanza" & country == "Tanzania") ~ "MWANZA",
       (snu1 == "Kagera" & country == "Tanzania") ~ "KAGERA",
       (snu1 == "Bulawayo" & country == "Zimbabwe") ~ "BULAWAYO",
@@ -247,6 +303,11 @@ my_data_recent <-
       (snu1 == "Midlands" & country == "Zimbabwe") ~ "MIDLANDS"
     )
   )
+
+my_data_recent <- rbind(my_data_recent_psnus,
+                        my_data_recent_snu1s)
+
+
 
 my_data <- rbind(my_data_historic, 
                  my_data_recent)
