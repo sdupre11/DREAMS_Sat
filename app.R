@@ -2065,7 +2065,7 @@ observeEvent(catchments_filtered(), { #catchmentMapListener(), {
     file <- input$completedTemplateUploadPopStructure
     ext <- tools::file_ext(file$datapath)
     
-    validate(need(ext == "xlsx",
+    shiny::validate(need(ext == "xlsx",
                   "Please upload xlsx file"))
     
     a <- file$datapath %>%
@@ -2128,6 +2128,7 @@ observeEvent(catchments_filtered(), { #catchmentMapListener(), {
     req(input$completedTemplateUploadDoubleCount)
     
     file <- input$completedTemplateUploadDoubleCount
+    
     ext <- tools::file_ext(file$datapath)
     
     a <- readxl::read_xlsx(file$datapath)
@@ -2139,7 +2140,7 @@ observeEvent(catchments_filtered(), { #catchmentMapListener(), {
     
     column_names <- colnames(a)
     
-    validate(need(ext == "xlsx", ""),
+    shiny::validate(need(ext == "xlsx", ""),
              need(all(required_columns %in% column_names), ""))
     
     b <- a %>%
