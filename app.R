@@ -1768,6 +1768,21 @@ observeEvent(catchments_filtered(), { #catchmentMapListener(), {
         catchmentsSelected = exportCatchmentsListener())
       
       save(params_df, file = file)
+      
+      # add send to S3
+      # write a file to a directory ----
+      target_directory <- "exportTokenData/" # change to your directory
+      type <- "exportTokenParameters"
+      s3write_using(params_df, FUN = write.csv,
+                    bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+                    object = paste0(
+                      "system_dreams_saturation/",
+                      target_directory,
+                      "DREAMS_Sat_Save_Token_Parameter_",
+                      Sys.time(),
+                      ".csv"
+                    )
+      )
 
     },
     
