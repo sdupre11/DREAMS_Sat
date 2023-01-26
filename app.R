@@ -267,7 +267,6 @@ server <- function(input, output, session) {
     session$reload()
   })
   
-  
   main_ui <- function() {
     fluidPage(
       tags$head(
@@ -658,18 +657,17 @@ server <- function(input, output, session) {
       
   }
   
-  output$ui <- renderUI({
-    main_ui()
-  })
-  
   # output$ui <- renderUI({
-  #   if(!user_input$authenticated){
-  #      auth_ui()
-  #     #main_ui()
-  #   }else{
-  #     main_ui()
-  #   }
+  #   main_ui()
   # })
+  
+  output$ui <- renderUI({
+    if(!user_input$authenticated){
+       auth_ui()
+    }else{
+      main_ui()
+    }
+  })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
@@ -1890,7 +1888,6 @@ server <- function(input, output, session) {
       # add send to S3
       # write a file to a directory ----
       target_directory <- "exportTokenParameters/" # change to your directory
-      type <- "exportTokenParameters"
       s3write_using(params_df, FUN = write.csv,
                     bucket = Sys.getenv("TEST_BUCKET_WRITE"),
                     object = paste0(
@@ -1928,7 +1925,6 @@ server <- function(input, output, session) {
       # add send to S3
       # write a file to a directory ----
       target_directory <- "exportTokenData/" # change to your directory
-      type <- "exportTokenData"
       s3write_using(workingDataExport, FUN = write.csv,
                     bucket = Sys.getenv("TEST_BUCKET_WRITE"),
                     object = paste0(
@@ -2354,7 +2350,7 @@ server <- function(input, output, session) {
     file <- input$completedTemplateUploadPopStructure
     ext <- tools::file_ext(file$datapath)
     
-    validate(need(ext == "xlsx",
+    shiny::validate(need(ext == "xlsx",
                   "Please upload xlsx file"))
     
     a <- file$datapath %>%
@@ -2453,6 +2449,7 @@ server <- function(input, output, session) {
     req(input$completedTemplateUploadDoubleCount)
     
     file <- input$completedTemplateUploadDoubleCount
+    
     ext <- tools::file_ext(file$datapath)
     
     a <- readxl::read_xlsx(file$datapath)
@@ -2465,7 +2462,7 @@ server <- function(input, output, session) {
     
     column_names <- colnames(a)
     
-    validate(need(ext == "xlsx", ""),
+    shiny::validate(need(ext == "xlsx", ""),
              need(all(required_columns %in% column_names), ""))
     
     b <- a %>%
