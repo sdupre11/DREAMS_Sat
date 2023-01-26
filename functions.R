@@ -28,7 +28,7 @@ attachDREAMSField <- function(x, y) {
   } else if  (y == "South Africa") {
     internal_list <- DREAMS_Districts_SouthAfrica_USCB
   } else if  (y == "Tanzania") {
-    internal_list <- DREAMS_Districts_Tanzania_USCB
+    internal_list <- DREAMS_Districts_Tanzania
   } else if  (y == "Uganda") {
     internal_list <- DREAMS_Districts_Uganda_USCB
   } else if  (y == "Zambia") {
@@ -225,7 +225,6 @@ dataParametersPivot5Year <- function(x) {
    
   All$fiscal_year <- All$fiscal_year %>%
     as.numeric()
-
   
   return(All)
 

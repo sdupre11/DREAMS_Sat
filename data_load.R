@@ -530,18 +530,14 @@ countryDataJoined <- left_join(countryData,
     )
   )
 
+# botADM1.sf <- readRDS('data/BotswanaADM1.RDS') %>%
+#   attachDREAMSField("Botswana")
 botADM2.sf <- readRDS('data/BotswanaADM2.RDS') %>%
   attachDREAMSField("Botswana")
-# cdiADM0.sf <- readRDS('data/CDIADM0.RDS') %>%
-#   attachDREAMSField("CDI")
 cdiADM2.sf <- readRDS('data/CDIADM2.RDS') %>%
   attachDREAMSField("CDI")
-# eswADM0.sf <- readRDS('data/EswADM0.RDS') %>%
-#   attachDREAMSField("Eswatini")
 eswADM1.sf <- readRDS('data/EswADM1.RDS') %>%
   attachDREAMSField("Eswatini")
-# haiADM0.sf <- readRDS('data/HaiADM0.RDS') %>%
-#   attachDREAMSField("Haiti")
 haiADM2.sf <- readRDS('data/HaiADM2.RDS') %>%
   attachDREAMSField("Haiti")
 kenADM1.sf <- readRDS('data/KenyaADM1.RDS') %>%
@@ -609,7 +605,6 @@ default5YearTemplate <- readxl::read_xlsx('www/defaultTemplate_5year.xlsx') %>%
     )
   )
 
-
 defaultData <- attachParameters_5year(countryDataJoined,
                                       dataParameters_5Year) %>%
   reshapeWide() %>%
@@ -666,7 +661,6 @@ default5YearTemplate <- left_join(default5YearTemplate,
 
 rm(defaultData_trimmed)
 
-  
 rm(countryData)
 rm(countryDataJoined)
 rm(AGYW_PREV)

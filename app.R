@@ -271,8 +271,8 @@ server <- function(input, output, session) {
     fluidPage(
       tags$head(
         tags$link(rel = "stylesheet", 
-                  type = "text/css",
-                  href = "style.css")),
+        type = "text/css",
+        href = "style.css")),
       tags$style(".progress-bar{
                  background-color: #20A39E;
                  }
@@ -290,7 +290,7 @@ server <- function(input, output, session) {
       br(),
       fluidRow(
         column(12,
-               strong("Welcome to version 1.0 of the DREAMS Sat app. Development is ongoing, with additional features planned for post-COP. To help improve the app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to samuel.i.dupre@census.gov."),
+               strong("Welcome to version 1.0 of the DREAMS Sat app. Development is ongoing, with additional features planned for post-COP. To help improve the app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to samuel.i.dupre@census.gov.")
         )),
       fluidRow(
         column(12,
@@ -354,7 +354,7 @@ server <- function(input, output, session) {
                    column(4,
                           strong("Note: country selection is meant as a first step and sets/reverts choices to default values. Avoid changing country selection without saving progress to avoid losing work.")),
                    column(8,
-                          leafletOutput("map_main"))),
+                          leafletOutput("map_main")))
                ),
                h3("Step 2 of 9: Upload Custom Population   OPTIONAL STEP"),
                h4("Overwrite default population figures for your country."),
@@ -654,24 +654,24 @@ server <- function(input, output, session) {
       )
       
     )
-      
   }
   
-  # output$ui <- renderUI({
-  #   main_ui()
-  # })
-  
   output$ui <- renderUI({
-    if(!user_input$authenticated){
-       auth_ui()
-    }else{
-      main_ui()
-    }
+    main_ui()
   })
+
+  # output$ui <- renderUI({
+  #   if(!user_input$authenticated){
+  #      auth_ui()
+  #   }else{
+  #     main_ui()
+  #   }
+  # })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
     country = "Botswana",
+
     popStructureType = "Default"#,
     # catchmentsSelected = ""
   )
@@ -694,7 +694,7 @@ server <- function(input, output, session) {
   
   spatial <- reactiveValues(
     # sf0 = NULL,
-    sf1 = botADM1.sf,
+    sf1 = botADM2.sf,
     # sf2 = botADM2.sf,
     sf1_DREAMS = NULL,
     sf1_notDREAMS = NULL,
@@ -768,8 +768,6 @@ server <- function(input, output, session) {
     #   dplyr::filter(DREAMSDistrict == "No")
     
   })
-  
-  
   
   
   ###
@@ -983,7 +981,7 @@ server <- function(input, output, session) {
   
   observeEvent(input$importButtonParams, {
     req(importedTokenParams())
-    
+
     updateRadioButtons(session,
                        "structure",
                        selected = importedTokenParams()$popStructure[1])
@@ -1007,13 +1005,19 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- defaultData %>%
       dplyr::filter(country == input$country)
+
   })
   
   observeEvent(input$country, {
     req(input$country)
     
+
     data_stats_2022$data <- defaultStats2022 %>%
       dplyr::filter(Country == input$country)
+
+    # workingDataPost$data <- defaultData %>%
+    #   dplyr::filter(country == input$country)
+
   })
   
   observeEvent(input$country, {
@@ -1028,6 +1032,7 @@ server <- function(input, output, session) {
     params$country = input$country
   })
   
+
   # Render text elements ----
   output$importedCountry <- renderText(
     if (!is.null(importedTokenParams())) 
@@ -1064,6 +1069,7 @@ server <- function(input, output, session) {
       mutate(
         IsSelected = case_when(
           (PopStructure == popStructureChoice() & country == countryChoice()) ~ as.character("Selected"),
+
           TRUE ~ as.character("Unselected")
         )
       )
@@ -1083,7 +1089,7 @@ server <- function(input, output, session) {
   
   data_stats_analytics <- eventReactive(input$initializeSelection, {
     req(!is.null(workingDataPost$data))
-    
+ 
     selected_data <- workingDataPost$data %>%
       reduceForAnalyticsPlots() %>%
       rename(Cohort = ageasentered,
@@ -1327,21 +1333,25 @@ server <- function(input, output, session) {
     workingDataPost$data$firstQ_2020 <- workingDataPost$data$firstQCustom_2020
     workingDataPost$data$firstQ_2021 <- workingDataPost$data$firstQCustom_2021
     workingDataPost$data$firstQ_2022 <- workingDataPost$data$firstQCustom_2022
+    
     workingDataPost$data$secondQ_2018 <- workingDataPost$data$secondQCustom_2018
     workingDataPost$data$secondQ_2019 <- workingDataPost$data$secondQCustom_2019
     workingDataPost$data$secondQ_2020 <- workingDataPost$data$secondQCustom_2020
     workingDataPost$data$secondQ_2021 <- workingDataPost$data$secondQCustom_2021
     workingDataPost$data$secondQ_2022 <- workingDataPost$data$secondQCustom_2022
+
     workingDataPost$data$thirdQ_2018 <- workingDataPost$data$thirdQCustom_2018
     workingDataPost$data$thirdQ_2019 <- workingDataPost$data$thirdQCustom_2019
     workingDataPost$data$thirdQ_2020 <- workingDataPost$data$thirdQCustom_2020
     workingDataPost$data$thirdQ_2021 <- workingDataPost$data$thirdQCustom_2021
     workingDataPost$data$thirdQ_2022 <- workingDataPost$data$thirdQCustom_2022
+
     workingDataPost$data$fourthQ_2018 <- workingDataPost$data$fourthQCustom_2018
     workingDataPost$data$fourthQ_2019 <- workingDataPost$data$fourthQCustom_2019
     workingDataPost$data$fourthQ_2020 <- workingDataPost$data$fourthQCustom_2020
     workingDataPost$data$fourthQ_2021 <- workingDataPost$data$fourthQCustom_2021
     workingDataPost$data$fourthQ_2022 <- workingDataPost$data$fourthQCustom_2022
+
     workingDataPost$data$fifthQ_2018 <- workingDataPost$data$fifthQCustom_2018
     workingDataPost$data$fifthQ_2019 <- workingDataPost$data$fifthQCustom_2019
     workingDataPost$data$fifthQ_2020 <- workingDataPost$data$fifthQCustom_2020
@@ -1447,7 +1457,7 @@ server <- function(input, output, session) {
   
   output$customEnrollmentTable <- DT::renderDataTable({
     req(customEnrollment())
-    
+
     datatable(customEnrollment(),
               rownames = FALSE,
               selection = 'none',
@@ -1567,7 +1577,6 @@ server <- function(input, output, session) {
     )
     
   })
-  
   
   # Render plot elements ----
   ## Pop structure plots ----
@@ -1749,7 +1758,7 @@ server <- function(input, output, session) {
   saturation_bins <- c(0, 25.0, 50.0, 75.0, 100.0, Inf)
   
   saturation_labels <- c("0.0 - 24.9", "25.0 - 49.9", "50.0 - 74.9", "75.0 - 99.9", "100.0 or more")
-  
+
   output$map_saturation <- leaflet::renderLeaflet({
     req(data_stats_2022$data)
     
@@ -1846,18 +1855,7 @@ server <- function(input, output, session) {
       setMapWidgetStyle(list(background = "white"))
     
   })
-  
-  ##########DELETE ME
-  
-  output$workingDataExport_check <- DT::renderDataTable({
-    req(workingDataPost$data)
-    
-    datatable(workingDataPost$data,
-              options = list(scrollx = TRUE)
-    )
-  })
-  ##########DELETE ME
-  
+
   # Save token ----
   ## Export ----
   ### Parameters ----
@@ -1868,7 +1866,7 @@ server <- function(input, output, session) {
   exportPopStructureListener <- reactive({
     params$popStructureType
   })
-  
+
   output$exportTokenParameters <- downloadHandler(
     filename = function() {
       paste("DREAMS_Sat_Save_Token_Parameters",
@@ -1942,7 +1940,7 @@ server <- function(input, output, session) {
   )
   
   
-  
+
   
   ## Import ----
   ### Parameters ----
@@ -1952,7 +1950,7 @@ server <- function(input, output, session) {
     load(input$importTokenParams$datapath)
     
     a <- params_df
-    
+
     return(a)
     
   })
@@ -1960,7 +1958,7 @@ server <- function(input, output, session) {
   observeEvent(importedTokenParams(), {
     params$country <- importedTokenParams()$country[1]
     params$popStructureType <- importedTokenParams()$popStructureType[1]
-    
+
   })
   
   ### Data ----
@@ -2146,7 +2144,7 @@ server <- function(input, output, session) {
     },
     contentType = NULL
   )
-  
+ 
   ### Mobility ----
   default5YearTemplate_selectedCountry_M <- reactive({
     req(input$country)
@@ -2480,7 +2478,7 @@ server <- function(input, output, session) {
   outputOptions(output, 'paramsUploaded', suspendWhenHidden = FALSE)
   #outputOptions(output, "map_saturation", suspendWhenHidden = FALSE)
   # outputOptions(output, "numerator_ui", suspendWhenHidden = FALSE)
-  
+
 }
 
 shinyApp(ui, server)

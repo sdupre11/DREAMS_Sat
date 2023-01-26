@@ -5377,13 +5377,16 @@
   },
   "files": {
     ".Rprofile": {
-      "checksum": "1f7943a05990534dcf21aeba77e1bdf3"
+      "checksum": "d50385b7a98a182233d26fe4c1206166"
     },
     "app.R": {
-      "checksum": "6b8cdaef24522d770801f3b10bd83de2"
+      "checksum": "7b78cf4fd28bc47ec458a9ba941f592c"
     },
     "data_load.R": {
-      "checksum": "dbc1ef0844a2631f993aca6e248cc462"
+      "checksum": "be42bdca988e824a1c31f06a22e1290a"
+    },
+    "data/BotswanaADM1.RDS": {
+      "checksum": "f317cef178b1cb0b60eaf43b65ab215a"
     },
     "data/BotswanaADM2.RDS": {
       "checksum": "666a5927efd35cb3c5121e0a181a70f1"
@@ -5412,6 +5415,9 @@
     "data/KenyaADM1.RDS": {
       "checksum": "204823fba42f95d6f2207ba612109d31"
     },
+    "data/KenyaADM2.RDS": {
+      "checksum": "d9e834dc93de79367478135b1d264c80"
+    },
     "data/LesothoADM1.RDS": {
       "checksum": "f38da556ea64fd0403252b4c42625e92"
     },
@@ -5427,14 +5433,26 @@
     "data/NamibiaADM2.RDS": {
       "checksum": "7c76cc00f78ed12ec28a269653bf0974"
     },
+    "data/neighborsLookup.RDS": {
+      "checksum": "a7e69de8b664926f872cd977b9106193"
+    },
+    "data/neighborsLookupAll.RDS": {
+      "checksum": "773ce136c48638d932f4302104c346fa"
+    },
     "data/RwandaADM1.RDS": {
       "checksum": "d3ec83912e81ade4bbe213e0e44572ed"
     },
     "data/SAfricaADM1.RDS": {
       "checksum": "7bc51d1a88ef7ac2c1aefa545f5b1e96"
     },
+    "data/SAfricaADM2.RDS": {
+      "checksum": "1c31c83179fd49fe0cf94dcd7fd32cb1"
+    },
     "data/SingleYearNationalAGYWPops.RDS": {
       "checksum": "6c1cd4fa5bf1f86cc86c82be86a905d4"
+    },
+    "data/TanzaniaADM1.RDS": {
+      "checksum": "46f0aa22ea772df68c2ea931dccd1474"
     },
     "data/TanzaniaADM2.RDS": {
       "checksum": "d57a769778e836dc91e3622c5a770b22"
@@ -5448,11 +5466,17 @@
     "data/ZambiaADM2.RDS": {
       "checksum": "dc0c31074b444c7b9252282ac71de6b6"
     },
+    "data/ZimbabweADM1.RDS": {
+      "checksum": "0fd18a024295af38a282de4fc0ad0b12"
+    },
     "data/ZimbabweADM2.RDS": {
       "checksum": "bc5426636076bc49fa480c82c83c8734"
     },
     "functions.R": {
-      "checksum": "8c2c4039b6c910b038c35f2b8cadcff3"
+      "checksum": "28806f5f892e26345d5029d4c13c8f28"
+    },
+    "params.R": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "preprocessing/build_national_pop_structure.R": {
       "checksum": "b556a1d6ba48775db0f48241be672c85"
@@ -5883,114 +5907,6 @@
     "preprocessing/data/VcPepfarPolygons.shx": {
       "checksum": "a5d459aff10a0698b165e91db0882eb4"
     },
-    "preprocessing/data/WorldPop/civ_f_10_2018.tif": {
-      "checksum": "cb258b451a0cae94375ef3b4e2c78cbf"
-    },
-    "preprocessing/data/WorldPop/civ_f_10_2019.tif": {
-      "checksum": "6babbd2ed38dfa033ee1fcdd32d16f00"
-    },
-    "preprocessing/data/WorldPop/civ_f_10_2020.tif": {
-      "checksum": "22ccbda981770aa830c5f0736b66f093"
-    },
-    "preprocessing/data/WorldPop/civ_f_15_2018.tif": {
-      "checksum": "c27bda2a2ce5cabe975d8c95aae471b2"
-    },
-    "preprocessing/data/WorldPop/civ_f_15_2019.tif": {
-      "checksum": "a6ae68396a5d4b7c2be3fb99c23c7c4f"
-    },
-    "preprocessing/data/WorldPop/civ_f_15_2020.tif": {
-      "checksum": "2428c914aa11888e00f370d9dc968401"
-    },
-    "preprocessing/data/WorldPop/civ_f_20_2018.tif": {
-      "checksum": "5dc54af77d660436b9f91d84f2baa8ed"
-    },
-    "preprocessing/data/WorldPop/civ_f_20_2019.tif": {
-      "checksum": "4508da3a2736e2bd2105bbcf0a0658ef"
-    },
-    "preprocessing/data/WorldPop/civ_f_20_2020.tif": {
-      "checksum": "20d247d0362cc3ed54d5b32a9a84f874"
-    },
-    "preprocessing/data/WorldPop/civ_f_25_2018.tif": {
-      "checksum": "75cfcd8fe4530444b05e55e6e22cb132"
-    },
-    "preprocessing/data/WorldPop/civ_f_25_2019.tif": {
-      "checksum": "877f6e5006cefbeb14a7dba65ded4c66"
-    },
-    "preprocessing/data/WorldPop/civ_f_25_2020.tif": {
-      "checksum": "3ac27364fe071c7d269ff4ff76b45206"
-    },
-    "preprocessing/data/WorldPop/hti_f_10_2018.tif": {
-      "checksum": "b0bec62b156dc580980311741131ffc1"
-    },
-    "preprocessing/data/WorldPop/hti_f_10_2019.tif": {
-      "checksum": "8d198a53d6ae99287bbf21c41c239efc"
-    },
-    "preprocessing/data/WorldPop/hti_f_10_2020.tif": {
-      "checksum": "a33c959ecd14a2da8274a5ecb0805a07"
-    },
-    "preprocessing/data/WorldPop/hti_f_15_2018.tif": {
-      "checksum": "f2ef36e129aed5d4cf1e57707077884e"
-    },
-    "preprocessing/data/WorldPop/hti_f_15_2019.tif": {
-      "checksum": "9b46c70554a91b0ba5f231e1e01086d9"
-    },
-    "preprocessing/data/WorldPop/hti_f_15_2020.tif": {
-      "checksum": "6c1eb01ae3bbc1a9eccbf7d3769714cf"
-    },
-    "preprocessing/data/WorldPop/hti_f_20_2018.tif": {
-      "checksum": "744bf10ef884b4233f8f4f29a2c4c8b2"
-    },
-    "preprocessing/data/WorldPop/hti_f_20_2019.tif": {
-      "checksum": "9dc4566d96b9207f1ed33af4abc73fac"
-    },
-    "preprocessing/data/WorldPop/hti_f_20_2020.tif": {
-      "checksum": "a592d7e3d44e3a0236799690a1b489a3"
-    },
-    "preprocessing/data/WorldPop/hti_f_25_2018.tif": {
-      "checksum": "b9f4f7e9841c8d326f1c23419f137c92"
-    },
-    "preprocessing/data/WorldPop/hti_f_25_2019.tif": {
-      "checksum": "ec59b0cd38fbdc106d8a79caceb90079"
-    },
-    "preprocessing/data/WorldPop/hti_f_25_2020.tif": {
-      "checksum": "e276a11deef0f2b61c2bc69419385405"
-    },
-    "preprocessing/data/WorldPop/swz_f_10_2018.tif": {
-      "checksum": "b3d50f2493988ef1cb455b35e0a81485"
-    },
-    "preprocessing/data/WorldPop/swz_f_10_2019.tif": {
-      "checksum": "7e1169b66135b5fce0e3e8a002a53031"
-    },
-    "preprocessing/data/WorldPop/swz_f_10_2020.tif": {
-      "checksum": "e3c264d6bf71c305ec5651824267ecbc"
-    },
-    "preprocessing/data/WorldPop/swz_f_15_2018.tif": {
-      "checksum": "ff641c065f7ad2eea430debb78ed1de8"
-    },
-    "preprocessing/data/WorldPop/swz_f_15_2019.tif": {
-      "checksum": "272e61e56ee9895ef576738dbd15c2d0"
-    },
-    "preprocessing/data/WorldPop/swz_f_15_2020.tif": {
-      "checksum": "e1e81d4c0c3a60a48f0622621f5526c6"
-    },
-    "preprocessing/data/WorldPop/swz_f_20_2018.tif": {
-      "checksum": "9431f57d2b5c86d115a4f5c4de34458d"
-    },
-    "preprocessing/data/WorldPop/swz_f_20_2019.tif": {
-      "checksum": "0332c587837a723ab4b201454a4569aa"
-    },
-    "preprocessing/data/WorldPop/swz_f_20_2020.tif": {
-      "checksum": "bfc6a54a5c7fa557a4bb7317a2ddfab2"
-    },
-    "preprocessing/data/WorldPop/swz_f_25_2018.tif": {
-      "checksum": "c0c5a08b5b24f61d76a3e1cd7d113629"
-    },
-    "preprocessing/data/WorldPop/swz_f_25_2019.tif": {
-      "checksum": "720cb0cda591e1331ae799965e71efc0"
-    },
-    "preprocessing/data/WorldPop/swz_f_25_2020.tif": {
-      "checksum": "b23b742bbcd6935da749ebe66ad0aca4"
-    },
     "preprocessing/data/Zambia_adm2_uscb_2021.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
     },
@@ -6076,16 +5992,22 @@
       "checksum": "23f1bc949d1a4d6abf9fd5e54b962001"
     },
     "preprocessing/demographic_and_spatial.R": {
-      "checksum": "f19aea82a241a64517c13addcca3a1e7"
+      "checksum": "8216b147e014678f3b9475989d80c170"
     },
     "preprocessing/manual_data_update.R": {
-      "checksum": "5595c842bad131c80091886d75f83aa8"
+      "checksum": "941ef47f5debf6425a74c6cd4fc90238"
     },
     "preprocessing/s3_read.R": {
       "checksum": "dc70ac0e554ec64023fd63173b05b579"
     },
+    "www/defaultTemplate_1year_old.xlsx": {
+      "checksum": "c58f58865049bc01d3d518a1417d0e78"
+    },
     "www/defaultTemplate_1year.xlsx": {
       "checksum": "3dbf38bb9622f490041d1289e48e3f31"
+    },
+    "www/defaultTemplate_5year_old.xlsx": {
+      "checksum": "f22610c9dd5bca2d96350596e8328224"
     },
     "www/defaultTemplate_5year.xlsx": {
       "checksum": "238b6ac9aa54bdaebe498c8b1b373fcd"

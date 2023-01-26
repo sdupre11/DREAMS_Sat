@@ -533,6 +533,7 @@ my_data_recent_snu1s <-
       (snu1 == "East" & country == "Rwanda") ~ "EASTERN PROVINCE",
       (snu1 == "Kigali City" & country == "Rwanda") ~ "KIGALI",
       (snu1 == "South" & country == "Rwanda") ~ "SOUTHERN PROVINCE"
+
     )
   )
 
