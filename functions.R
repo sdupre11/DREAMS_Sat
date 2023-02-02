@@ -38,17 +38,17 @@ attachDREAMSField <- function(x, y) {
   }
   
   internal_ADM1_Countries <- c("Kenya",
-                              "Lesotho",
-                              "Rwanda",
-                              "South Africa", #actually a PSNU country, but here for functionality (workaround), improve later
-                              "Uganda")
+                               "Lesotho",
+                               "Rwanda",
+                               "South Africa", #actually a PSNU country, but here for functionality (workaround), improve later
+                               "Uganda")
   
   internal_ADM2_Countries <- c("Botswana",
-                            "Malawi",
-                            "Mozambique",
-                            "Namibia",
-                            "Zambia",
-                            "Zimbabwe")
+                               "Malawi",
+                               "Mozambique",
+                               "Namibia",
+                               "Zambia",
+                               "Zimbabwe")
   
   internal_NSO_NAME_Countries <- c("Tanzania")
   
@@ -92,7 +92,7 @@ attachDREAMSField <- function(x, y) {
           TRUE ~ as.character(AREA_NAME))
       )
   }
-    
+  
 }
 
 
@@ -144,7 +144,7 @@ dataParametersPivot1Year <- function(x) {
     pivot_wider(
       names_from = c("Age", "fiscalyear"),
       values_from = "GradStructure"
-
+      
     )
   
   return(b)
@@ -193,7 +193,7 @@ dataParametersPivot5Year <- function(x) {
       names_prefix = "Enrollment_",
       values_to = "Enrollment"
     )
-
+  
   PrimarySecondaryDoubleCounts <- x %>%
     dplyr::select(-(4:25)) %>%
     pivot_longer(
@@ -202,32 +202,32 @@ dataParametersPivot5Year <- function(x) {
       names_prefix = "PrimarySecondaryDoubleCounts_",
       values_to = "PrimarySecondaryDoubleCounts"
     )
-
+  
   PrevVuln <- left_join(Prevalence,
                         Vulnerable,
                         by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
   
   PrevVulnMob <- left_join(PrevVuln,
-                            Mobility,
-                            by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
+                           Mobility,
+                           by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
   
   PrevVulnMobEnro <- left_join(PrevVulnMob,
-                        Enrollment,
-                        by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
+                               Enrollment,
+                               by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered"))
   
   All <- left_join(PrevVulnMobEnro,
                    PrimarySecondaryDoubleCounts,
                    by = c("Country" = "Country", "District" = "District", "fiscal_year" = "fiscal_year", "ageasentered" = "ageasentered")) %>%
     dplyr::select(-c("Join_Name.x",
-                      "Join_Name.y",
-                      "Join_Name.x.x",
-                      "Join_Name.y.y"))
-   
+                     "Join_Name.y",
+                     "Join_Name.x.x",
+                     "Join_Name.y.y"))
+  
   All$fiscal_year <- All$fiscal_year %>%
     as.numeric()
   
   return(All)
-
+  
 }
 
 #Reshape to match PoC
@@ -243,11 +243,11 @@ splitForReshapeWide <- function(x, y) {
                     "country",
                     "fiscal_year",
                     all_of(y)))
-             
+  
 }
 
 reshapeWide <- function(x) {
-
+  
   PrevalenceDF <- splitForReshapeWide(x, "Prevalence")
   VulnerableDF <- splitForReshapeWide(x, "Vulnerable")
   MobilityDF <- splitForReshapeWide(x, "Mobility")
@@ -255,7 +255,7 @@ reshapeWide <- function(x) {
   EnrollmentDF <- splitForReshapeWide(x, "Enrollment")
   PopDF <- splitForReshapeWide(x, "population")
   AGYW_PREVDF <- splitForReshapeWide(x, "AGYW_PREV")
-
+  
   PrevalenceDF <- PrevalenceDF %>%
     pivot_wider(
       id_cols = c(AREA_NAME,
@@ -281,7 +281,7 @@ reshapeWide <- function(x) {
       names_glue = "Vuln_{fiscal_year}",
       values_from = Vulnerable
     )
-
+  
   PrimarySecondaryDoubleCountsDF <- PrimarySecondaryDoubleCountsDF %>%
     pivot_wider(
       id_cols = c(AREA_NAME,
@@ -320,7 +320,7 @@ reshapeWide <- function(x) {
       names_glue = "Enrollment_{fiscal_year}",
       values_from = Enrollment
     )
-
+  
   PopDF <- PopDF %>%
     pivot_wider(
       id_cols = c(AREA_NAME,
@@ -333,7 +333,7 @@ reshapeWide <- function(x) {
       names_glue = "Pop_{fiscal_year}",
       values_from = population
     )
-
+  
   AGYW_PREVDF <- AGYW_PREVDF %>%
     pivot_wider(
       id_cols = c(AREA_NAME,
@@ -349,15 +349,6 @@ reshapeWide <- function(x) {
   
   PrevVuln <- left_join(PrevalenceDF,
                         VulnerableDF,
-                   by = c("country" = "country", 
-                          "AREA_NAME" = "AREA_NAME",
-                          "JOIN_NAME" = "JOIN_NAME",
-                          "NSO_NAME" = "NSO_NAME",
-                          "uid" = "uid",
-                          "ageasentered" = "ageasentered"))
-  
-  PrevVulnPSDC <- left_join(PrevVuln,
-                        PrimarySecondaryDoubleCountsDF,
                         by = c("country" = "country", 
                                "AREA_NAME" = "AREA_NAME",
                                "JOIN_NAME" = "JOIN_NAME",
@@ -365,17 +356,17 @@ reshapeWide <- function(x) {
                                "uid" = "uid",
                                "ageasentered" = "ageasentered"))
   
-  PrevVulnPSDCMob <- left_join(PrevVulnPSDC,
-                                      MobilityDF,
-                                      by = c("country" = "country", 
-                                             "AREA_NAME" = "AREA_NAME",
-                                             "JOIN_NAME" = "JOIN_NAME",
-                                             "NSO_NAME" = "NSO_NAME",
-                                             "uid" = "uid",
-                                             "ageasentered" = "ageasentered"))
+  PrevVulnPSDC <- left_join(PrevVuln,
+                            PrimarySecondaryDoubleCountsDF,
+                            by = c("country" = "country", 
+                                   "AREA_NAME" = "AREA_NAME",
+                                   "JOIN_NAME" = "JOIN_NAME",
+                                   "NSO_NAME" = "NSO_NAME",
+                                   "uid" = "uid",
+                                   "ageasentered" = "ageasentered"))
   
-  PrevVulnPSDCMobEnrollment <- left_join(PrevVulnPSDCMob,
-                               EnrollmentDF,
+  PrevVulnPSDCMob <- left_join(PrevVulnPSDC,
+                               MobilityDF,
                                by = c("country" = "country", 
                                       "AREA_NAME" = "AREA_NAME",
                                       "JOIN_NAME" = "JOIN_NAME",
@@ -383,14 +374,23 @@ reshapeWide <- function(x) {
                                       "uid" = "uid",
                                       "ageasentered" = "ageasentered"))
   
+  PrevVulnPSDCMobEnrollment <- left_join(PrevVulnPSDCMob,
+                                         EnrollmentDF,
+                                         by = c("country" = "country", 
+                                                "AREA_NAME" = "AREA_NAME",
+                                                "JOIN_NAME" = "JOIN_NAME",
+                                                "NSO_NAME" = "NSO_NAME",
+                                                "uid" = "uid",
+                                                "ageasentered" = "ageasentered"))
+  
   PrevVulnPSDCMobEnrollmentPop <- left_join(PrevVulnPSDCMobEnrollment,
-                            PopDF,
-                            by = c("country" = "country", 
-                                   "AREA_NAME" = "AREA_NAME",
-                                   "JOIN_NAME" = "JOIN_NAME",
-                                   "NSO_NAME" = "NSO_NAME",
-                                   "uid" = "uid",
-                                   "ageasentered" = "ageasentered"))
+                                            PopDF,
+                                            by = c("country" = "country", 
+                                                   "AREA_NAME" = "AREA_NAME",
+                                                   "JOIN_NAME" = "JOIN_NAME",
+                                                   "NSO_NAME" = "NSO_NAME",
+                                                   "uid" = "uid",
+                                                   "ageasentered" = "ageasentered"))
   
   All <- left_join(PrevVulnPSDCMobEnrollmentPop,
                    AGYW_PREVDF,
@@ -471,37 +471,37 @@ deriveStatisticsPreSat <- function(x) {
                                         0)
   
   a$DeDuplicatedAGYW_PREV_2019 <- round(a$AGYW_PREV_2019 * ((100-a$PSDC_2019)/100),
-                                       0)
-
+                                        0)
+  
   a$DeDuplicatedAGYW_PREV_2020 <- round(a$AGYW_PREV_2020 * ((100-a$PSDC_2020)/100),
-                                       0)
-
+                                        0)
+  
   a$DeDuplicatedAGYW_PREV_2021 <- round(a$AGYW_PREV_2021 * ((100-a$PSDC_2021)/100),
-                                       0)
-
+                                        0)
+  
   a$DeDuplicatedAGYW_PREV_2022 <- round(a$AGYW_PREV_2022 * ((100-a$PSDC_2022)/100),
-                                       0)
+                                        0)
   
   a$MobilityStandardizedAGYW_PREV_2018 <- round(a$DeDuplicatedAGYW_PREV_2018 * ((100-a$Mobility_2018)/100), 
-                                                  0)
+                                                0)
   
   a$MobilityStandardizedAGYW_PREV_2019 <- round(a$DeDuplicatedAGYW_PREV_2019 * ((100-a$Mobility_2019)/100), 
-                                                  0)
+                                                0)
   
   a$MobilityStandardizedAGYW_PREV_2020 <- round(a$DeDuplicatedAGYW_PREV_2020 * ((100-a$Mobility_2020)/100), 
-                                                  0)
+                                                0)
   
   a$MobilityStandardizedAGYW_PREV_2021 <- round(a$DeDuplicatedAGYW_PREV_2021 * ((100-a$Mobility_2021)/100), 
-                                                  0)
+                                                0)
   
   a$MobilityStandardizedAGYW_PREV_2022 <- round(a$DeDuplicatedAGYW_PREV_2022 * ((100-a$Mobility_2022)/100), 
-                                                  0)
+                                                0)
   
   a$EnrollmentStandardizedAGYW_PREV_2018 <- round(a$MobilityStandardizedAGYW_PREV_2018 * ((100-a$Enrollment_2018)/100), 
                                                   0)
-
+  
   a$EnrollmentStandardizedAGYW_PREV_2019 <- round(a$MobilityStandardizedAGYW_PREV_2019 * ((100-a$Enrollment_2019)/100), 
-                                                                            0)
+                                                  0)
   
   a$EnrollmentStandardizedAGYW_PREV_2020 <- round(a$MobilityStandardizedAGYW_PREV_2020 * ((100-a$Enrollment_2020)/100), 
                                                   0)
@@ -531,16 +531,16 @@ deriveStatisticsSat <- function(x) {
                                 0)
   
   a$Actual_Served_2019 <- round(a$EnrollmentStandardizedAGYW_PREV_2019,
-                                   0)
+                                0)
   
   a$Actual_Served_2020 <- round((a$EnrollmentStandardizedAGYW_PREV_2020 + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-a$fifthQ_2019))),
-                                   0)
+                                0)
   
   a$Actual_Served_2021 <- round((a$EnrollmentStandardizedAGYW_PREV_2021 + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-a$fifthQ_2020)) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019)))),
-                                   0)
+                                0)
   
   a$Actual_Served_2022 <- round((a$EnrollmentStandardizedAGYW_PREV_2022 + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019)))),
-                                   0)
+                                0)
   
   a$Actual_Served_2023 <- round(((a$EnrollmentStandardizedAGYW_PREV_2022*(1-a$fifthQ_2022)) + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020+a$thirdQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019+a$secondQ_2019)))),
                                 0)
@@ -562,21 +562,21 @@ deriveStatisticsSat <- function(x) {
   
   a$Sat_2023 <- round(((a$Actual_Served_2023/a$VulnerableNonPLHIV_2023)*100),
                       1)
-
+  
   b$Actual_Served_2018 <- round(b$EnrollmentStandardizedAGYW_PREV_2018, #Make work if 2018 AGYW_PREV ingestion becomes an option, incorporate into successive calculations
                                 0)
   
   b$Actual_Served_2019 <- round(b$EnrollmentStandardizedAGYW_PREV_2019,
-                      0)
+                                0)
   
   b$Actual_Served_2020 <- round((b$EnrollmentStandardizedAGYW_PREV_2020+(b$EnrollmentStandardizedAGYW_PREV_2019*.8)),
-                      0)
+                                0)
   
   b$Actual_Served_2021 <- round((b$EnrollmentStandardizedAGYW_PREV_2021 + (b$EnrollmentStandardizedAGYW_PREV_2020*.8) + (b$EnrollmentStandardizedAGYW_PREV_2019*.6)),
-                      0)
+                                0)
   
   b$Actual_Served_2022 <- round((b$EnrollmentStandardizedAGYW_PREV_2022 + (b$EnrollmentStandardizedAGYW_PREV_2021*.8) + (b$EnrollmentStandardizedAGYW_PREV_2020*.6) + (b$EnrollmentStandardizedAGYW_PREV_2019*.4)),
-                      0)
+                                0)
   
   b$Actual_Served_2023 <- round(((b$EnrollmentStandardizedAGYW_PREV_2022*.8) + (b$EnrollmentStandardizedAGYW_PREV_2021*.6) + (b$EnrollmentStandardizedAGYW_PREV_2020*.4) + (b$EnrollmentStandardizedAGYW_PREV_2019*.2)),
                                 0)
@@ -598,9 +598,9 @@ deriveStatisticsSat <- function(x) {
   
   b$Sat_2023 <- round(((b$Actual_Served_2023/b$VulnerableNonPLHIV_2023)*100),
                       1)
-
+  
   c$Actual_Served_2018 <- round(c$EnrollmentStandardizedAGYW_PREV_2018, #Make work if 2018 AGYW_PREV ingestion becomes an option, incorporate into successive calculations
-                                 0)
+                                0)
   
   c$Actual_Served_2019 <- round(c$EnrollmentStandardizedAGYW_PREV_2019,
                                 0)
@@ -673,7 +673,7 @@ deriveStatistics <- function(x) {
     deriveStatisticsPreSat() %>%
     deriveStatisticsSat() %>%
     deriveStatisticsGirlsRemaining()
-
+  
   return(a)
 }
 
@@ -732,17 +732,17 @@ mergeAccountingForCDI <- function(x, y) {
 }
 
 attachParameters_5year <- function(x, y, z) {
-
+  
   a <- left_join(x,
-            y,
-            by = c("country" = "Country", 
-                   "AREA_NAME" = "District", 
-                   "fiscal_year" = "fiscal_year", 
-                   "ageasentered" = "ageasentered"))
-
+                 y,
+                 by = c("country" = "Country", 
+                        "AREA_NAME" = "District", 
+                        "fiscal_year" = "fiscal_year", 
+                        "ageasentered" = "ageasentered"))
+  
   return(a)
 }
-  
+
 attachParameters_1year <- function(x, y) {
   
   a <- y %>%
@@ -760,7 +760,8 @@ attachParameters_1year <- function(x, y) {
 
 reduceTo2022Export <- function(x) {
   
-  col_order <- c("Country",
+  col_order <- c("Prev_2022",
+                 "Country",
                  "District",
                  "Cohort",
                  "Pop_2022",
@@ -781,19 +782,19 @@ reduceTo2022Export <- function(x) {
                                                           "third", 
                                                           "fourth", 
                                                           "fifth")))) %>%
-    dplyr::select(-c("Prev_2022", 
-                     "PSDC_2022", 
-                     "Vuln_2022",
-                     "Pop_2022_Default",
-                     "AGYW_PREV_2022",
-                     "PLHIV_2022",
-                     "NonPLHIV_2022",
-                     "DeDuplicatedAGYW_PREV_2022",
-                     "MobilityStandardizedAGYW_PREV_2022",
-                     "EnrollmentStandardizedAGYW_PREV_2022",
-                     "Actual_Served_2022",
-                     "Prev_2023",
-                     "Vuln_2023")) %>%
+    dplyr::select(-c(#"Prev_2022", 
+      "PSDC_2022", 
+      "Vuln_2022",
+      "Pop_2022_Default",
+      "AGYW_PREV_2022",
+      "PLHIV_2022",
+      "NonPLHIV_2022",
+      "DeDuplicatedAGYW_PREV_2022",
+      "MobilityStandardizedAGYW_PREV_2022",
+      "EnrollmentStandardizedAGYW_PREV_2022",
+      "Actual_Served_2022",
+      "Prev_2023",
+      "Vuln_2023")) %>%
     dplyr::mutate(
       PopRemaining_2022 = case_when(
         (PopRemaining_2022 < 0) ~ 0,
@@ -815,14 +816,15 @@ reduceTo2022Export <- function(x) {
 
 reduceToCOPExport <- function(x) {
   
-  col_order <- c("Country",
+  col_order <- c("Prev_2023", 
+                 "Country",
                  "District",
                  "Cohort",
                  "Pop_2023",
                  "Total DREAMS eligible AGYW 2023",
                  "Percent coverage (saturation) 2023",
                  "Remaining unserved AGYW 2023"
-                 )
+  )
   
   a <- x %>%
     dplyr::filter(IsSelected == "Selected") %>%
@@ -837,11 +839,11 @@ reduceToCOPExport <- function(x) {
                                                           "third", 
                                                           "fourth", 
                                                           "fifth")))) %>%
-    dplyr::select(-c("Prev_2023", 
-                     "Vuln_2023",
-                     "Pop_2023_Default",
-                     "PLHIV_2023",
-                     "NonPLHIV_2023")) %>%
+    dplyr::select(-c(#"Prev_2023", 
+      "Vuln_2023",
+      "Pop_2023_Default",
+      "PLHIV_2023",
+      "NonPLHIV_2023")) %>%
     dplyr::mutate(
       PopRemaining_2023 = case_when(
         (PopRemaining_2023 < 0) ~ 0,
@@ -849,27 +851,27 @@ reduceToCOPExport <- function(x) {
       )
     ) %>%
     dplyr::rename("Country" = "country",
-           "Cohort" = "ageasentered",
-           "District" = "AREA_NAME",
-           "Pop_2023" = "Pop_2023",
-           "Total DREAMS eligible AGYW 2023" = "VulnerableNonPLHIV_2023",
-           "Percent coverage (saturation) 2023" = "Sat_2023",
-           "Remaining unserved AGYW 2023" = "PopRemaining_2023")
+                  "Cohort" = "ageasentered",
+                  "District" = "AREA_NAME",
+                  "Pop_2023" = "Pop_2023",
+                  "Total DREAMS eligible AGYW 2023" = "VulnerableNonPLHIV_2023",
+                  "Percent coverage (saturation) 2023" = "Sat_2023",
+                  "Remaining unserved AGYW 2023" = "PopRemaining_2023")
   
   a <- a[, col_order]
-    
+  
   return(a)
 }
 
 reduceForAnalyticsPlots <- function(x) {
-
+  
   a <- x
-
+  
   a$AGYW_PREV_Sum <- a$AGYW_PREV_2018 + a$AGYW_PREV_2019 + a$AGYW_PREV_2020 + a$AGYW_PREV_2021 + a$AGYW_PREV_2022
   a$DeDuplicatedAGYW_PREV_Sum <- a$DeDuplicatedAGYW_PREV_2018 + a$DeDuplicatedAGYW_PREV_2019 + a$DeDuplicatedAGYW_PREV_2020 + a$DeDuplicatedAGYW_PREV_2021 + a$DeDuplicatedAGYW_PREV_2022
   a$MobilityStandardizedAGYW_PREV_Sum <- a$MobilityStandardizedAGYW_PREV_2018 + a$MobilityStandardizedAGYW_PREV_2019 + a$MobilityStandardizedAGYW_PREV_2020 + a$MobilityStandardizedAGYW_PREV_2021 + a$MobilityStandardizedAGYW_PREV_2022
   a$EnrollmentStandardizedAGYW_PREV_Sum <- a$EnrollmentStandardizedAGYW_PREV_2018 + a$EnrollmentStandardizedAGYW_PREV_2019 + a$EnrollmentStandardizedAGYW_PREV_2020 + a$EnrollmentStandardizedAGYW_PREV_2021 + a$EnrollmentStandardizedAGYW_PREV_2022
-
+  
   b <- a %>%
     dplyr::select((-ends_with(c("2018",
                                 "2019",
@@ -902,9 +904,9 @@ theme_plot <- function(...) {
     plot.background = element_rect(fill = "transparent",
                                    color = NA),
     panel.background = element_rect(fill = "transparent",
-                                   color = NA),
+                                    color = NA),
     legend.background = element_rect(fill = "transparent",
-                                   color = NA),
+                                     color = NA),
     
     #titles
     legend.title = element_blank(),
@@ -994,8 +996,98 @@ prepQDataforPopStructurePlots <- function(x) {
   b$prop <- round((b$prop*100),1) 
   
   return(b)
-
+  
 }
+
+# attach prevalence ----
+countrySpecificPrev <- function(x) {
+  a <- x
+  
+  b <- a %>%
+    mutate(
+      Internal_Prev = case_when(
+        (country == "Botswana" & ageasentered == "10-14") ~ 0.6,
+        (country == "Botswana" & ageasentered == "15-19") ~ 2.7,
+        (country == "Botswana" & ageasentered == "20-24") ~ 6.7,
+        (country == "Botswana" & ageasentered == "25-29") ~ 15.8,
+        (country == "Cote d'Ivoire" & ageasentered == "10-14") ~ 0.2,
+        (country == "Cote d'Ivoire" & ageasentered == "15-19") ~ 0.6,
+        (country == "Cote d'Ivoire" & ageasentered == "20-24") ~ 1.3,
+        (country == "Cote d'Ivoire" & ageasentered == "25-29") ~ 3.2,
+        (country == "Eswatini" & ageasentered == "10-14") ~ 3.4,
+        (country == "Eswatini" & ageasentered == "15-19") ~ 7.2,
+        (country == "Eswatini" & ageasentered == "20-24") ~ 20.9,
+        (country == "Eswatini" & ageasentered == "25-29") ~ 37.5,
+        (country == "Haiti" & ageasentered == "10-14") ~ 0.2,
+        (country == "Haiti" & ageasentered == "15-19") ~ 0.3,
+        (country == "Haiti" & ageasentered == "20-24") ~ 1.5,
+        (country == "Haiti" & ageasentered == "25-29") ~ 3.0,
+        (country == "Kenya" & ageasentered == "10-14") ~ 0.8,
+        (country == "Kenya" & ageasentered == "15-19") ~ 1.2,
+        (country == "Kenya" & ageasentered == "20-24") ~ 3.4,
+        (country == "Kenya" & ageasentered == "25-29") ~ 6.0,
+        (country == "Lesotho" & ageasentered == "10-14") ~ 2.0,
+        (country == "Lesotho" & ageasentered == "15-19") ~ 3.9,
+        (country == "Lesotho" & ageasentered == "20-24") ~ 13.0,
+        (country == "Lesotho" & ageasentered == "25-29") ~ 27.5,
+        (country == "Mozambique" & ageasentered == "10-14") ~ 2.3,
+        (country == "Mozambique" & ageasentered == "15-19") ~ 11.5,
+        (country == "Mozambique" & ageasentered == "20-24") ~ 11.5,
+        (country == "Mozambique" & ageasentered == "25-29") ~ 11.5,
+        (country == "Malawi" & ageasentered == "10-14") ~ 0.7,
+        (country == "Malawi" & ageasentered == "15-19") ~ 1.4,
+        (country == "Malawi" & ageasentered == "20-24") ~ 1.3,
+        (country == "Malawi" & ageasentered == "25-29") ~ 3.2,
+        (country == "Namibia" & ageasentered == "10-14") ~ 1.6,
+        (country == "Namibia" & ageasentered == "15-19") ~ 4.7,
+        (country == "Namibia" & ageasentered == "20-24") ~ 6.0,
+        (country == "Namibia" & ageasentered == "25-29") ~ 9.2,
+        (country == "Rwanda" & ageasentered == "10-14") ~ 0.5,
+        (country == "Rwanda" & ageasentered == "15-19") ~ 0.8,
+        (country == "Rwanda" & ageasentered == "20-24") ~ 1.8,
+        (country == "Rwanda" & ageasentered == "25-29") ~ 3.4,
+        (country == "South Africa" & ageasentered == "10-14") ~ 3.8,
+        (country == "South Africa" & ageasentered == "15-19") ~ 19.1,
+        (country == "South Africa" & ageasentered == "20-24") ~ 19.1,
+        (country == "South Africa" & ageasentered == "25-29") ~ 19.1,
+        (country == "South Sudan" & ageasentered == "10-14") ~ 0.5,
+        (country == "South Sudan" & ageasentered == "15-19") ~ 2.3,
+        (country == "South Sudan" & ageasentered == "20-24") ~ 2.3,
+        (country == "South Sudan" & ageasentered == "25-29") ~ 2.3,
+        (country == "Tanzania" & ageasentered == "10-14") ~ 0.3,
+        (country == "Tanzania" & ageasentered == "15-19") ~ 1.0,
+        (country == "Tanzania" & ageasentered == "20-24") ~ 3.4,
+        (country == "Tanzania" & ageasentered == "25-29") ~ 5.6,
+        (country == "Uganda" & ageasentered == "10-14") ~ 0.9,
+        (country == "Uganda" & ageasentered == "15-19") ~ 1.7,
+        (country == "Uganda" & ageasentered == "20-24") ~ 4.2,
+        (country == "Uganda" & ageasentered == "25-29") ~ 7.5,
+        (country == "Zambia" & ageasentered == "10-14") ~ 1.0,
+        (country == "Zambia" & ageasentered == "15-19") ~ 3.3,
+        (country == "Zambia" & ageasentered == "20-24") ~ 8.3,
+        (country == "Zambia" & ageasentered == "25-29") ~ 13.6,
+        (country == "Zimbabwe" & ageasentered == "10-14") ~ 1.9,
+        (country == "Zimbabwe" & ageasentered == "15-19") ~ 3.8,
+        (country == "Zimbabwe" & ageasentered == "20-24") ~ 6.4,
+        (country == "Zimbabwe" & ageasentered == "25-29") ~ 10.6,
+      )
+    )
+  
+  b$Prev_2018 <- b$Internal_Prev
+  b$Prev_2019 <- b$Internal_Prev
+  b$Prev_2020 <- b$Internal_Prev
+  b$Prev_2021 <- b$Internal_Prev
+  b$Prev_2022 <- b$Internal_Prev
+  b$Prev_2023 <- b$Internal_Prev
+  
+  c <- b %>%
+    dplyr::select(-c("Internal_Prev"))
+  
+  return(c)
+  
+}
+
+
 
 
 # connection function

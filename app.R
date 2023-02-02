@@ -271,8 +271,8 @@ server <- function(input, output, session) {
     fluidPage(
       tags$head(
         tags$link(rel = "stylesheet", 
-        type = "text/css",
-        href = "style.css")),
+                  type = "text/css",
+                  href = "style.css")),
       tags$style(".progress-bar{
                  background-color: #20A39E;
                  }
@@ -326,7 +326,7 @@ server <- function(input, output, session) {
                  )
                ),
                h3("Step 1 of 9: Select Your Country"),
-               h4("Once selected, the application will pull population data by 5-year age cohort for each individual year for each subnational unit from the U.S. Census Bureau PEPFAestimates."),
+               h4("Once selected, the application will pull population data by 5-year age cohort for each individual year for each subnational unit from the U.S. Census Bureau PEPFAR estimates."),
                h4("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
                h4("WorldPop gridded estimates are used for Cote d'Ivoire, Eswatini, and Haiti as U.S. Census Bureau estimates are on-hold pending updated national data."),
                h4("WorldPop data is only available through 2020, so 2020 totals have been extended to 2021, 2022, and 2023. For this reason, these Cote d'Ivoire, Eswatini, and Haiti population numbers should be replaced by internal national data as available in Step 2."),
@@ -388,7 +388,7 @@ server <- function(input, output, session) {
                h3("Step 3 of 9: Set Prevalence"),
                h4("This is used to derive HIV-negative population for each cohort."),
                wellPanel(
-                 strong("Prevalence default: 2%"),
+                 strong("Prevalence default: national figures based on most-recent PHIA or UNAIDS AIDSinfo data"),
                  br(),
                  p("Use default values or upload custom values (highly recommended)"),
                  br(),
@@ -481,93 +481,39 @@ server <- function(input, output, session) {
                                                     2019,
                                                     2020,
                                                     2021,
-                                                    2022)),
-                            selectInput("popStructureDistrict",
-                                        "Select a district (affects custom only):",
-                                        selected = "",
-                                        choices = ""
-                            )),
+                                                    2022))
+                            # selectInput("popStructureDistrict",
+                            #             "Select a district (affects custom table only):",
+                            #             selected = "",
+                            #             choices = ""
+                            # )
+                          ),
                           fluidRow(
-                            column(4,
+                            column(6,
                                    plotOutput("popStructure_DefaultPlot")),
-                            column(4,
-                                   plotOutput("popStructure_NationalPlot")),
-                            column(4,
-                                   plotOutput("popStructure_CustomPlot"))
+                            column(6,
+                                   plotOutput("popStructure_NationalPlot"))
+                          ),
+                          fluidRow(
+                            DT::dataTableOutput("customStructureTable")
                           )))
                ),
-               h3("Step 6 of 9: Set Mobility Modifier"),
-               h4("This is used to address mobility of girls in and out of the DREAMS district. This includes: 1) girls leaving the district who have completed programming and so are no longer in the numerator or denominator; 2) girls being enrolled in DREAMS programming who are not resident in the district and so not included in the denominator."),
-               wellPanel(
-                 strong("Mobility modifier default: 0% modifier"),
-                 p("Use default value or upload a custom modifier structure"),
-                 br(),
-                 br(),
-                 strong("Custom modifier step 6a"),
-                 p("Download blank mobility\nmodifier worksheet"),
-                 downloadButton("blankTemplateDownloadMobility",
-                                "Download blank template"),
-                 br(),
-                 br(),
-                 strong("Step 6b"),
-                 p("Open worksheet in Excel, fill out 'Mobility' columns and save"),
-                 strong("Step 6c"),
-                 p("Upload completed mobillity\nmodifier worksheet"),
-                 DT::dataTableOutput("customMobilityTable"),
-                 fileInput("completedTemplateUploadMobility",
-                           "Upload completed template (.xlsx only)",
-                           accept = ".xlsx"),
-                 actionButton("confirmCustomMobility",
-                                "Confirm: use custom upload",
-                                style="color: #fff; background-color: #FFBA49; border-color: #1C110A"),
-                 actionButton("resetToDefaultMobility",
-                                "Reset: use default modifier",
-                                style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
-               ),
-               h3("Step 7 of 9: Set Enrollment Modifier"),
-               h4("This addresses mismatches in enrollment criteria from vulnerability criteria, e.g., food insecurity may allow for enrollment, but would not have qualified that same person for 'vulnerability' in the denominator."),
-               wellPanel(
-                 strong("Enrollment modifier default: 3%"),
-                 p("Use default value or upload a custom modifier structure"),
-                 br(),
-                 br(),
-                 strong("Custom modifier step 7a"),
-                 p("Download blank enrollment\nmodifier worksheet"),
-                 downloadButton("blankTemplateDownloadEnrollment",
-                                "Download blank template"),
-                 br(),
-                 br(),
-                 strong("Step 7b"),
-                 p("Open worksheet in Excel, fill out 'Enrollment' columns and save"),
-                 strong("Step 7c"),
-                 p("Upload completed enrollment\nmodifier worksheet"),
-                 DT::dataTableOutput("customEnrollmentTable"),
-                 fileInput("completedTemplateUploadEnrollment",
-                           "Upload completed template (.xlsx only)",
-                           accept = ".xlsx"),
-                 actionButton("confirmCustomEnrollment",
-                                "Confirm: use custom upload",
-                                style="color: #fff; background-color: #FFBA49; border-color: #1C110A"),
-                 actionButton("resetToDefaultEnrollment",
-                                "Reset: use default modifier",
-                                style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
-               ),
-               h3("Step 8 of 9: Set Double Count Modifier"),
+               h3("Step 6 of 9: Set Double Count Modifier"),
                h4("This addresses duplication, where a person may complete primary programming while 12 in 2020 and then secondary while 13 in 2021. Without being addressed, she would appear as two counts in AGYW_PREV."),
                wellPanel(
-                 strong("Double count modifier default: 10%"),
+                 strong("Double count modifier default: 15%"),
                  p("Use default value or upload a custom structure"),
                  br(),
                  br(),
-                 strong("Custom modifier step 8a"),
+                 strong("Custom modifier step 6a"),
                  p("Download blank modifier\nstructure worksheet"),
                  downloadButton("blankTemplateDownloadDoubleCount",
                                 "Download blank template"),
                  br(),
                  br(),
-                 strong("Step 8b"),
+                 strong("Step 6b"),
                  p("Open worksheet in Excel, fill out 'PrimarySecondaryDoubleCounts_20XX' columns and save"),
-                 strong("Step 8c"),
+                 strong("Step 6c"),
                  p("Upload completed double count\nmodifier worksheet"),
                  DT::dataTableOutput("customPSDCTable"),
                  fileInput("completedTemplateUploadDoubleCount",
@@ -577,6 +523,62 @@ server <- function(input, output, session) {
                               "Confirm: use custom upload",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A"),
                  actionButton("resetToDefaultDoubleCount",
+                              "Reset: use default modifier",
+                              style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
+               ),
+               h3("Step 7 of 9: Set Mobility Modifier"),
+               h4("This is used to address mobility of girls in and out of the DREAMS district. This includes: 1) girls leaving the district who have completed programming and so are no longer in the numerator or denominator; 2) girls being enrolled in DREAMS programming who are not resident in the district and so not included in the denominator."),
+               wellPanel(
+                 strong("Mobility modifier default: 0% modifier"),
+                 p("Use default value or upload a custom modifier structure"),
+                 br(),
+                 br(),
+                 strong("Custom modifier step 7a"),
+                 p("Download blank mobility\nmodifier worksheet"),
+                 downloadButton("blankTemplateDownloadMobility",
+                                "Download blank template"),
+                 br(),
+                 br(),
+                 strong("Step 7b"),
+                 p("Open worksheet in Excel, fill out 'Mobility' columns and save"),
+                 strong("Step 7c"),
+                 p("Upload completed mobillity\nmodifier worksheet"),
+                 DT::dataTableOutput("customMobilityTable"),
+                 fileInput("completedTemplateUploadMobility",
+                           "Upload completed template (.xlsx only)",
+                           accept = ".xlsx"),
+                 actionButton("confirmCustomMobility",
+                              "Confirm: use custom upload",
+                              style="color: #fff; background-color: #FFBA49; border-color: #1C110A"),
+                 actionButton("resetToDefaultMobility",
+                              "Reset: use default modifier",
+                              style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
+               ),
+               h3("Step 8 of 9: Set Enrollment Modifier"),
+               h4("This addresses mismatches in enrollment criteria from vulnerability criteria, e.g., food insecurity may allow for enrollment, but would not have qualified that same person for 'vulnerability' in the denominator."),
+               wellPanel(
+                 strong("Enrollment modifier default: 5%"),
+                 p("Use default value or upload a custom modifier structure"),
+                 br(),
+                 br(),
+                 strong("Custom modifier step 8a"),
+                 p("Download blank enrollment\nmodifier worksheet"),
+                 downloadButton("blankTemplateDownloadEnrollment",
+                                "Download blank template"),
+                 br(),
+                 br(),
+                 strong("Step 8b"),
+                 p("Open worksheet in Excel, fill out 'Enrollment' columns and save"),
+                 strong("Step 8c"),
+                 p("Upload completed enrollment\nmodifier worksheet"),
+                 DT::dataTableOutput("customEnrollmentTable"),
+                 fileInput("completedTemplateUploadEnrollment",
+                           "Upload completed template (.xlsx only)",
+                           accept = ".xlsx"),
+                 actionButton("confirmCustomEnrollment",
+                              "Confirm: use custom upload",
+                              style="color: #fff; background-color: #FFBA49; border-color: #1C110A"),
+                 actionButton("resetToDefaultEnrollment",
                               "Reset: use default modifier",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
@@ -601,23 +603,28 @@ server <- function(input, output, session) {
                h3("Review Your Results"))),
       wellPanel(
         h4("2022 Figures"),
-        strong("NOTE: Exports will only include displayed content. Set to display all desired content before exporting."),
         br(),
         br(),
         DT::dataTableOutput("stats_2022"),
+        strong("Download 2022 results"),
+        br(),
+        downloadButton("blankTemplateDownload2022Export",
+                       "Download 2022 Saturation Export",
+                       style="color: #fff; background-color: #20A39E; border-color: #1C110A"),
+        br(),
+        br(),
+        h4("Saturation Map"),
+        selectInput("saturationCohort",
+                    "Select an age cohort:",
+                    selected = "10-14",
+                    choices = c("10-14",
+                                "15-19",
+                                "20-24",
+                                "25-29")),
         fluidRow(
-          h4("   Saturation Map"),
-          selectInput("saturationCohort",
-                      "Select an age cohort:",
-                      selected = "10-14",
-                      choices = c("10-14",
-                                  "15-19",
-                                  "20-24",
-                                  "25-29")),
-          fluidRow(
-            column(12, 
-                   leafletOutput("map_saturation")))
-        )),
+          column(12, 
+                 leafletOutput("map_saturation")))
+        ),
       wellPanel(
         h4("COP Export Figures"),
         DT::dataTableOutput("stats_COP"),
@@ -656,22 +663,22 @@ server <- function(input, output, session) {
     )
   }
   
-  output$ui <- renderUI({
-    main_ui()
-  })
-
   # output$ui <- renderUI({
-  #   if(!user_input$authenticated){
-  #      auth_ui()
-  #   }else{
-  #     main_ui()
-  #   }
+  #   main_ui()
   # })
+  
+  output$ui <- renderUI({
+    if(!user_input$authenticated){
+       auth_ui()
+    }else{
+      main_ui()
+    }
+  })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
     country = "Botswana",
-
+    
     popStructureType = "Default"#,
     # catchmentsSelected = ""
   )
@@ -981,7 +988,7 @@ server <- function(input, output, session) {
   
   observeEvent(input$importButtonParams, {
     req(importedTokenParams())
-
+    
     updateRadioButtons(session,
                        "structure",
                        selected = importedTokenParams()$popStructure[1])
@@ -1005,19 +1012,19 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- defaultData %>%
       dplyr::filter(country == input$country)
-
+    
   })
   
   observeEvent(input$country, {
     req(input$country)
     
-
+    
     data_stats_2022$data <- defaultStats2022 %>%
       dplyr::filter(Country == input$country)
-
+    
     # workingDataPost$data <- defaultData %>%
     #   dplyr::filter(country == input$country)
-
+    
   })
   
   observeEvent(input$country, {
@@ -1032,7 +1039,7 @@ server <- function(input, output, session) {
     params$country = input$country
   })
   
-
+  
   # Render text elements ----
   output$importedCountry <- renderText(
     if (!is.null(importedTokenParams())) 
@@ -1069,7 +1076,7 @@ server <- function(input, output, session) {
       mutate(
         IsSelected = case_when(
           (PopStructure == popStructureChoice() & country == countryChoice()) ~ as.character("Selected"),
-
+          
           TRUE ~ as.character("Unselected")
         )
       )
@@ -1089,7 +1096,7 @@ server <- function(input, output, session) {
   
   data_stats_analytics <- eventReactive(input$initializeSelection, {
     req(!is.null(workingDataPost$data))
- 
+    
     selected_data <- workingDataPost$data %>%
       reduceForAnalyticsPlots() %>%
       rename(Cohort = ageasentered,
@@ -1164,12 +1171,15 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultPrevalence, {
     req(defaultData)
     
-    defaultData$Prev_2018 <- 2
-    defaultData$Prev_2019 <- 2
-    defaultData$Prev_2020 <- 2
-    defaultData$Prev_2021 <- 2
-    defaultData$Prev_2022 <- 2
-    defaultData$Prev_2023 <- 2
+    defaultData <- defaultData %>%
+      countrySpecificPrev()
+    # 
+    # defaultData$Prev_2018 <- 2
+    # defaultData$Prev_2019 <- 2
+    # defaultData$Prev_2020 <- 2
+    # defaultData$Prev_2021 <- 2
+    # defaultData$Prev_2022 <- 2
+    # defaultData$Prev_2023 <- 2
     
     workingDataPost$data <- defaultData %>%
       deriveStatistics()
@@ -1237,11 +1247,11 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultEnrollment, {
     req(defaultData)
     
-    defaultData$Enrollment_2018 <- 3
-    defaultData$Enrollment_2019 <- 3
-    defaultData$Enrollment_2020 <- 3
-    defaultData$Enrollment_2021 <- 3
-    defaultData$Enrollment_2022 <- 3
+    defaultData$Enrollment_2018 <- 5
+    defaultData$Enrollment_2019 <- 5
+    defaultData$Enrollment_2020 <- 5
+    defaultData$Enrollment_2021 <- 5
+    defaultData$Enrollment_2022 <- 5
     
     workingDataPost$data <- defaultData %>%
       deriveStatistics()
@@ -1307,11 +1317,11 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultDoubleCount, {
     req(defaultData)
     
-    defaultData$PSDC_2018 <- 10
-    defaultData$PSDC_2019 <- 10
-    defaultData$PSDC_2020 <- 10
-    defaultData$PSDC_2021 <- 10
-    defaultData$PSDC_2022 <- 10
+    defaultData$PSDC_2018 <- 15
+    defaultData$PSDC_2019 <- 15
+    defaultData$PSDC_2020 <- 15
+    defaultData$PSDC_2021 <- 15
+    defaultData$PSDC_2022 <- 15
     
     workingDataPost$data <- defaultData %>%
       deriveStatistics()
@@ -1339,19 +1349,19 @@ server <- function(input, output, session) {
     workingDataPost$data$secondQ_2020 <- workingDataPost$data$secondQCustom_2020
     workingDataPost$data$secondQ_2021 <- workingDataPost$data$secondQCustom_2021
     workingDataPost$data$secondQ_2022 <- workingDataPost$data$secondQCustom_2022
-
+    
     workingDataPost$data$thirdQ_2018 <- workingDataPost$data$thirdQCustom_2018
     workingDataPost$data$thirdQ_2019 <- workingDataPost$data$thirdQCustom_2019
     workingDataPost$data$thirdQ_2020 <- workingDataPost$data$thirdQCustom_2020
     workingDataPost$data$thirdQ_2021 <- workingDataPost$data$thirdQCustom_2021
     workingDataPost$data$thirdQ_2022 <- workingDataPost$data$thirdQCustom_2022
-
+    
     workingDataPost$data$fourthQ_2018 <- workingDataPost$data$fourthQCustom_2018
     workingDataPost$data$fourthQ_2019 <- workingDataPost$data$fourthQCustom_2019
     workingDataPost$data$fourthQ_2020 <- workingDataPost$data$fourthQCustom_2020
     workingDataPost$data$fourthQ_2021 <- workingDataPost$data$fourthQCustom_2021
     workingDataPost$data$fourthQ_2022 <- workingDataPost$data$fourthQCustom_2022
-
+    
     workingDataPost$data$fifthQ_2018 <- workingDataPost$data$fifthQCustom_2018
     workingDataPost$data$fifthQ_2019 <- workingDataPost$data$fifthQCustom_2019
     workingDataPost$data$fifthQ_2020 <- workingDataPost$data$fifthQCustom_2020
@@ -1360,30 +1370,30 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select(-c(firstQCustom_2018,
-                firstQCustom_2019,
-                firstQCustom_2020,
-                firstQCustom_2021,
-                firstQCustom_2022,
-                secondQCustom_2018,
-                secondQCustom_2019,
-                secondQCustom_2020,
-                secondQCustom_2021,
-                secondQCustom_2022,
-                thirdQCustom_2018,
-                thirdQCustom_2019,
-                thirdQCustom_2020,
-                thirdQCustom_2021,
-                thirdQCustom_2022,
-                fourthQCustom_2018,
-                fourthQCustom_2019,
-                fourthQCustom_2020,
-                fourthQCustom_2021,
-                fourthQCustom_2022,
-                fifthQCustom_2018,
-                fifthQCustom_2019,
-                fifthQCustom_2020,
-                fifthQCustom_2021,
-                fifthQCustom_2022))
+                       firstQCustom_2019,
+                       firstQCustom_2020,
+                       firstQCustom_2021,
+                       firstQCustom_2022,
+                       secondQCustom_2018,
+                       secondQCustom_2019,
+                       secondQCustom_2020,
+                       secondQCustom_2021,
+                       secondQCustom_2022,
+                       thirdQCustom_2018,
+                       thirdQCustom_2019,
+                       thirdQCustom_2020,
+                       thirdQCustom_2021,
+                       thirdQCustom_2022,
+                       fourthQCustom_2018,
+                       fourthQCustom_2019,
+                       fourthQCustom_2020,
+                       fourthQCustom_2021,
+                       fourthQCustom_2022,
+                       fifthQCustom_2018,
+                       fifthQCustom_2019,
+                       fifthQCustom_2020,
+                       fifthQCustom_2021,
+                       fifthQCustom_2022))
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics()
@@ -1440,6 +1450,26 @@ server <- function(input, output, session) {
     )
   })
   
+  output$customStructureTable <- DT::renderDataTable({
+    req(customPopStructure())
+    
+    a <- customPopStructure() %>%
+      prepQDataforPopStructurePlots() %>%
+      dplyr::select(-c("Join_Name", "ageasentered")) %>%
+      pivot_wider(
+        names_from = c("fiscal_year"),
+        values_from = "prop"
+      )
+    
+    
+    
+    datatable(a,
+              rownames = FALSE,
+              selection = 'none',
+              colnames = c("Age" = "age")
+    )
+  })
+  
   output$customMobilityTable <- DT::renderDataTable({
     req(customMobility())
     
@@ -1457,7 +1487,7 @@ server <- function(input, output, session) {
   
   output$customEnrollmentTable <- DT::renderDataTable({
     req(customEnrollment())
-
+    
     datatable(customEnrollment(),
               rownames = FALSE,
               selection = 'none',
@@ -1508,7 +1538,7 @@ server <- function(input, output, session) {
   
   output$stats_COP <- DT::renderDataTable({
     req(data_stats_COP$data)
-
+    
     a <- data_stats_COP$data %>%
       group_by(Country,
                District,
@@ -1519,14 +1549,14 @@ server <- function(input, output, session) {
                 `DREAMS Sat App Percent Coverage - Saturation (%, FY23)` = mean(`Percent coverage (saturation) 2023`),
                 `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY23)` = mean(`Remaining unserved AGYW 2023`)) %>%
       ungroup()
-
+    
     datatable(a %>%
                 dplyr::select(-c("Country")),
               rownames = FALSE,
               selection = 'none'
     )
   })
-
+  
   output$table_numerator <- DT::renderDataTable({
     req(data_stats_analytics())
     
@@ -1657,6 +1687,15 @@ server <- function(input, output, session) {
       prepQDataforPopStructurePlots() %>%
       filter(fiscal_year==input$popStructureYear & Country == input$country & District == input$popStructureDistrict)
     
+    # age_custom <- c(10:29)
+    # prop_custom <- rep(0, 20)
+    # sequence_custom <- c("10-14", "15-19", "20-24", "25-29")
+    # ageasentered_custom <- rep(sequence_custom, each = 5)
+    # 
+    # emptyDF <- data.frame(age_custom, 
+    #                       prop_custom,
+    #                       ageasentered_custom)
+    
     a <- custDF %>%
       ggplot(
         aes(
@@ -1680,6 +1719,34 @@ server <- function(input, output, session) {
       theme_plot(legend.position = "none")
     
     return(a)
+    
+    # b <- emptyDF %>%
+    #   ggplot(
+    #     aes(
+    #       x = age_custom,
+    #       y = prop_custom,
+    #       fill = ageasentered_custom)) +
+    #   geom_bar(stat="identity") +
+    #   coord_flip() +
+    #   scale_fill_manual(
+    #     values = alpha(c("10-14" = "#FF6663",
+    #                      "15-19" = "#FFBA49",
+    #                      "20-24" = "#FF6663",
+    #                      "25-29" = "#FFBA49"),
+    #                    1)
+    #   ) +
+    #   ggtitle("Custom",
+    #           subtitle = "Uploaded") +
+    #   xlab("") +
+    #   ylab("") +
+    #   lims(y = c(0, 40)) +
+    #   theme_plot(legend.position = "none")
+    # 
+    # if (input$structure != "Custom")  {
+    #   return(b)
+    # } else {
+    #   return(a)
+    # }
   })
   
   # Render map elements ----
@@ -1758,7 +1825,7 @@ server <- function(input, output, session) {
   saturation_bins <- c(0, 25.0, 50.0, 75.0, 100.0, Inf)
   
   saturation_labels <- c("0.0 - 24.9", "25.0 - 49.9", "50.0 - 74.9", "75.0 - 99.9", "100.0 or more")
-
+  
   output$map_saturation <- leaflet::renderLeaflet({
     req(data_stats_2022$data)
     
@@ -1855,7 +1922,7 @@ server <- function(input, output, session) {
       setMapWidgetStyle(list(background = "white"))
     
   })
-
+  
   # Save token ----
   ## Export ----
   ### Parameters ----
@@ -1866,7 +1933,7 @@ server <- function(input, output, session) {
   exportPopStructureListener <- reactive({
     params$popStructureType
   })
-
+  
   output$exportTokenParameters <- downloadHandler(
     filename = function() {
       paste("DREAMS_Sat_Save_Token_Parameters",
@@ -1940,7 +2007,7 @@ server <- function(input, output, session) {
   )
   
   
-
+  
   
   ## Import ----
   ### Parameters ----
@@ -1950,7 +2017,7 @@ server <- function(input, output, session) {
     load(input$importTokenParams$datapath)
     
     a <- params_df
-
+    
     return(a)
     
   })
@@ -1958,7 +2025,7 @@ server <- function(input, output, session) {
   observeEvent(importedTokenParams(), {
     params$country <- importedTokenParams()$country[1]
     params$popStructureType <- importedTokenParams()$popStructureType[1]
-
+    
   })
   
   ### Data ----
@@ -1982,6 +2049,41 @@ server <- function(input, output, session) {
   
   # DownloadHandlers ----
   ## Downloads ----
+  ### 2022 Export, not COP, (FY22 Figures) ----
+  selectedCountry_2022 <- reactive({
+    req(input$country)
+    req(data_stats_2022$data)
+    
+    a <- data_stats_2022$data %>%
+      group_by(Country,
+               District,
+               Cohort) %>%
+      dplyr::filter(Country == input$country) %>%
+      summarize(`Est. Female Population (FY22)` = mean(`Pop_2022`),
+                `Total DREAMS-eligible AGYW (FY22)` = mean(`Total DREAMS eligible AGYW`),
+                `Percent coverage (saturation) (FY22)` = mean(`Percent coverage (saturation)`),
+                `Remaining unserved AGYW (FY22)` = mean(`Remaining unserved AGYW`)) %>%
+      ungroup() #%>%
+    # dplyr::select(-c("Country"))
+    
+    return(a)
+    
+  })
+  
+  output$blankTemplateDownload2022Export <- downloadHandler(
+    filename = function() {
+      paste("2022Export", 
+            ".xlsx",
+            sep = "")
+    },
+    
+    content = function(file) {
+      write_xlsx(selectedCountry_2022(), 
+                 path = file)
+    },
+    contentType = NULL
+  )
+  
   ### COP Export (FY23 Figures) ----
   selectedCountry_COP <- reactive({
     req(input$country)
@@ -1996,8 +2098,8 @@ server <- function(input, output, session) {
                 `H.C. Est. # of Vulnerable AGYW (FY23)` = mean(`Total DREAMS eligible AGYW 2023`),
                 `DREAMS Sat App Percent Coverage - Saturation (%, FY23)` = mean(`Percent coverage (saturation) 2023`),
                 `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY23)` = mean(`Remaining unserved AGYW 2023`)) %>%
-      ungroup() %>%
-      dplyr::select(-c("Country"))
+      ungroup() #%>%
+    # dplyr::select(-c("Country"))
     
     return(a)
     
@@ -2144,7 +2246,7 @@ server <- function(input, output, session) {
     },
     contentType = NULL
   )
- 
+  
   ### Mobility ----
   default5YearTemplate_selectedCountry_M <- reactive({
     req(input$country)
@@ -2349,7 +2451,7 @@ server <- function(input, output, session) {
     ext <- tools::file_ext(file$datapath)
     
     shiny::validate(need(ext == "xlsx",
-                  "Please upload xlsx file"))
+                         "Please upload xlsx file"))
     
     a <- file$datapath %>%
       dataParametersImportandMutate() %>%
@@ -2461,7 +2563,7 @@ server <- function(input, output, session) {
     column_names <- colnames(a)
     
     shiny::validate(need(ext == "xlsx", ""),
-             need(all(required_columns %in% column_names), ""))
+                    need(all(required_columns %in% column_names), ""))
     
     b <- a %>%
       rename(PSDC_2018_Custom = PrimarySecondaryDoubleCounts_2018,
@@ -2478,7 +2580,7 @@ server <- function(input, output, session) {
   outputOptions(output, 'paramsUploaded', suspendWhenHidden = FALSE)
   #outputOptions(output, "map_saturation", suspendWhenHidden = FALSE)
   # outputOptions(output, "numerator_ui", suspendWhenHidden = FALSE)
-
+  
 }
 
 shinyApp(ui, server)
