@@ -301,7 +301,7 @@ server <- function(input, output, session) {
                  br(),
                  p("Please either import saved parameters and data or proceed to step 1 of 9 by clicking the blue 'Next' button below"),
                  br(),
-                 p("DREAMS Sat is pre-loaded with default values for each country. To update figures after making any changes in these slides, please click the `Accept parameters and derive/re-derive COP statistics' button below."),
+                 p("DREAMS Sat is pre-loaded with default values for each country. To update figures after making any changes in these slides, please click the `Accept parameters andderive/re-derive COP statistics' button below."),
                  br(),
                  br(),
                  fileInput("importTokenParams",
@@ -663,17 +663,17 @@ server <- function(input, output, session) {
     )
   }
   
-  output$ui <- renderUI({
-    main_ui()
-  })
-  
   # output$ui <- renderUI({
-  #   if(!user_input$authenticated){
-  #      auth_ui()
-  #   }else{
-  #     main_ui()
-  #   }
+  #   main_ui()
   # })
+  
+  output$ui <- renderUI({
+    if(!user_input$authenticated){
+       auth_ui()
+    }else{
+      main_ui()
+    }
+  })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
@@ -1144,7 +1144,9 @@ server <- function(input, output, session) {
     defaultData$Pop_2023 <- defaultData$Pop_2023_Default
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1166,7 +1168,9 @@ server <- function(input, output, session) {
     defaultData$Prev_2023 <- defaultData$Prevalence_2023_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1184,7 +1188,9 @@ server <- function(input, output, session) {
     # defaultData$Prev_2023 <- 2
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1206,7 +1212,9 @@ server <- function(input, output, session) {
     defaultData$Vuln_2023 <- defaultData$Vulnerable_2023_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1221,7 +1229,9 @@ server <- function(input, output, session) {
     defaultData$Vuln_2023 <- 80
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1242,7 +1252,9 @@ server <- function(input, output, session) {
     defaultData$Enrollment_2022 <- defaultData$Enrollment_2022_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     # }
   })
   
@@ -1256,7 +1268,9 @@ server <- function(input, output, session) {
     defaultData$Enrollment_2022 <- 5
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1277,7 +1291,9 @@ server <- function(input, output, session) {
     defaultData$Mobility_2022 <- defaultData$Mobility_2022_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     # }
   })
   
@@ -1291,7 +1307,9 @@ server <- function(input, output, session) {
     defaultData$Mobility_2022 <- 0
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1312,7 +1330,9 @@ server <- function(input, output, session) {
     defaultData$PSDC_2022 <- defaultData$PSDC_2022_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1326,7 +1346,9 @@ server <- function(input, output, session) {
     defaultData$PSDC_2022 <- 15
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -1398,7 +1420,9 @@ server <- function(input, output, session) {
                        fifthQCustom_2022))
     
     workingDataPost$data <- workingDataPost$data %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
