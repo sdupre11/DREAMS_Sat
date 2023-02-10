@@ -663,17 +663,17 @@ server <- function(input, output, session) {
     )
   }
   
-  # output$ui <- renderUI({
-  #   main_ui()
-  # })
-  
   output$ui <- renderUI({
-    if(!user_input$authenticated){
-       auth_ui()
-    }else{
-      main_ui()
-    }
+    main_ui()
   })
+  
+  # output$ui <- renderUI({
+  #   if(!user_input$authenticated){
+  #      auth_ui()
+  #   }else{
+  #     main_ui()
+  #   }
+  # })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
@@ -1127,7 +1127,9 @@ server <- function(input, output, session) {
     defaultData$Pop_2023 <- defaultData$Pop_2023_Custom
     
     workingDataPost$data <- defaultData %>%
-      deriveStatistics()
+      deriveStatistics() %>%
+      group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
+      slice_head(n = 1)
     
   })
   
@@ -2016,9 +2018,13 @@ server <- function(input, output, session) {
     
     load(input$importTokenParams$datapath)
     
+    if (exists("params_df")) {
+    
     a <- params_df
     
     return(a)
+    }
+    
     
   })
   
