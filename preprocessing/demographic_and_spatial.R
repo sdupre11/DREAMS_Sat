@@ -3,12 +3,14 @@ library(tidyverse)
 library(sf)
 library(spdep)
 library(leaflet)
+library(raster)
+library(exactextractr)
 
 # CONVENIENCE FUNCTION(S) ----
 sf_check <- function(x) {
   x %>%
     as.data.frame() %>%
-    select(-c(geometry)) %>%
+     dplyr::select(-c(geometry)) %>%
     View()
 }
 
@@ -26,7 +28,7 @@ poly_check <- function(ADM2,ADM1) {
 pivot_step1 <- function(x) {
   x %>%
     pivot_longer(
-      cols = F1014_2019:F2529_2022,
+      cols = F1014_2018:F2529_2023,
       names_to = c("ageasentered", "fiscal_year"), 
       names_sep = "_",
       names_prefix = "F",
@@ -34,15 +36,25 @@ pivot_step1 <- function(x) {
     )
 }
 
-pivot_step2 <- function(x) {
+pivot_step2 <- function(x, y) {
+  if(y == "Tanzania") {
   x %>%
     pivot_wider(
       id_cols = c(AREA_NAME,
                   ageasentered,
-                  populationtx),
+                  NSO_NAME),
       names_from = fiscal_year, 
       values_from = "Denominator"
     )
+  } else {
+    x %>%
+      pivot_wider(
+        id_cols = c(AREA_NAME,
+                    ageasentered),
+        names_from = fiscal_year, 
+        values_from = "Denominator"
+      )
+  }
 }
 
 adjust_ages <- function(x) {
@@ -57,196 +69,221 @@ adjust_ages <- function(x) {
       ))
 }
 
+add_join_names <- function(x) {
+  a <- x %>%
+    mutate(
+      JOIN_NAME = case_when(
+        (AREA_NAME == "BOBONONG" & CNTRY_NAME == "BOTSWANA") ~ "Bobirwa District",
+        (AREA_NAME == "MAHALAPYE" & CNTRY_NAME == "BOTSWANA") ~ "Mahalapye District",
+        (AREA_NAME == "SEROWE PALAPYE" & CNTRY_NAME == "BOTSWANA") ~ "Serowe District",
+        (AREA_NAME == "KGATLENG" & CNTRY_NAME == "BOTSWANA") ~ "Kgatleng District",
+        (AREA_NAME == "KWENENG EAST" & CNTRY_NAME == "BOTSWANA") ~ "Kweneng East District",
+        (AREA_NAME == "NORTH EAST" & CNTRY_NAME == "BOTSWANA") ~ "North East District",
+        (AREA_NAME == "GABORONE" & CNTRY_NAME == "BOTSWANA") ~ "Gaborone District",
+        (AREA_NAME == "SOUTHERN" & CNTRY_NAME == "BOTSWANA") ~ "Southern District",
+        # (AREA_NAME == "Abobo-Est" & CNTRY_NAME == "Cote d'Ivoire") ~ "Abobo-Est",
+        # (AREA_NAME == "Cocody-Bingerville" & CNTRY_NAME == "Cote d'Ivoire") ~ "Cocody-Bingerville",
+        # (AREA_NAME == "Daloa" & CNTRY_NAME == "Cote d'Ivoire") ~ "Daloa",
+        # (AREA_NAME == "Man" & CNTRY_NAME == "Cote d'Ivoire") ~ "Man",
+        # (AREA_NAME == "Dessalines" & CNTRY_NAME == "Haiti") ~ "Dessalines",
+        # (AREA_NAME == "Saint-Marc" & CNTRY_NAME == "Haiti") ~ "Saint-Marc",
+        # (AREA_NAME == "Cap-Haïtien" & CNTRY_NAME == "Haiti") ~ "Cap-Haïtien",
+        # (AREA_NAME == "Port-au-Prince" & CNTRY_NAME == "Haiti") ~ "Port-au-Prince",
+        (AREA_NAME == "BLANTYRE" & CNTRY_NAME == "MALAWI") ~ "Blantyre District", #AREA_NAME for Malawi
+        (AREA_NAME == "MACHINGA" & CNTRY_NAME == "MALAWI") ~ "Machinga District", #AREA_NAME for Malawi
+        (AREA_NAME == "ZOMBA" & CNTRY_NAME == "MALAWI") ~ "Zomba District", #AREA_NAME for Malawi
+        (AREA_NAME == "CIDADE DE PEMBA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Pemba",
+        (AREA_NAME == "CHÓKWÈ" & CNTRY_NAME == "MOZAMBIQUE") ~ "Chokwe",
+        (AREA_NAME == "CHONGOENE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Chonguene",
+        (AREA_NAME == "GUIJÁ" & CNTRY_NAME == "MOZAMBIQUE") ~ "Guija",
+        (AREA_NAME == "LIMPOPO" & CNTRY_NAME == "MOZAMBIQUE") ~ "Limpopo",
+        (AREA_NAME == "CIDADE DE XAI-XAI" & CNTRY_NAME == "MOZAMBIQUE") ~ "Xai-Xai",
+        (AREA_NAME == "CIDADE DA MAXIXE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Maxixe",
+        (AREA_NAME == "CIDADE DE CHIMOIO" & CNTRY_NAME == "MOZAMBIQUE") ~ "Chimoio",
+        (AREA_NAME == "BOANE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Boane",
+        (AREA_NAME == "MAGUDE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Magude",
+        (AREA_NAME == "MANHIÇA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Manhiça",
+        (AREA_NAME == "MARRACUENE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Marracuene",
+        (AREA_NAME == "CIDADE DA MATOLA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Matola",
+        (AREA_NAME == "MATUTUINE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Matutuine",
+        (AREA_NAME == "MOAMBA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Moamba",
+        (AREA_NAME == "NAMAACHA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Namaacha",
+        (AREA_NAME == "ERÁTI" & CNTRY_NAME == "MOZAMBIQUE") ~ "Erati",
+        (AREA_NAME == "CIDADE DE NAMPULA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Nampula",
+        (AREA_NAME == "CIDADE DA BEIRA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Beira",
+        (AREA_NAME == "CAIA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Caia",
+        (AREA_NAME == "GILÉ" & CNTRY_NAME == "MOZAMBIQUE") ~ "Gile",
+        (AREA_NAME == "ILE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Ile",
+        (AREA_NAME == "INHASSUNGE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Inhassunge",
+        (AREA_NAME == "LUGELA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Lugela",
+        (AREA_NAME == "MAGANJA DA COSTA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Maganja Da Costa",
+        (AREA_NAME == "MILANGE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Milange",
+        (AREA_NAME == "MOCUBA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Mocuba",
+        (AREA_NAME == "MOCUBELA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Mocubela",
+        (AREA_NAME == "NAMACURRA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Namacurra",
+        (AREA_NAME == "NICOADALA" & CNTRY_NAME == "MOZAMBIQUE") ~ "Nicoadala",
+        (AREA_NAME == "PEBANE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Pebane",
+        (AREA_NAME == "QUELIMANE" & CNTRY_NAME == "MOZAMBIQUE") ~ "Quelimane",
+        (AREA_NAME == "MUKWE" & CNTRY_NAME == "NAMIBIA") ~ "Andara",
+        (AREA_NAME == "NDIYONA" & CNTRY_NAME == "NAMIBIA") ~ "Nyangana",
+        (AREA_NAME == "RUNDU" & CNTRY_NAME == "NAMIBIA") ~ "Rundu",
+        (AREA_NAME == "WINDHOEK" & CNTRY_NAME == "NAMIBIA") ~ "Windhoek",
+        (AREA_NAME == "OSHAKATI" & CNTRY_NAME == "NAMIBIA") ~ "Oshakati",
+        (AREA_NAME == "OMUTHIYAGWIIPUNDI" & CNTRY_NAME == "NAMIBIA") ~ "Omuthiya",
+        (AREA_NAME == "ONIIPA" & CNTRY_NAME == "NAMIBIA") ~ "Onandjokwe",
+        (AREA_NAME == "TSUMEB" & CNTRY_NAME == "NAMIBIA") ~ "Tsumeb",
+        (AREA_NAME == "KATIMA MULILO" & CNTRY_NAME == "NAMIBIA") ~ "Katima Mulilo",
+        (AREA_NAME == "ALFRED NZO" & CNTRY_NAME == "SOUTH AFRICA") ~ "ec Alfred Nzo District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "BOJANALA" & CNTRY_NAME == "SOUTH AFRICA") ~ "nw Bojanala Platinum District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "BUFFALO CITY" & CNTRY_NAME == "SOUTH AFRICA") ~ "ec Buffalo City Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "CAPRICORN" & CNTRY_NAME == "SOUTH AFRICA") ~ "lp Capricorn District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "CITY OF CAPE TOWN" & CNTRY_NAME == "SOUTH AFRICA") ~ "wc City of Cape Town Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "CITY OF JOHANNESBURG" & CNTRY_NAME == "SOUTH AFRICA") ~ "gp City of Johannesburg Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "CITY OF TSHWANE" & CNTRY_NAME == "SOUTH AFRICA") ~ "gp City of Tshwane Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "DOCTOR KENNETH KAUNDA" & CNTRY_NAME == "SOUTH AFRICA") ~ "nw Dr Kenneth Kaunda District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "EHLANZENI" & CNTRY_NAME == "SOUTH AFRICA") ~ "mp Ehlanzeni District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "EKURHULENI" & CNTRY_NAME == "SOUTH AFRICA") ~ "gp Ekurhuleni Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "ETHEKWINI" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz eThekwini Metropolitan Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "GERT SIBANDE" & CNTRY_NAME == "SOUTH AFRICA") ~ "mp Gert Sibande District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "LEJWELEPUTSWA" & CNTRY_NAME == "SOUTH AFRICA") ~ "fs Lejweleputswa District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "MOPANI" & CNTRY_NAME == "SOUTH AFRICA") ~ "lp Mopani District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "NGAKA MODIRI MOLEMA" & CNTRY_NAME == "SOUTH AFRICA") ~ "nw Ngaka Modiri Molema District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "NKANGALA" & CNTRY_NAME == "SOUTH AFRICA") ~ "mp Nkangala District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "OR TAMBO" & CNTRY_NAME == "SOUTH AFRICA") ~ "ec Oliver Tambo District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "SEDIBENG" & CNTRY_NAME == "SOUTH AFRICA") ~ "gp Sedibeng District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "THABO MOFUTSANYANE" & CNTRY_NAME == "SOUTH AFRICA") ~ "fs Thabo Mofutsanyane District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "UGU" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz Ugu District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "UMGUNGUNDLOVU" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz uMgungundlovu District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "UTHUKELA" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz Uthukela District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "UTHUNGULU" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz King Cetshwayo District Municipality", #AREA_NAME for SOUTH AFRICA
+        (AREA_NAME == "ZULULAND" & CNTRY_NAME == "SOUTH AFRICA") ~ "kz Zululand District Municipality", #AREA_NAME for South Africa
+        (AREA_NAME == "TEMEKE MUNICIPAL COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Temeke MC",
+        (AREA_NAME == "MUFINDI DISTRICT COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Mufindi DC",
+        (AREA_NAME == "MULEBA DISTRIC COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Muleba DC",
+        (AREA_NAME == "KYELA DISTRICT COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Kyela DC",
+        (AREA_NAME == "MBARALI DISTRICT COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Mbarali DC",
+        (AREA_NAME == "MBEYA CITY COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Mbeya CC",
+        (AREA_NAME == "NYAMAGANA MUNICIPAL COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Nyamagana MC",
+        (AREA_NAME == "KAHAMA TOWN COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Kahama TC",
+        (AREA_NAME == "MSALALA" & CNTRY_NAME == "TANZANIA") ~ "Msalala DC",
+        (AREA_NAME == "SHINYANGA DISTRICT COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Shinyanga DC",
+        (AREA_NAME == "SHINYANGA MUNICIPAL COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Shinyanga MC",
+        (AREA_NAME == "USHETU DISTRICT COUNCIL" & CNTRY_NAME == "TANZANIA") ~ "Ushetu DC",
+        (AREA_NAME == "BUKOMANSIMBI" & CNTRY_NAME == "UGANDA") ~ "Bukomansimbi District",
+        (AREA_NAME == "GOMBA" & CNTRY_NAME == "UGANDA") ~ "Gomba District",
+        (AREA_NAME == "KALANGALA" & CNTRY_NAME == "UGANDA") ~ "Kalangala District",
+        (AREA_NAME == "KYOTERA" & CNTRY_NAME == "UGANDA") ~ "Kyotera District",
+        (AREA_NAME == "LWENGO" & CNTRY_NAME == "UGANDA") ~ "Lwengo District",
+        (AREA_NAME == "LYANTONDE" & CNTRY_NAME == "UGANDA") ~ "Lyantonde District",
+        (AREA_NAME == "MASAKA" & CNTRY_NAME == "UGANDA") ~ "Masaka District",
+        (AREA_NAME == "RAKAI" & CNTRY_NAME == "UGANDA") ~ "Rakai District",
+        (AREA_NAME == "SEMBABULE" & CNTRY_NAME == "UGANDA") ~ "Sembabule District",
+        (AREA_NAME == "WAKISO" & CNTRY_NAME == "UGANDA") ~ "Wakiso District",
+        (AREA_NAME == "KASANDA" & CNTRY_NAME == "UGANDA") ~ "Kassanda District",
+        (AREA_NAME == "LUWERO" & CNTRY_NAME == "UGANDA") ~ "Luwero District",
+        (AREA_NAME == "MITYANA" & CNTRY_NAME == "UGANDA") ~ "Mityana District",
+        (AREA_NAME == "MUBENDE" & CNTRY_NAME == "UGANDA") ~ "Mubende District",
+        (AREA_NAME == "MUKONO" & CNTRY_NAME == "UGANDA") ~ "Mukono District",
+        (AREA_NAME == "KAMPALA" & CNTRY_NAME == "UGANDA") ~ "Kampala District",
+        (AREA_NAME == "AGAGO" & CNTRY_NAME == "UGANDA") ~ "Agago District",
+        (AREA_NAME == "APAC" & CNTRY_NAME == "UGANDA") ~ "Apac District",
+        (AREA_NAME == "GULU" & CNTRY_NAME == "UGANDA") ~ "Gulu District",
+        (AREA_NAME == "KWANIA" & CNTRY_NAME == "UGANDA") ~ "Kwania District",
+        (AREA_NAME == "LIRA" & CNTRY_NAME == "UGANDA") ~ "Lira District",
+        (AREA_NAME == "OMORO" & CNTRY_NAME == "UGANDA") ~ "Omoro District",
+        (AREA_NAME == "OYAM" & CNTRY_NAME == "UGANDA") ~ "Oyam District",
+        (AREA_NAME == "MBARARA" & CNTRY_NAME == "UGANDA") ~ "Mbarara District",
+        (AREA_NAME == "KABWE" & CNTRY_NAME == "ZAMBIA") ~ "Kabwe District",
+        (AREA_NAME == "KAPIRI MPOSHI" & CNTRY_NAME == "ZAMBIA") ~ "Kapiri-Mposhi District",
+        (AREA_NAME == "CHINGOLA" & CNTRY_NAME == "ZAMBIA") ~ "Chingola District",
+        (AREA_NAME == "KITWE" & CNTRY_NAME == "ZAMBIA") ~ "Kitwe District",
+        (AREA_NAME == "LUANSHYA" & CNTRY_NAME == "ZAMBIA") ~ "Luanshya District",
+        (AREA_NAME == "MUFULIRA" & CNTRY_NAME == "ZAMBIA") ~ "Mufulira District",
+        (AREA_NAME == "NDOLA" & CNTRY_NAME == "ZAMBIA") ~ "Ndola District",
+        (AREA_NAME == "CHIPATA" & CNTRY_NAME == "ZAMBIA") ~ "Chipata District",
+        (AREA_NAME == "LUSAKA" & CNTRY_NAME == "ZAMBIA") ~ "Lusaka District",
+        (AREA_NAME == "KASAMA" & CNTRY_NAME == "ZAMBIA") ~ "Kasama District",
+        (AREA_NAME == "LIVINGSTONE" & CNTRY_NAME == "ZAMBIA") ~ "Livingstone District",
+        (AREA_NAME == "MAZABUKA" & CNTRY_NAME == "ZAMBIA") ~ "Mazabuka District",
+        (AREA_NAME == "MONZE" & CNTRY_NAME == "ZAMBIA") ~ "Monze District",
+        (AREA_NAME == "MONGU" & CNTRY_NAME == "ZAMBIA") ~ "Mongu District",
+        (AREA_NAME == "BULAWAYO" & CNTRY_NAME == "ZIMBABWE") ~ "Bulawayo",
+        (AREA_NAME == "CHIPINGE" & CNTRY_NAME == "ZIMBABWE") ~ "Chipinge",
+        (AREA_NAME == "MAKONI" & CNTRY_NAME == "ZIMBABWE") ~ "Makoni",
+        (AREA_NAME == "MUTARE" & CNTRY_NAME == "ZIMBABWE") ~ "Mutare",
+        (AREA_NAME == "MAZOWE" & CNTRY_NAME == "ZIMBABWE") ~ "Mazowe",
+        (AREA_NAME == "BUBI" & CNTRY_NAME == "ZIMBABWE") ~ "Bubi",
+        (AREA_NAME == "LUPANE" & CNTRY_NAME == "ZIMBABWE") ~ "Lupane",
+        (AREA_NAME == "NKAYI" & CNTRY_NAME == "ZIMBABWE") ~ "Nkayi",
+        (AREA_NAME == "TSHOLOTSHO" & CNTRY_NAME == "ZIMBABWE") ~ "Tsholotsho",
+        (AREA_NAME == "BEITBRIDGE" & CNTRY_NAME == "ZIMBABWE") ~ "Beitbridge",
+        (AREA_NAME == "BULILIMA" & CNTRY_NAME == "ZIMBABWE") ~ "Bulilima",
+        (AREA_NAME == "GWANDA" & CNTRY_NAME == "ZIMBABWE") ~ "Gwanda",
+        (AREA_NAME == "INSIZA" & CNTRY_NAME == "ZIMBABWE") ~ "Insiza",
+        (AREA_NAME == "MANGWE" & CNTRY_NAME == "ZIMBABWE") ~ "Mangwe",
+        (AREA_NAME == "MATOBO" & CNTRY_NAME == "ZIMBABWE") ~ "Matobo",
+        (AREA_NAME == "GWERU" & CNTRY_NAME == "ZIMBABWE") ~ "Gweru",
+        # (AREA_NAME == "Hhohho" & CNTRY_NAME == "Eswatini") ~ "Hhohho",
+        # (AREA_NAME == "Lubombo" & CNTRY_NAME == "Eswatini") ~ "Lubombo",
+        # (AREA_NAME == "Manzini" & CNTRY_NAME == "Eswatini") ~ "Manzini",
+        # (AREA_NAME == "Shiselweni" & CNTRY_NAME == "Eswatini") ~ "Shiselweni",
+        (AREA_NAME == "HOMA BAY" & CNTRY_NAME == "KENYA") ~ "Homa Bay County",
+        (AREA_NAME == "KIAMBU" & CNTRY_NAME == "KENYA") ~ "Kiambu County",
+        (AREA_NAME == "KISUMU" & CNTRY_NAME == "KENYA") ~ "Kisumu County",
+        (AREA_NAME == "MIGORI" & CNTRY_NAME == "KENYA") ~ "Migori County",
+        (AREA_NAME == "MOMBASA" & CNTRY_NAME == "KENYA") ~ "Mombasa County",
+        (AREA_NAME == "NAIROBI CITY" & CNTRY_NAME == "KENYA") ~ "Nairobi County",
+        (AREA_NAME == "SIAYA" & CNTRY_NAME == "KENYA") ~ "Siaya County",
+        (AREA_NAME == "BEREA" & CNTRY_NAME == "LESOTHO") ~ "Berea",
+        (AREA_NAME == "MAFETENG" & CNTRY_NAME == "LESOTHO") ~ "Mafeteng",
+        (AREA_NAME == "MASERU" & CNTRY_NAME == "LESOTHO") ~ "Maseru",
+        (AREA_NAME == "MOHALE'S HOEK" & CNTRY_NAME == "LESOTHO") ~ "Mohale's Hoek",
+        (AREA_NAME == "EASTERN PROVINCE" & CNTRY_NAME == "RWANDA") ~ "East",
+        (AREA_NAME == "KIGALI" & CNTRY_NAME == "RWANDA") ~ "Kigali City",
+        (AREA_NAME == "SOUTHERN PROVINCE" & CNTRY_NAME == "RWANDA") ~ "South",
+        TRUE ~ as.character(AREA_NAME)
+      )
+    )
+  
+}
 
 
-####COTE D'IVOIRE [Not currently in subnat estimates] [Will need to adjust for fact that ADM2s are the PEPFAR units]
-####ESWATINI [Not currently in subnat estimates]
-####HAITI
-####MOZAMBIQUE
-####NAMIBIA
-####RWANDA
-####UGANDA [Will need to adjust for fact that ADM2s are the PEPFAR units]
-####ZAMBIA
-
-
+## STARTING WITH USCB-SOURCED SHAPEFILES AND ESTIMATES
 
 # BOTSWANA ----
 ###DENOMINATOR: Larger country, ADM1 and 2
 ##Start with District cohort pop by year
 ##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Bot.sf <- st_read('preprocessing/data/Botswana_adm1_uscb_2019.shp') %>%
-  st_as_sf() %>%
-  st_transform(crs = 4326)
-
 ADM2.1.Bot.sf <- st_read('preprocessing/data/Botswana_adm2_uscb_2019.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326) %>%
+  add_join_names()
 
-saveRDS(ADM1.1.Bot.sf, file = "data/BotswanaADM1.RDS")
+
 saveRDS(ADM2.1.Bot.sf, file = "data/BotswanaADM2.RDS")
 
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
-
-DREAMS_Districts_Botswana <- c("CENTRAL", 
-                               "KGATLENG", 
-                               "KWENENG", 
-                               "NORTH EAST", 
-                               "SOUTH EAST", 
-                               "SOUTHERN")
-
-ADM1.DREAMS.Bot.sf.1 <- ADM1.1.Bot.sf  %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Botswana)
-
-ADM1.DREAMS.Bot.sf.2.Central <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "CENTRAL")
-
-ADM1.DREAMS.Bot.sf.2.Kgatleng <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "KGATLENG")
-
-ADM1.DREAMS.Bot.sf.2.Kweneng <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "KWENENG")
-
-ADM1.DREAMS.Bot.sf.2.NorthEast <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "NORTH EAST")
-
-ADM1.DREAMS.Bot.sf.2.SouthEast <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "SOUTH EAST")
-
-ADM1.DREAMS.Bot.sf.2.Southern <- ADM1.DREAMS.Bot.sf.1 %>%
-  filter(AREA_NAME == "SOUTHERN")
-
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.Central)
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.Kgatleng)
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.Kweneng)
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.NorthEast)
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.SouthEast)
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.Southern)
-# sf_check(ADM1.1.Bot.sf)
-
-
-##Create neighbors list, does not make something it's own neighbor.
-ADM2.1.Bot.sf$CentralNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                           ADM1.DREAMS.Bot.sf.2.Central,
-                                                           sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                        1,
-                                        0)
-
-ADM2.1.Bot.sf$KgatlengNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                            ADM1.DREAMS.Bot.sf.2.Kgatleng,
-                                                            sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                         1,
-                                         0)
-
-ADM2.1.Bot.sf$KwenengNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                           ADM1.DREAMS.Bot.sf.2.Kweneng,
-                                                           sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                        1,
-                                        0)
-
-
-ADM2.1.Bot.sf$NorthEastNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                             ADM1.DREAMS.Bot.sf.2.NorthEast,
-                                                             sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                          1,
-                                          0)
-
-ADM2.1.Bot.sf$SouthEastNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                             ADM1.DREAMS.Bot.sf.2.SouthEast,
-                                                             sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                          1,
-                                          0)
-
-ADM2.1.Bot.sf$SouthernNeighbor <- ifelse((sf::st_intersects(ADM2.1.Bot.sf, 
-                                                            ADM1.DREAMS.Bot.sf.2.Southern,
-                                                            sparse = F) & !(ADM2.1.Bot.sf$ADM1_NAME %in% DREAMS_Districts_Botswana)),
-                                         1,
-                                         0)
-
-
-
-# sf_check(ADM2.1.Bot.sf)
-# 
-# poly_check(ADM1.1.Bot.sf, ADM1.DREAMS.Bot.sf.2.Southern)
-# 
-# test1 <- ADM2.1.Bot.sf %>%
-#   filter(SouthernNeighbor == 1)
-# 
-# poly_check(ADM1.1.Bot.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Bot.sf.2.Southern, test1)
-
-
-#Re-adds ones from the district
-ADM2.2.Bot.sf <- ADM2.1.Bot.sf
-
-ADM2.2.Bot.sf$CentralNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "CENTRAL" | ADM2.2.Bot.sf$CentralNeighbor == 1),
-                                        1,
-                                        0)
-
-ADM2.2.Bot.sf$KgatlengNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "KGATLENG" | ADM2.2.Bot.sf$KgatlengNeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.Bot.sf$KwenengNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "KWENENG" | ADM2.2.Bot.sf$KwenengNeighbor == 1),
-                                        1,
-                                        0)
-
-ADM2.2.Bot.sf$NorthEastNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "NORTH EAST" | ADM2.2.Bot.sf$NorthEastNeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.Bot.sf$SouthEastNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "SOUTH EAST" | ADM2.2.Bot.sf$SouthEastNeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.Bot.sf$SouthernNeighbor <- ifelse((ADM2.2.Bot.sf$ADM1_NAME == "SOUTHERN" | ADM2.2.Bot.sf$SouthernNeighbor == 1),
-                                         1,
-                                         0)
-
-# sf_check(ADM2.2.Bot.sf)
-# 
-# test1 <- ADM2.2.Bot.sf %>%
-#   filter(SouthernNeighbor == 1)
-# 
-# poly_check(ADM1.1.Bot.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Bot.sf.2.Southern, test1)
-
-ADM2.2.Bot.sf <- ADM2.2.Bot.sf %>%
-  as.data.frame()
-
-neighborsLookupBotswana <- ADM2.2.Bot.sf
-
-ADM2.2.Bot.sf$CentralNeighbor <- c(ADM2.2.Bot.sf$CentralNeighbor)
-ADM2.2.Bot.sf$KgatlengNeighbor <- c(ADM2.2.Bot.sf$KgatlengNeighbor)
-ADM2.2.Bot.sf$KwenengNeighbor <- c(ADM2.2.Bot.sf$KwenengNeighbor)
-ADM2.2.Bot.sf$NorthEastNeighbor <- c(ADM2.2.Bot.sf$NorthEastNeighbor)
-ADM2.2.Bot.sf$SouthEastNeighbor <- c(ADM2.2.Bot.sf$SouthEastNeighbor)
-ADM2.2.Bot.sf$SouthernNeighbor <- c(ADM2.2.Bot.sf$SouthernNeighbor)
-
-#sf_check(ADM2.2.Zim.sf)
-
-ADM2.2.Bot.sf$DREAMSneighbors <- ADM2.2.Bot.sf$CentralNeighbor + ADM2.2.Bot.sf$KgatlengNeighbor + ADM2.2.Bot.sf$KwenengNeighbor + ADM2.2.Bot.sf$NorthEastNeighbor + ADM2.2.Bot.sf$SouthEastNeighbor + ADM2.2.Bot.sf$SouthernNeighbor
-
-ADM2.2.Bot.sf <- ADM2.2.Bot.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Botswana) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-
-#sf_check(ADM2.2.Zim.sf)
+DREAMS_Districts_Botswana_USCB <- c("BOBONONG",
+                                    "MAHALAPYE", 
+                                    "SEROWE PALAPYE",
+                                    "KGATLENG", 
+                                    "KWENENG EAST", 
+                                    "NORTH EAST", 
+                                    "GABORONE", 
+                                    "SOUTHERN")
+                               
 
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/Botswana_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
-           "ADM1_NAME",
            "ADM2_NAME",
            "ADM_LEVEL", 
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -262,25 +299,30 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
   filter(ADM_LEVEL == 2) %>%
-  select(-c("ADM_LEVEL"))
+   dplyr::select(-c("ADM_LEVEL"))
 
 #Strip out remaining spatial parameters and unnecessary fields
-ADM2.3.Bot.sf <- ADM2.2.Bot.sf %>% 
-  select(-c("Shape_Leng", 
+ADM2.2.Bot.sf <- ADM2.1.Bot.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
             "Shape_Area",
             "ADM_LEVEL",
             "NSO_CODE",
             "GEO_CONCAT",
             "CNTRY_NAME",
             "geometry",
-            "ADM2_NAME",
+            "ADM1_NAME",
             "OBJECTID"))
 
-merged.00 <- merge(ADM2.3.Bot.sf, 
+merged.00 <- merge(ADM2.2.Bot.sf, 
                    Demographic.3, 
                    by.x = "GEO_MATCH", 
                    by.y = "GEO_MATCH", 
@@ -290,268 +332,25 @@ merged.00 <- merge(ADM2.3.Bot.sf,
 
 ##Split off original figures for later re-join
 merged.1c <- merged.00 %>%
-  select(-c("AREA_NAME.y",
-            "CentralNeighbor",
-            "KgatlengNeighbor",
-            "KwenengNeighbor",
-            "NorthEastNeighbor",
-            "SouthEastNeighbor",
-            "SouthernNeighbor",
-            "ADM1_NAME.y",
-            "ADM2_NAME",
-            "GEO_MATCH",
-            "DREAMSneighbors")) %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM2_NAME.y",
+            "GEO_MATCH")) %>%
   rename(AREA_NAME=AREA_NAME.x) %>%
-  rename(ADM1_NAME=ADM1_NAME.x) %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Botswana)
+  rename(ADM2_NAME=ADM2_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Botswana_USCB)
 
+merged.3b <-pivot_step1(merged.1c)
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
+merged.4b <-pivot_step2(merged.3b, 
+                        "Botswana")
 
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-##Create new pop total for each
-#Take those that border X (inc. X itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Central <- merged.1 %>%
-  filter(CentralNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("KGATLENG", 
-                                                                           "KWENENG", 
-                                                                           "NORTH EAST", 
-                                                                           "SOUTH EAST", 
-                                                                           "SOUTHERN")))) %>%
-  group_by(CentralNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Kgatleng <- merged.1 %>%
-  filter(KgatlengNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("CENTRAL", 
-                                                                            "KWENENG", 
-                                                                            "NORTH EAST", 
-                                                                            "SOUTH EAST", 
-                                                                            "SOUTHERN")))) %>%
-  group_by(KgatlengNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Kweneng <- merged.1 %>%
-  filter(KwenengNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("CENTRAL", 
-                                                                           "KGATLENG", 
-                                                                           "NORTH EAST", 
-                                                                           "SOUTH EAST", 
-                                                                           "SOUTHERN")))) %>%
-  group_by(KwenengNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.NorthEast <- merged.1 %>%
-  filter(NorthEastNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("CENTRAL", 
-                                                                             "KGATLENG", 
-                                                                             "KWENENG", 
-                                                                             "SOUTH EAST", 
-                                                                             "SOUTHERN")))) %>%
-  group_by(NorthEastNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.SouthEast <- merged.1 %>%
-  filter(SouthEastNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("CENTRAL", 
-                                                                             "KGATLENG", 
-                                                                             "KWENENG", 
-                                                                             "NORTH EAST", 
-                                                                             "SOUTHERN")))) %>%
-  group_by(SouthEastNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Southern <- merged.1 %>%
-  filter(SouthernNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("CENTRAL", 
-                                                                            "KGATLENG", 
-                                                                            "KWENENG", 
-                                                                            "NORTH EAST", 
-                                                                            "SOUTH EAST")))) %>%
-  group_by(SouthernNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Central$AREA_NAME <- "CENTRAL"
-merged.1.Kgatleng$AREA_NAME <- "KGATLENG"
-merged.1.Kweneng$AREA_NAME <- "KWENENG"
-merged.1.NorthEast$AREA_NAME <- "NORTH EAST"
-merged.1.SouthEast$AREA_NAME <- "SOUTH EAST"
-merged.1.Southern$AREA_NAME <- "SOUTHERN"
-
-merged.2a <- rbind(merged.1.Central,
-                   merged.1.Kgatleng,
-                   merged.1.Kweneng,
-                   merged.1.NorthEast,
-                   merged.1.SouthEast,
-                   merged.1.Southern)
-
-merged.1d <- merged.1c %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Botswana) %>%
-  group_by(ADM1_NAME) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = ADM1_NAME)
-
-merged.3a <-pivot_step1(merged.2a)
-merged.3b <-pivot_step1(merged.1d)
-
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
-
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.6, file = "BotswanaOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "BotswanaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6, file = "preprocessing/data/BotswanaOutput_Denominators.RDS")
-
-
+saveRDS(merged.5b, file = "preprocessing/data/BotswanaOutput_Denominators.RDS")
 
 # KENYA ----
 ###DENOMINATOR: Larger country, ADM1 and 2
@@ -559,191 +358,31 @@ saveRDS(merged.6, file = "preprocessing/data/BotswanaOutput_Denominators.RDS")
 ##Add surrounding ADM2s to cohort pop by year
 ADM1.1.Ken.sf <- st_read('preprocessing/data/Kenya_adm1_uscb_2020.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
-
-ADM2.1.Ken.sf <- st_read('preprocessing/data/Kenya_adm2_uscb_2020.shp') %>%
-  st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326) %>%
+  add_join_names()
 
 saveRDS(ADM1.1.Ken.sf, file = "data/KenyaADM1.RDS")
-saveRDS(ADM2.1.Ken.sf, file = "data/KenyaADM2.RDS")
 
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
-
-DREAMS_Districts_Kenya <- c("HOMA BAY", 
-                            "KIAMBU", 
-                            "KISUMU", 
-                            "MIGORI", 
-                            "MOMBASA", 
-                            "NAIROBI CITY", 
-                            "SIAYA")
-
-ADM1.DREAMS.Ken.sf.1 <- ADM1.1.Ken.sf  %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Kenya)
-
-ADM1.DREAMS.Ken.sf.2.Homa <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "HOMA BAY")
-
-ADM1.DREAMS.Ken.sf.2.Kiambu <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "KIAMBU")
-
-ADM1.DREAMS.Ken.sf.2.Kisumu <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "KISUMU")
-
-ADM1.DREAMS.Ken.sf.2.Migori <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "MIGORI")
-
-ADM1.DREAMS.Ken.sf.2.Mombasa <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "MOMBASA")
-
-ADM1.DREAMS.Ken.sf.2.Nairobi <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "NAIROBI CITY")
-
-ADM1.DREAMS.Ken.sf.2.Siaya <- ADM1.DREAMS.Ken.sf.1 %>%
-  filter(AREA_NAME == "SIAYA")
-# 
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Homa)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Kiambu)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Kisumu)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Migori)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Mombasa)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Nairobi)
-# poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Siaya)
-# sf_check(ADM1.1.Ken.sf)
-
-
-##Create neighbors list, does not make something it's own neighbor.
-ADM2.1.Ken.sf$HomaNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                        ADM1.DREAMS.Ken.sf.2.Homa,
-                                                        sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                     1,
-                                     0)
-
-ADM2.1.Ken.sf$KiambuNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                          ADM1.DREAMS.Ken.sf.2.Kiambu,
-                                                          sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                       1,
-                                       0)
-
-ADM2.1.Ken.sf$KisumuNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                          ADM1.DREAMS.Ken.sf.2.Kisumu,
-                                                          sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                       1,
-                                       0)
-
-
-ADM2.1.Ken.sf$MigoriNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                          ADM1.DREAMS.Ken.sf.2.Migori,
-                                                          sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                       1,
-                                       0)
-
-ADM2.1.Ken.sf$MombasaNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                           ADM1.DREAMS.Ken.sf.2.Mombasa,
-                                                           sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                        1,
-                                        0)
-
-ADM2.1.Ken.sf$NairobiNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                           ADM1.DREAMS.Ken.sf.2.Nairobi,
-                                                           sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                        1,
-                                        0)
-
-ADM2.1.Ken.sf$SiayaNeighbor <- ifelse((sf::st_intersects(ADM2.1.Ken.sf, 
-                                                         ADM1.DREAMS.Ken.sf.2.Siaya,
-                                                         sparse = F) & !(ADM2.1.Ken.sf$ADM1_NAME %in% DREAMS_Districts_Kenya)),
-                                      1,
-                                      0)
-
-# sf_check(ADM2.1.Ken.sf)
-# 
-#poly_check(ADM1.1.Ken.sf, ADM1.DREAMS.Ken.sf.2.Siaya)
-
-# test1 <- ADM2.1.Ken.sf %>%
-#   filter(SiayaNeighbor == 1)
-# 
-# poly_check(ADM1.1.Ken.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Ken.sf.2.Siaya, test1)
-
-
-#Re-adds ones from the district
-ADM2.2.Ken.sf <- ADM2.1.Ken.sf
-
-ADM2.2.Ken.sf$HomaNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "HOMA BAY" | ADM2.2.Ken.sf$HomaNeighbor == 1),
-                                     1,
-                                     0)
-
-ADM2.2.Ken.sf$KiambuNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "KIAMBU" | ADM2.2.Ken.sf$KiambuNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Ken.sf$KisumuNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "KISUMU" | ADM2.2.Ken.sf$KisumuNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Ken.sf$MigoriNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "MIGORI" | ADM2.2.Ken.sf$MigoriNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Ken.sf$MombasaNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "MOMBASA" | ADM2.2.Ken.sf$MombasaNeighbor == 1),
-                                        1,
-                                        0)
-
-ADM2.2.Ken.sf$NairobiNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "NAIROBI CITY" | ADM2.2.Ken.sf$NairobiNeighbor == 1),
-                                        1,
-                                        0)
-
-ADM2.2.Ken.sf$SiayaNeighbor <- ifelse((ADM2.2.Ken.sf$ADM1_NAME == "SIAYA" | ADM2.2.Ken.sf$SiayaNeighbor == 1),
-                                      1,
-                                      0)
-
-# sf_check(ADM2.2.Ken.sf)
-# 
-# test1 <- ADM2.2.Ken.sf %>%
-#   filter(SiayaNeighbor == 1)
-# 
-# poly_check(ADM1.1.Ken.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Ken.sf.2.Siaya, test1)
-
-ADM2.2.Ken.sf <- ADM2.2.Ken.sf %>%
-  as.data.frame()
-
-neighborsLookupKenya <- ADM2.2.Ken.sf
-
-ADM2.2.Ken.sf$HomaNeighbor <- c(ADM2.2.Ken.sf$HomaNeighbor)
-ADM2.2.Ken.sf$KiambuNeighbor <- c(ADM2.2.Ken.sf$KiambuNeighbor)
-ADM2.2.Ken.sf$KisumuNeighbor <- c(ADM2.2.Ken.sf$KisumuNeighbor)
-ADM2.2.Ken.sf$MigoriNeighbor <- c(ADM2.2.Ken.sf$MigoriNeighbor)
-ADM2.2.Ken.sf$MombasaNeighbor <- c(ADM2.2.Ken.sf$MombasaNeighbor)
-ADM2.2.Ken.sf$NairobiNeighbor <- c(ADM2.2.Ken.sf$NairobiNeighbor)
-ADM2.2.Ken.sf$SiayaNeighbor <- c(ADM2.2.Ken.sf$SiayaNeighbor)
-
-#sf_check(ADM2.2.Zim.sf)
-
-ADM2.2.Ken.sf$DREAMSneighbors <- ADM2.2.Ken.sf$HomaNeighbor + ADM2.2.Ken.sf$KiambuNeighbor + ADM2.2.Ken.sf$KisumuNeighbor + ADM2.2.Ken.sf$MigoriNeighbor + ADM2.2.Ken.sf$MombasaNeighbor + ADM2.2.Ken.sf$NairobiNeighbor + ADM2.2.Ken.sf$SiayaNeighbor
-
-ADM2.2.Ken.sf <- ADM2.2.Ken.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Kenya) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-
-#sf_check(ADM2.2.Zim.sf)
+DREAMS_Districts_Kenya_USCB <- c("HOMA BAY",
+                                 "KIAMBU", 
+                                 "KISUMU", 
+                                 "MIGORI", 
+                                 "MOMBASA", 
+                                 "NAIROBI CITY", 
+                                 "SIAYA")
 
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/Kenya_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
            "ADM1_NAME",
-           "ADM2_NAME",
-           "ADM_LEVEL", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -759,15 +398,20 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
-  filter(ADM_LEVEL == 2) %>%
-  select(-c("ADM_LEVEL"))
+  filter(ADM_LEVEL == 1) %>%
+   dplyr::select(-c("ADM_LEVEL"))
 
 #Strip out remaining spatial parameters and unnecessary fields
-ADM2.3.Ken.sf <- ADM2.2.Ken.sf %>% 
-  select(-c("USCBCMNT",
+ADM1.2.Ken.sf <- ADM1.1.Ken.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("USCBCMNT",
             "Shape_Leng", 
             "Shape_Area",
             "ADM_LEVEL",
@@ -775,314 +419,36 @@ ADM2.3.Ken.sf <- ADM2.2.Ken.sf %>%
             "GEO_CONCAT",
             "CNTRY_NAME",
             "geometry",
-            "ADM2_NAME"))
+            "ADM1_NAME"))
 
-merged.00 <- merge(ADM2.3.Ken.sf, 
+merged.00 <- merge(ADM1.2.Ken.sf, 
                    Demographic.3, 
                    by.x = "GEO_MATCH", 
                    by.y = "GEO_MATCH", 
                    all.x = TRUE)
 
-#Stop here and visually check for any mismatches between paired X and Y dataset shared fields
-
 ##Split off original figures for later re-join
 merged.1c <- merged.00 %>%
-  select(-c("AREA_NAME.y",
-            "HomaNeighbor",
-            "KiambuNeighbor",
-            "KisumuNeighbor",
-            "MigoriNeighbor",
-            "MombasaNeighbor",
-            "NairobiNeighbor",
-            "SiayaNeighbor",
-            "ADM1_NAME.y",
-            "ADM2_NAME",
-            "GEO_MATCH",
-            "DREAMSneighbors")) %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "GEO_MATCH")) %>%
   rename(AREA_NAME=AREA_NAME.x) %>%
-  rename(ADM1_NAME=ADM1_NAME.x) %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Kenya)
-
-
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
-
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-##Create new pop total for each
-#Take those that border X (inc. X itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Homa <- merged.1 %>%
-  filter(HomaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("KIAMBU", 
-                                                                        "KISUMU", 
-                                                                        "MIGORI", 
-                                                                        "MOMBASA", 
-                                                                        "NAIROBI CITY", 
-                                                                        "SIAYA")))) %>%
-  group_by(HomaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Kiambu <- merged.1 %>%
-  filter(KiambuNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY", 
-                                                                          "KISUMU", 
-                                                                          "MIGORI", 
-                                                                          "MOMBASA", 
-                                                                          "NAIROBI CITY", 
-                                                                          "SIAYA")))) %>%
-  group_by(KiambuNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Kisumu <- merged.1 %>%
-  filter(KisumuNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY", 
-                                                                          "KIAMBU", 
-                                                                          "MIGORI", 
-                                                                          "MOMBASA", 
-                                                                          "NAIROBI CITY", 
-                                                                          "SIAYA")))) %>%
-  group_by(KisumuNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Migori <- merged.1 %>%
-  filter(MigoriNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY",
-                                                                          "KIAMBU", 
-                                                                          "KISUMU", 
-                                                                          "MOMBASA", 
-                                                                          "NAIROBI CITY", 
-                                                                          "SIAYA")))) %>%
-  group_by(MigoriNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Mombasa <- merged.1 %>%
-  filter(MombasaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY",
-                                                                           "KIAMBU", 
-                                                                           "KISUMU", 
-                                                                           "MIGORI",
-                                                                           "NAIROBI CITY", 
-                                                                           "SIAYA")))) %>%
-  group_by(MombasaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Nairobi <- merged.1 %>%
-  filter(NairobiNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY",
-                                                                           "KIAMBU", 
-                                                                           "KISUMU", 
-                                                                           "MIGORI", 
-                                                                           "MOMBASA", 
-                                                                           "SIAYA")))) %>%
-  group_by(NairobiNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Siaya <- merged.1 %>%
-  filter(SiayaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("HOMA BAY",
-                                                                         "KIAMBU", 
-                                                                         "KISUMU", 
-                                                                         "MIGORI", 
-                                                                         "MOMBASA", 
-                                                                         "NAIROBI CITY")))) %>%
-  group_by(SiayaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Homa$AREA_NAME <- "HOMA BAY"
-merged.1.Kiambu$AREA_NAME <- "KIAMBU"
-merged.1.Kisumu$AREA_NAME <- "KISUMU"
-merged.1.Migori$AREA_NAME <- "MIGORI"
-merged.1.Mombasa$AREA_NAME <- "MOMBASA"
-merged.1.Nairobi$AREA_NAME <- "NAIROBI CITY"
-merged.1.Siaya$AREA_NAME <- "SIAYA"
-
-merged.2a <- rbind(merged.1.Homa,
-                   merged.1.Kiambu,
-                   merged.1.Kisumu,
-                   merged.1.Migori,
-                   merged.1.Mombasa,
-                   merged.1.Nairobi,
-                   merged.1.Siaya)
+  filter(AREA_NAME %in% DREAMS_Districts_Kenya_USCB)
 
 merged.1d <- merged.1c %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Kenya) %>%
-  group_by(ADM1_NAME) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = ADM1_NAME)
+  filter(AREA_NAME %in% DREAMS_Districts_Kenya_USCB)
 
-merged.3a <-pivot_step1(merged.2a)
 merged.3b <-pivot_step1(merged.1d)
 
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
+merged.4b <-pivot_step2(merged.3b, 
+                        "Kenya")
 
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.6, file = "KenyaOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "KenyaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6,file = "preprocessing/data/KenyaOutput_Denominators.RDS")
+saveRDS(merged.5b,file = "preprocessing/data/KenyaOutput_Denominators.RDS")
 
 
 # LESOTHO ----
@@ -1091,116 +457,28 @@ saveRDS(merged.6,file = "preprocessing/data/KenyaOutput_Denominators.RDS")
 ##Add surrounding ADM2s to cohort pop by year
 ADM1.1.Les.sf <- st_read('preprocessing/data/Lesotho_adm1_uscb_2020.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326)%>%
+  add_join_names()
 
 saveRDS(ADM1.1.Les.sf, file = "data/LesothoADM1.RDS")
 
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
-
-DREAMS_Districts_Lesotho <- c("BEREA", 
+DREAMS_Districts_Lesotho_USCB <- c("BEREA", 
                               "MAFETENG",
                               "MASERU",
                               "MOHALE'S HOEK")
-
-ADM1.DREAMS.Les.sf.1 <- ADM1.1.Les.sf %>%
-  filter(AREA_NAME %in% DREAMS_Districts_Lesotho)
-
-ADM1.DREAMS.Les.sf.2.Berea <- ADM1.DREAMS.Les.sf.1 %>%
-  filter(AREA_NAME == "BEREA")
-
-ADM1.DREAMS.Les.sf.2.Mafeteng <- ADM1.DREAMS.Les.sf.1 %>%
-  filter(AREA_NAME == "MAFETENG")
-
-ADM1.DREAMS.Les.sf.2.Maseru <- ADM1.DREAMS.Les.sf.1 %>%
-  filter(AREA_NAME == "MASERU")
-
-ADM1.DREAMS.Les.sf.2.MHoek <- ADM1.DREAMS.Les.sf.1 %>%
-  filter(AREA_NAME == "MOHALE'S HOEK")
-
-# poly_check(ADM1.1.Les.sf, ADM1.DREAMS.Les.sf.2.Berea)
-# poly_check(ADM1.1.Les.sf, ADM1.DREAMS.Les.sf.2.Mafeteng)
-# poly_check(ADM1.1.Les.sf, ADM1.DREAMS.Les.sf.2.Maseru)
-# poly_check(ADM1.1.Les.sf, ADM1.DREAMS.Les.sf.2.MHoek)
-# sf_check(ADM1.1.Les.sf)
-
-##Create neighbors list
-ADM1.1.Les.sf$BereaNeighbor <- ifelse((sf::st_intersects(ADM1.1.Les.sf,
-                                                         ADM1.DREAMS.Les.sf.2.Berea,
-                                                         sparse = F)),
-                                      1,
-                                      0)
-
-ADM1.1.Les.sf$MafetengNeighbor <- ifelse((sf::st_intersects(ADM1.1.Les.sf, 
-                                                            ADM1.DREAMS.Les.sf.2.Mafeteng,
-                                                            sparse = F)),
-                                         1,
-                                         0)
-
-ADM1.1.Les.sf$MaseruNeighbor <- ifelse((sf::st_intersects(ADM1.1.Les.sf, 
-                                                          ADM1.DREAMS.Les.sf.2.Maseru,
-                                                          sparse = F)),
-                                       1,
-                                       0)
-
-
-ADM1.1.Les.sf$MHoekNeighbor <- ifelse((sf::st_intersects(ADM1.1.Les.sf,
-                                                         ADM1.DREAMS.Les.sf.2.MHoek,
-                                                         sparse = F)),
-                                      1,
-                                      0)
-#sf_check(ADM1.1.Les.sf)
-
-ADM1.1.Les.sf <- ADM1.1.Les.sf %>%
-  as.data.frame()
-
-ADM1.1.Les.sf$BereaNeighbor <- c(ADM1.1.Les.sf$BereaNeighbor)
-ADM1.1.Les.sf$MafetengNeighbor <- c(ADM1.1.Les.sf$MafetengNeighbor)
-ADM1.1.Les.sf$MaseruNeighbor <- c(ADM1.1.Les.sf$MaseruNeighbor)
-ADM1.1.Les.sf$MHoekNeighbor <- c(ADM1.1.Les.sf$MHoekNeighbor)
-
-#Setup lookup table df to be used in filtering app map
-neighborsLookupLesotho <- ADM1.1.Les.sf
-  
-
-ADM1.1.Les.sf$DREAMSneighbors <- ADM1.1.Les.sf$BereaNeighbor + ADM1.1.Les.sf$MafetengNeighbor + ADM1.1.Les.sf$MaseruNeighbor + ADM1.1.Les.sf$MHoekNeighbor
-
-#Set DREAMSneighbors to zero for DREAMS ADM1s, this flags them for non-treatment later
-ADM1.1.Les.sf <- ADM1.1.Les.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Lesotho) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-
-#sf_check(ADM1.1.Les.sf)
-
-#Strip out remaining spatial parameters and unnecessary fields
-ADM1.2.Les.sf <- ADM1.1.Les.sf %>% 
-  select(-c("Shape_Leng", 
-            "Shape_Area",
-            "GENC_CODE",
-            "FIPS_CODE",
-            "ADM_LEVEL",
-            "NSO_CODE",
-            "GEO_CONCAT",
-            "CNTRY_NAME",
-            "geometry"))
-
-#sf_check(ADM1.2.Les.sf)
-
-# test1 <- ADM1.1.Les.sf %>%
-#   filter(MafetengNeighbor == 1) 
-# poly_check(test1, ADM1.DREAMS.Les.sf.2.Mafeteng)
 
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/Lesotho_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
            "ADM1_NAME", 
-           "ADM_LEVEL", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -1216,11 +494,27 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
   filter(ADM_LEVEL == 1) %>%
-  select(-c("ADM_LEVEL"))
+   dplyr::select(-c("ADM_LEVEL"))
+
+ADM1.2.Les.sf <- ADM1.1.Les.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
+            "Shape_Area",
+            "ADM_LEVEL",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "GENC_CODE",
+            "FIPS_CODE",
+            "NSO_CODE"))
 
 merged.00 <- merge(ADM1.2.Les.sf, 
                    Demographic.3, 
@@ -1230,192 +524,34 @@ merged.00 <- merge(ADM1.2.Les.sf,
 
 #Check for any mismatches between paired X and Y dataset shared fields
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
-
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-merged.1c <- merged.1 %>%
-  select(-c("AREA_NAME.y",
-            "BereaNeighbor",
-            "MafetengNeighbor",
-            "MaseruNeighbor",
-            "MHoekNeighbor",
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("AREA_NAME.y",
             "ADM1_NAME.x",
             "ADM1_NAME.y",
-            "GEO_MATCH",
-            "DREAMSneighbors")) %>%
-  rename(AREA_NAME=AREA_NAME.x)
+            "GEO_MATCH")) %>%
+  rename(AREA_NAME=AREA_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Lesotho_USCB)
 
-##Create new pop total for each
-#Take those that border Berea (inc. Berea itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Berea <- merged.1 %>%
-  filter(BereaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("MASERU",
-                                                                         "MAFETENG",
-                                                                         "MOHALE'S HOEK")))) %>%
-  group_by(BereaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Mafeteng <- merged.1 %>%
-  filter(MafetengNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("MASERU",
-                                                                            "BEREA",
-                                                                            "MOHALE'S HOEK")))) %>%
-  group_by(MafetengNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Maseru <- merged.1 %>%
-  filter(MaseruNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BEREA",
-                                                                          "MAFETENG",
-                                                                          "MOHALE'S HOEK")))) %>%
-  group_by(MaseruNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.MHoek <- merged.1 %>%
-  filter(MHoekNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("MASERU",
-                                                                         "MAFETENG",
-                                                                         "BEREA")))) %>%
-  group_by(MHoekNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Berea$AREA_NAME <- "BEREA"
-merged.1.Mafeteng$AREA_NAME <- "MAFETENG"
-merged.1.Maseru$AREA_NAME <- "MASERU"
-merged.1.MHoek$AREA_NAME <- "MOHALE'S HOEK"
-
-merged.2a <- rbind(merged.1.Berea,
-                   merged.1.Mafeteng,
-                   merged.1.Maseru,
-                   merged.1.MHoek)
-
-merged.3a <-pivot_step1(merged.2a)
 merged.3b <-pivot_step1(merged.1c)
 
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
+merged.4b <-pivot_step2(merged.3b, 
+                        "Lesotho")
 
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
-
-merged.7 <- merged.6 %>%
-  filter(AREA_NAME %in% c("BEREA",
-                          "MAFETENG",
-                          "MASERU",
-                          "MOHALE'S HOEK"))
-                                                
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.7, file = "LesothoOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "LesothoOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.7,file = "preprocessing/data/LesothoOutput_Denominators.RDS")
+saveRDS(merged.5b,file = "preprocessing/data/LesothoOutput_Denominators.RDS")
 
 # MALAWI ----
 ###DENOMINATOR: Smaller country, ADM1s dropped, ADM2s treated as ADM1s, Lesotho treatment
 ##Start with District cohort pop by year
-##Add surrounding ADM2s to cohort pop by year
 
 ADM1.0.Mal.sf <- st_read('preprocessing/data/Malawi_adm2_uscb_2022.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326) 
 
 #merge rural/urban pieces
 
@@ -1443,102 +579,27 @@ Polys <- bind_rows(OtherPolys,
 
 Polys$ADM1_NAME <- Polys$ADM2_NAME
 
-ADM1.1.Mal.sf <- Polys
+ADM1.1.Mal.sf <- Polys  %>%
+  add_join_names()
 
 saveRDS(ADM1.1.Mal.sf, file = "data/MalawiADM1.RDS")
 
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
-
-
-DREAMS_Districts_Malawi <- c("BLANTYRE", 
+DREAMS_Districts_Malawi_USCB <- c("BLANTYRE", 
                              "MACHINGA",
                              "ZOMBA")
-
-ADM1.DREAMS.Mal.sf.1 <- ADM1.1.Mal.sf %>%
-  filter(AREA_NAME %in% DREAMS_Districts_Malawi)
-
-ADM1.DREAMS.Mal.sf.2.Blantyre <- ADM1.DREAMS.Mal.sf.1 %>%
-  filter(AREA_NAME == "BLANTYRE")
-
-ADM1.DREAMS.Mal.sf.2.Machinga <- ADM1.DREAMS.Mal.sf.1 %>%
-  filter(AREA_NAME == "MACHINGA")
-
-ADM1.DREAMS.Mal.sf.2.Zomba <- ADM1.DREAMS.Mal.sf.1 %>%
-  filter(AREA_NAME == "ZOMBA")
-
-
-# poly_check(ADM1.1.Mal.sf, ADM1.DREAMS.Mal.sf.2.Blantyre)
-# poly_check(ADM1.1.Mal.sf, ADM1.DREAMS.Mal.sf.2.Machinga)
-# poly_check(ADM1.1.Mal.sf, ADM1.DREAMS.Mal.sf.2.Zomba)
-
-##Create neighbors list
-ADM1.1.Mal.sf$BlantyreNeighbor <- ifelse((sf::st_intersects(ADM1.1.Mal.sf,
-                                                            ADM1.DREAMS.Mal.sf.2.Blantyre,
-                                                            sparse = F)),
-                                         1,
-                                         0)
-
-ADM1.1.Mal.sf$MachingaNeighbor <- ifelse((sf::st_intersects(ADM1.1.Mal.sf, 
-                                                            ADM1.DREAMS.Mal.sf.2.Machinga,
-                                                            sparse = F)),
-                                         1,
-                                         0)
-
-ADM1.1.Mal.sf$ZombaNeighbor <- ifelse((sf::st_intersects(ADM1.1.Mal.sf, 
-                                                         ADM1.DREAMS.Mal.sf.2.Zomba,
-                                                         sparse = F)),
-                                      1,
-                                      0)
-
-
-#sf_check(ADM1.1.Mal.sf)
-
-ADM1.1.Mal.sf <- ADM1.1.Mal.sf %>%
-  as.data.frame()
-
-ADM1.1.Mal.sf$BlantyreNeighbor <- c(ADM1.1.Mal.sf$BlantyreNeighbor)
-ADM1.1.Mal.sf$MachingaNeighbor <- c(ADM1.1.Mal.sf$MachingaNeighbor)
-ADM1.1.Mal.sf$ZombaNeighbor <- c(ADM1.1.Mal.sf$ZombaNeighbor)
-
-
-#Setup lookup table df to be used in filtering app map
-neighborsLookupMalawi <- ADM1.1.Mal.sf
-
-
-ADM1.1.Mal.sf$DREAMSneighbors <- ADM1.1.Mal.sf$BlantyreNeighbor + ADM1.1.Mal.sf$MachingaNeighbor + ADM1.1.Mal.sf$ZombaNeighbor
-
-#Set DREAMSneighbors to zero for DREAMS ADM1s, this flags them for non-treatment later
-ADM1.1.Mal.sf <- ADM1.1.Mal.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Malawi) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-
-#sf_check(ADM1.1.Mal.sf)
-
-#Strip out remaining spatial parameters and unnecessary fields
-ADM1.2.Mal.sf <- ADM1.1.Mal.sf %>% 
-  select(-c("Shape_Leng", 
-            "Shape_Area",
-            "GENC_CODE",
-            "FIPS_CODE",
-            "ADM_LEVEL",
-            "ADM2_NAME",
-            #"NSO_CODE",
-            "GEO_CONCAT",
-            "CNTRY_NAME",
-            "geometry"))
 
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/Malawi_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+  dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
            "ADM1_NAME", 
-           "ADM_LEVEL", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -1554,7 +615,11 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.2.Other <- Demographic.2 %>%
   dplyr::filter(!(AREA_NAME %in% c("BLANTYRE", "BLANTYRE CITY", "ZOMBA", "ZOMBA CITY")))
@@ -1563,7 +628,11 @@ Demographic.2.Blantyre <- Demographic.2 %>%
   dplyr::filter(AREA_NAME %in% c("BLANTYRE", "BLANTYRE CITY")) %>%
   mutate(AREA_NAME = "BLANTYRE") %>%
   group_by(AREA_NAME) %>%
-  summarize(F1014_2019 = sum(F1014_2019),
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
             F1519_2019 = sum(F1519_2019),
             F2024_2019 = sum(F2024_2019),
             F2529_2019 = sum(F2529_2019),
@@ -1578,7 +647,11 @@ Demographic.2.Blantyre <- Demographic.2 %>%
             F1014_2022 = sum(F1014_2022),
             F1519_2022 = sum(F1519_2022),
             F2024_2022 = sum(F2024_2022),
-            F2529_2022 = sum(F2529_2022)
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
   ) %>%
   mutate(ADM1_NAME = "BLANTYRE",
          ADM_LEVEL = 1)
@@ -1588,7 +661,11 @@ Demographic.2.Zomba <- Demographic.2 %>%
   dplyr::filter(AREA_NAME %in% c("ZOMBA", "ZOMBA CITY")) %>%
   mutate(AREA_NAME = "ZOMBA") %>%
   group_by(AREA_NAME) %>%
-  summarize(F1014_2019 = sum(F1014_2019),
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
             F1519_2019 = sum(F1519_2019),
             F2024_2019 = sum(F2024_2019),
             F2529_2019 = sum(F2529_2019),
@@ -1603,7 +680,11 @@ Demographic.2.Zomba <- Demographic.2 %>%
             F1014_2022 = sum(F1014_2022),
             F1519_2022 = sum(F1519_2022),
             F2024_2022 = sum(F2024_2022),
-            F2529_2022 = sum(F2529_2022)
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
   ) %>%
   mutate(ADM1_NAME = "ZOMBA",
          ADM_LEVEL = 1)
@@ -1614,7 +695,21 @@ Demographic.3 <- bind_rows(Demographic.2.Other,
 
 Demographic.4 <- Demographic.3 %>%
   filter(ADM_LEVEL == 1) %>%
-  select(-c("ADM_LEVEL"))
+   dplyr::select(-c("ADM_LEVEL"))
+
+#Strip out remaining spatial parameters and unnecessary fields
+ADM1.2.Mal.sf <- ADM1.1.Mal.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng", 
+            "Shape_Area",
+            "GENC_CODE",
+            "FIPS_CODE",
+            "ADM_LEVEL",
+            "ADM2_NAME",
+            #"NSO_CODE",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry"))
 
 merged.00 <- merge(ADM1.2.Mal.sf, 
                    Demographic.4, 
@@ -1625,153 +720,559 @@ merged.00 <- merge(ADM1.2.Mal.sf,
 
 #Check for any mismatches between paired X and Y dataset shared fields
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
-
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-merged.1c <- merged.1 %>%
-  select(-c("BlantyreNeighbor",
-            "MachingaNeighbor",
-            "ZombaNeighbor",
-            "ADM1_NAME.x",
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("ADM1_NAME.x",
             "ADM1_NAME.y",
             "GEO_MATCH.x",
-            "GEO_MATCH.y",
-            "DREAMSneighbors"))
+            "GEO_MATCH.y")) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Malawi_USCB)
 
-##Create new pop total for each
-#Take those that border Berea (inc. Berea itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Blantyre <- merged.1 %>%
-  filter(BlantyreNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME %in% c("MACHINGA",
-                                                                          "ZOMBA")))) %>%
-  group_by(BlantyreNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Machinga <- merged.1 %>%
-  filter(MachingaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME %in% c("BLANTYRE",
-                                                                          "ZOMBA")))) %>%
-  group_by(MachingaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Zomba <- merged.1 %>%
-  filter(ZombaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME %in% c("BLANTYRE",
-                                                                       "MACHINGA")))) %>%
-  group_by(ZombaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Blantyre$AREA_NAME <- "BLANTYRE"
-merged.1.Machinga$AREA_NAME <- "MACHINGA"
-merged.1.Zomba$AREA_NAME <- "ZOMBA"
-
-
-merged.2a <- rbind(merged.1.Blantyre,
-                   merged.1.Machinga,
-                   merged.1.Zomba)
-
-merged.3a <-pivot_step1(merged.2a)
 merged.3b <-pivot_step1(merged.1c)
 
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
+merged.4b <-pivot_step2(merged.3b, 
+                        "Malawi")
 
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
-
-merged.7 <- merged.6 %>%
-  filter(AREA_NAME %in% c("BLANTYRE",
-                          "MACHINGA",
-                          "ZOMBA"))
-
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.7, file = "LesothoOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "LesothoOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.7,file = "preprocessing/data/MalawiOutput_Denominators.RDS")
+saveRDS(merged.5b,file = "preprocessing/data/MalawiOutput_Denominators.RDS")
 
+# MOZAMBIQUE ----
+###DENOMINATOR: Small country, ADM1 only
+##Start with District cohort pop by year
+##Add surrounding ADM2s to cohort pop by year
+ADM2.1.Moz.sf <- st_read('preprocessing/data/Mozambique_adm2_uscb_2020.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326)  %>%
+  add_join_names()
+
+saveRDS(ADM2.1.Moz.sf, file = "data/MozambiqueADM2.RDS")
+
+DREAMS_Districts_Mozambique_USCB <- c("CIDADE DE PEMBA",
+                                 "CHÓKWÈ",
+                                 "CHONGOENE",
+                                 "GUIJÁ",
+                                 "LIMPOPO",
+                                 "CIDADE DE XAI-XAI",
+                                 "CIDADE DA MAXIXE",
+                                 "CIDADE DE CHIMOIO",
+                                 "BOANE",
+                                 "MAGUDE",
+                                 "MANHIÇA",
+                                 "MARRACUENE",
+                                 "CIDADE DA MATOLA",
+                                 "MATUTUINE",
+                                 "MOAMBA",
+                                 "NAMAACHA",
+                                 "ERÁTI",
+                                 "CIDADE DE NAMPULA",
+                                 "CIDADE DA BEIRA",
+                                 "CAIA",
+                                 "GILÉ",
+                                 "ILE",
+                                 "INHASSUNGE",
+                                 "LUGELA",
+                                 "MAGANJA DA COSTA",
+                                 "MILANGE",
+                                 "MOCUBA",
+                                 "MOCUBELA",
+                                 "NAMACURRA",
+                                 "NICOADALA",
+                                 "PEBANE",
+                                 "QUELIMANE")
+
+##Attach demographic data
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Mozambique_USCB.xlsx")
+
+Demographic.2 <- Demographic.1 %>%
+   dplyr::select(c("AREA_NAME", 
+           "GEO_MATCH", 
+           "ADM2_NAME", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
+           "F1014_2019",
+           "F1519_2019",
+           "F2024_2019",
+           "F2529_2019",
+           "F1014_2020",
+           "F1519_2020",
+           "F2024_2020",
+           "F2529_2020",
+           "F1014_2021",
+           "F1519_2021",
+           "F2024_2021",
+           "F2529_2021",
+           "F1014_2022",
+           "F1519_2022",
+           "F2024_2022",
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
+
+Demographic.3 <- Demographic.2 %>%
+  filter(ADM_LEVEL == 2) %>%
+   dplyr::select(-c("ADM_LEVEL"))
+
+ADM2.2.Moz.sf <- ADM2.1.Moz.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
+            "Shape_Area",
+            "ADM_LEVEL",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "NSO_CODE",
+            "USCBCMNT",
+            "ADM1_NAME"))
+
+merged.00 <- merge(ADM2.2.Moz.sf, 
+                   Demographic.3, 
+                   by.x = "GEO_MATCH", 
+                   by.y = "GEO_MATCH", 
+                   all.x = TRUE)
+
+#Check for any mismatches between paired X and Y dataset shared fields
+
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM2_NAME.y",
+            "GEO_MATCH")) %>%
+  rename(AREA_NAME=AREA_NAME.x) %>%
+  rename(ADM2_NAME=ADM2_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Mozambique_USCB)
+
+merged.3b <-pivot_step1(merged.1c)
+
+merged.4b <-pivot_step2(merged.3b, 
+                        "Mozambique")
+
+merged.5b <- adjust_ages(merged.4b)
+
+##Export Results
+#For any manual checking
+#write_excel_csv(merged.5b, file = "MozambiqueOutput_Denominators.csv") #purely for external inspection
+#For import to app
+saveRDS(merged.5b,file = "preprocessing/data/MozambiqueOutput_Denominators.RDS")
+# NAMIBIA ----
+###DENOMINATOR
+
+ADM2.0.Nam.sf <- st_read('preprocessing/data/Namibia_adm2_uscb_2022.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326) 
+
+#merge rural/urban pieces
+
+OtherPolys <- ADM2.0.Nam.sf %>%
+  dplyr::filter(!(AREA_NAME %in% c("RUNDU RURAL WEST", 
+                                   "RUNDU URBAN", 
+                                   "RUNDU RURAL EAST", 
+                                   "WINDHOEK EAST",
+                                   "WINDHOEK RURAL", 
+                                   "WINDHOEK WEST", 
+                                   "OSHAKATI EAST", 
+                                   "OSHAKATI WEST",
+                                   "KATIMA MULILO RURAL", 
+                                   "KATIMA MULILO URBAN")))
+
+RunduPolys <- ADM2.0.Nam.sf %>%
+  dplyr::filter(AREA_NAME %in% c("RUNDU RURAL WEST", 
+                                 "RUNDU URBAN", 
+                                 "RUNDU RURAL EAST")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+WindhoekPolys <- ADM2.0.Nam.sf %>%
+  dplyr::filter(AREA_NAME %in% c("WINDHOEK EAST",
+                                 "WINDHOEK RURAL", 
+                                 "WINDHOEK WEST")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+OshakatiPolys <- ADM2.0.Nam.sf %>%
+  dplyr::filter(AREA_NAME %in% c("OSHAKATI EAST", 
+                                 "OSHAKATI WEST")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+KatimaMuliloPolys <- ADM2.0.Nam.sf %>%
+  dplyr::filter(AREA_NAME %in% c("KATIMA MULILO RURAL", 
+                                 "KATIMA MULILO URBAN")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+RunduPolys$ADM2_NAME <- "RUNDU"
+RunduPolys$AREA_NAME <- "RUNDU"
+WindhoekPolys$ADM2_NAME <- "WINDHOEK"
+WindhoekPolys$AREA_NAME <- "WINDHOEK"
+OshakatiPolys$ADM2_NAME <- "OSHAKATI"
+OshakatiPolys$AREA_NAME <- "OSHAKATI"
+KatimaMuliloPolys$ADM2_NAME <- "KATIMA MULILO"
+KatimaMuliloPolys$AREA_NAME <- "KATIMA MULILO"
+
+Polys <- bind_rows(OtherPolys,
+                   RunduPolys,
+                   WindhoekPolys,
+                   OshakatiPolys,
+                   KatimaMuliloPolys)
+
+ADM2.1.Nam.sf <- Polys  %>%
+  add_join_names()
+
+saveRDS(ADM2.1.Nam.sf, file = "data/NamibiaADM2.RDS")
+
+DREAMS_Districts_Namibia_USCB <- c("MUKWE", 
+                             "NDIYONA",
+                             "RUNDU",
+                             "WINDHOEK",
+                             "OSHAKATI",
+                             "OMUTHIYAGWIIPUNDI",
+                             "ONIIPA",
+                             "TSUMEB",
+                             "KATIMA MULILO")
+
+# Village in MUKWE, PEPFAR "Andara" seems to be Mukwe
+# Village in NDIYONA
+# RUNDU RURAL WEST, RUNDU URBAN, RUNDU RURAL EAST
+# WINDHOEK EAST, WINDHOEK RURAL, WINDHOEK WEST
+# OSHAKATI EAST, OSHAKATI WEST
+# OMUTHIYAGWIIPUNDI
+# Located within ONIIPA
+# TSUMEB
+# KATIMA MULILO RURAL, KATIMA MULILO URBAN
+
+
+##Attach demographic data
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Namibia_USCB.xlsx")
+
+Demographic.2 <- Demographic.1 %>%
+   dplyr::select(c("AREA_NAME", 
+           "GEO_MATCH", 
+           "ADM2_NAME", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
+           "F1014_2019",
+           "F1519_2019",
+           "F2024_2019",
+           "F2529_2019",
+           "F1014_2020",
+           "F1519_2020",
+           "F2024_2020",
+           "F2529_2020",
+           "F1014_2021",
+           "F1519_2021",
+           "F2024_2021",
+           "F2529_2021",
+           "F1014_2022",
+           "F1519_2022",
+           "F2024_2022",
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
+
+Demographic.2.Other <- Demographic.2 %>%
+  dplyr::filter(!(AREA_NAME %in% c("RUNDU RURAL WEST", 
+                                   "RUNDU URBAN", 
+                                   "RUNDU RURAL EAST", 
+                                   "WINDHOEK EAST",
+                                   "WINDHOEK RURAL", 
+                                   "WINDHOEK WEST", 
+                                   "OSHAKATI EAST", 
+                                   "OSHAKATI WEST",
+                                   "KATIMA MULILO RURAL", 
+                                   "KATIMA MULILO URBAN")))
+
+Demographic.2.Rundu <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("RUNDU RURAL WEST", 
+                                 "RUNDU URBAN", 
+                                 "RUNDU RURAL EAST")) %>%
+  mutate(AREA_NAME = "RUNDU") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "RUNDU",
+         ADM_LEVEL = 2)
+
+
+Demographic.2.Windhoek <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("WINDHOEK EAST",
+                                 "WINDHOEK RURAL", 
+                                 "WINDHOEK WEST")) %>%
+  mutate(AREA_NAME = "WINDHOEK") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM1_NAME = "WINDHOEK",
+         ADM_LEVEL = 2)
+
+Demographic.2.Oshakati <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("OSHAKATI EAST", 
+                                 "OSHAKATI WEST")) %>%
+  mutate(AREA_NAME = "OSHAKATI") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM1_NAME = "OSHAKATI",
+         ADM_LEVEL = 2)
+
+Demographic.2.KatimaMulilo <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("KATIMA MULILO RURAL", 
+                                 "KATIMA MULILO URBAN")) %>%
+  mutate(AREA_NAME = "KATIMA MULILO") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM1_NAME = "KATIMA MULILO",
+         ADM_LEVEL = 2)
+
+Demographic.3 <- bind_rows(Demographic.2.Other, 
+                           Demographic.2.Rundu, 
+                           Demographic.2.Windhoek,
+                           Demographic.2.Oshakati,
+                           Demographic.2.KatimaMulilo)
+
+Demographic.4 <- Demographic.3 %>%
+  filter(ADM_LEVEL == 2) %>%
+   dplyr::select(-c("ADM_LEVEL"))
+
+#Strip out remaining spatial parameters and unnecessary fields
+ADM2.2.Nam.sf <- ADM2.1.Nam.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng", 
+            "Shape_Area",
+            "ADM_LEVEL",
+            "ADM1_NAME",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "NSO_CODE",
+            "USCBCMNT"))
+
+merged.00 <- merge(ADM2.2.Nam.sf, 
+                   Demographic.4, 
+                   by.x = "AREA_NAME", 
+                   by.y = "AREA_NAME", 
+                   all.x = TRUE)
+
+#Check for any mismatches between paired X and Y dataset shared fields
+
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("ADM1_NAME",
+            "ADM2_NAME.y",
+            "GEO_MATCH.x",
+            "GEO_MATCH.y")) %>%
+  rename(ADM2_NAME = ADM2_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Namibia_USCB)
+
+merged.3b <-pivot_step1(merged.1c)
+
+merged.4b <-pivot_step2(merged.3b, 
+                        "Namibia")
+
+merged.5b <- adjust_ages(merged.4b)
+
+##Export Results
+#For any manual checking
+#write_excel_csv(merged.5b, file = "NamibiaOutput_Denominators.csv") #purely for external inspection
+#For import to app
+saveRDS(merged.5b,file = "preprocessing/data/NamibiaOutput_Denominators.RDS")
+
+# RWANDA ----
+###DENOMINATOR: ADM1s for PEPFAR = SNUs and PSNUs both
+ADM1.1.Rwa.sf <- st_read('preprocessing/data/Rwanda_adm1_uscb_2022.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326) %>%
+  add_join_names()
+
+saveRDS(ADM1.1.Rwa.sf, file = "data/RwandaADM1.RDS")
+
+DREAMS_Districts_Rwanda_USCB <- c("EASTERN PROVINCE", 
+                              "KIGALI",
+                              "SOUTHERN PROVINCE")
+
+##Attach demographic data
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Rwanda_USCB.xlsx")
+
+Demographic.2 <- Demographic.1 %>%
+   dplyr::select(c("AREA_NAME", 
+           "GEO_MATCH", 
+           "ADM1_NAME", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
+           "F1014_2019",
+           "F1519_2019",
+           "F2024_2019",
+           "F2529_2019",
+           "F1014_2020",
+           "F1519_2020",
+           "F2024_2020",
+           "F2529_2020",
+           "F1014_2021",
+           "F1519_2021",
+           "F2024_2021",
+           "F2529_2021",
+           "F1014_2022",
+           "F1519_2022",
+           "F2024_2022",
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
+
+Demographic.3 <- Demographic.2 %>%
+  filter(ADM_LEVEL == 1) %>%
+   dplyr::select(-c("ADM_LEVEL"))
+
+ADM1.2.Rwa.sf <- ADM1.1.Rwa.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
+            "Shape_Area",
+            "ADM_LEVEL",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "GENC_CODE",
+            "FIPS_CODE",
+            "NSO_CODE",
+            "USCBCMNT")) %>%
+  filter(AREA_NAME != "LAKE KIVU")
+
+merged.00 <- merge(ADM1.2.Rwa.sf, 
+                   Demographic.3, 
+                   by.x = "GEO_MATCH", 
+                   by.y = "GEO_MATCH", 
+                   all.x = TRUE)
+
+#Check for any mismatches between paired X and Y dataset shared fields
+
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM1_NAME.x",
+            "ADM1_NAME.y",
+            "GEO_MATCH")) %>%
+  rename(AREA_NAME=AREA_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Rwanda_USCB)
+
+merged.3b <-pivot_step1(merged.1c)
+
+merged.4b <-pivot_step2(merged.3b, 
+                        "Rwanda")
+
+merged.5b <- adjust_ages(merged.4b)
+
+##Export Results
+#For any manual checking
+#write_excel_csv(merged.5b, file = "RwandaOutput_Denominators.csv") #purely for external inspection
+#For import to app
+saveRDS(merged.5b,file = "preprocessing/data/RwandaOutput_Denominators.RDS")
 
 # SOUTH AFRICA ----
 ###DENOMINATOR: Huge country, ADM1s dropped, ADM2s treated as ADM1s, ADM3s treated as ADM2s
@@ -1779,29 +1280,18 @@ saveRDS(merged.7,file = "preprocessing/data/MalawiOutput_Denominators.RDS")
 ##Add surrounding ADM2s to cohort pop by year
 ADM1.1.SAf.sf <- st_read('preprocessing/data/South_Africa_adm2_uscb_2022.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326) 
+  st_transform(crs = 4326)  %>%
+  add_join_names()
 
 ADM1.1.SAf.sf.export <- ADM1.1.SAf.sf %>%
-  select(-c("ADM1_NAME")) %>%
+   dplyr::select(-c("ADM1_NAME")) %>%
   rename("ADM1_NAME" = "ADM2_NAME")
 
-ADM2.1.SAf.sf <- st_read('preprocessing/data/South_Africa_adm3_uscb_2022.shp') %>%
-  st_as_sf() %>%
-  st_transform(crs = 4326)
-
-ADM2.1.SAf.sf.export <- ADM2.1.SAf.sf %>%
-  select(-c("ADM1_NAME")) %>%
-  rename("ADM1_NAME" = "ADM2_NAME") %>%
-  rename("ADM2_NAME" = "ADM3_NAME")
-
 saveRDS(ADM1.1.SAf.sf.export, file = "data/SAfricaADM1.RDS")
-saveRDS(ADM2.1.SAf.sf.export, file = "data/SAfricaADM2.RDS")
-
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
 
 ###NOTE: UTHUNGULU is PEPFAR kz King Cetshwayo District Municipality
 
-DREAMS_Districts_SouthAfrica <- c("ALFRED NZO",
+DREAMS_Districts_SouthAfrica_USCB <- c("ALFRED NZO",
                                   "BOJANALA",
                                   "BUFFALO CITY",
                                   "CAPRICORN",
@@ -1826,415 +1316,19 @@ DREAMS_Districts_SouthAfrica <- c("ALFRED NZO",
                                   "UTHUNGULU",
                                   "ZULULAND")
 
-ADM1.DREAMS.SAf.sf.1 <- ADM1.1.SAf.sf  %>%
-  filter(ADM2_NAME %in% DREAMS_Districts_SouthAfrica)
-
-ADM1.DREAMS.SAf.sf.2.ALFRED_NZO <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "ALFRED NZO")
-
-ADM1.DREAMS.SAf.sf.2.BOJANALA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "BOJANALA")
-
-ADM1.DREAMS.SAf.sf.2.BUFFALO_CITY <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "BUFFALO CITY")
-
-ADM1.DREAMS.SAf.sf.2.CAPRICORN <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "CAPRICORN")
-
-ADM1.DREAMS.SAf.sf.2.CITY_OF_CAPE_TOWN <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "CITY OF CAPE TOWN")
-
-ADM1.DREAMS.SAf.sf.2.CITY_OF_JOHANNESBURG <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "CITY OF JOHANNESBURG")
-
-ADM1.DREAMS.SAf.sf.2.CITY_OF_TSHWANE <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "CITY OF TSHWANE")
-
-ADM1.DREAMS.SAf.sf.2.DOCTOR_KENNETH_KAUNDA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "DOCTOR KENNETH KAUNDA")
-
-ADM1.DREAMS.SAf.sf.2.EHLANZENI <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "EHLANZENI")
-
-ADM1.DREAMS.SAf.sf.2.EKURHULENI <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "EKURHULENI")
-
-ADM1.DREAMS.SAf.sf.2.ETHEKWINI <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "ETHEKWINI")
-
-ADM1.DREAMS.SAf.sf.2.GERT_SIBANDE <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "GERT SIBANDE")
-
-ADM1.DREAMS.SAf.sf.2.LEJWELEPUTSWA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "LEJWELEPUTSWA")
-
-ADM1.DREAMS.SAf.sf.2.MOPANI <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "MOPANI")
-
-ADM1.DREAMS.SAf.sf.2.NGAKA_MODIRI_MOLEMA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "NGAKA MODIRI MOLEMA")
-
-ADM1.DREAMS.SAf.sf.2.NKANGALA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "NKANGALA")
-
-ADM1.DREAMS.SAf.sf.2.OR_TAMBO <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "O.R. TAMBO")
-
-ADM1.DREAMS.SAf.sf.2.SEDIBENG <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "SEDIBENG")
-
-ADM1.DREAMS.SAf.sf.2.THABO_MOFUTSANYANE <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "THABO MOFUTSANYANE")
-
-ADM1.DREAMS.SAf.sf.2.UGU <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "UGU")
-
-ADM1.DREAMS.SAf.sf.2.UMGUNGUNDLOVU <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "UMGUNGUNDLOVU")
-
-ADM1.DREAMS.SAf.sf.2.UTHUKELA <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "UTHUKELA")
-
-ADM1.DREAMS.SAf.sf.2.UTHUNGULU <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "UTHUNGULU")
-
-ADM1.DREAMS.SAf.sf.2.ZULULAND <- ADM1.DREAMS.SAf.sf.1 %>%
-  filter(ADM2_NAME == "ZULULAND")
-
-##Create neighbors list, does not make something it's own neighbor.
-sf::sf_use_s2(FALSE)
-
-ADM2.1.SAf.sf$ALFRED_NZONeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                              ADM1.DREAMS.SAf.sf.2.ALFRED_NZO,
-                                                              sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                           1,
-                                           0)
-
-ADM2.1.SAf.sf$BOJANALANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.BOJANALA,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-ADM2.1.SAf.sf$BUFFALO_CITYNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                ADM1.DREAMS.SAf.sf.2.BUFFALO_CITY,
-                                                                sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                             1,
-                                             0)
-
-
-ADM2.1.SAf.sf$CAPRICORNNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                             ADM1.DREAMS.SAf.sf.2.CAPRICORN,
-                                                             sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                          1,
-                                          0)
-
-ADM2.1.SAf.sf$CITY_OF_CAPE_TOWNNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                     ADM1.DREAMS.SAf.sf.2.CITY_OF_CAPE_TOWN,
-                                                                     sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                  1,
-                                                  0)
-
-ADM2.1.SAf.sf$CITY_OF_JOHANNESBURGNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                        ADM1.DREAMS.SAf.sf.2.CITY_OF_JOHANNESBURG,
-                                                                        sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                     1,
-                                                     0)
-
-ADM2.1.SAf.sf$CITY_OF_TSHWANENeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                   ADM1.DREAMS.SAf.sf.2.CITY_OF_TSHWANE,
-                                                                   sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                1,
-                                                0)
-
-ADM2.1.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                         ADM1.DREAMS.SAf.sf.2.DOCTOR_KENNETH_KAUNDA,
-                                                                         sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                      1,
-                                                      0)
-
-ADM2.1.SAf.sf$EHLANZENINeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                             ADM1.DREAMS.SAf.sf.2.EHLANZENI,
-                                                             sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                          1,
-                                          0)
-
-ADM2.1.SAf.sf$EKURHULENINeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                              ADM1.DREAMS.SAf.sf.2.EKURHULENI,
-                                                              sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                           1,
-                                           0)
-
-ADM2.1.SAf.sf$ETHEKWININeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                             ADM1.DREAMS.SAf.sf.2.ETHEKWINI,
-                                                             sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                          1,
-                                          0)
-
-ADM2.1.SAf.sf$GERT_SIBANDENeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                ADM1.DREAMS.SAf.sf.2.GERT_SIBANDE,
-                                                                sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                             1,
-                                             0)
-
-ADM2.1.SAf.sf$LEJWELEPUTSWANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                 ADM1.DREAMS.SAf.sf.2.LEJWELEPUTSWA,
-                                                                 sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                              1,
-                                              0)
-
-ADM2.1.SAf.sf$MOPANINeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                          ADM1.DREAMS.SAf.sf.2.MOPANI,
-                                                          sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                       1,
-                                       0)
-
-ADM2.1.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                       ADM1.DREAMS.SAf.sf.2.NGAKA_MODIRI_MOLEMA,
-                                                                       sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                    1,
-                                                    0)
-
-
-ADM2.1.SAf.sf$NKANGALANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.NKANGALA,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-ADM2.1.SAf.sf$OR_TAMBONeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.OR_TAMBO,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-ADM2.1.SAf.sf$SEDIBENGNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.SEDIBENG,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-ADM2.1.SAf.sf$THABO_MOFUTSANYANENeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                      ADM1.DREAMS.SAf.sf.2.THABO_MOFUTSANYANE,
-                                                                      sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                                   1,
-                                                   0)
-
-ADM2.1.SAf.sf$UGUNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                       ADM1.DREAMS.SAf.sf.2.UGU,
-                                                       sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                    1,
-                                    0)
-
-ADM2.1.SAf.sf$UMGUNGUNDLOVUNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                                 ADM1.DREAMS.SAf.sf.2.UMGUNGUNDLOVU,
-                                                                 sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                              1,
-                                              0)
-
-
-ADM2.1.SAf.sf$UTHUKELANeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.UTHUKELA,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-ADM2.1.SAf.sf$UTHUNGULUNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                             ADM1.DREAMS.SAf.sf.2.UTHUNGULU,
-                                                             sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                          1,
-                                          0)
-
-ADM2.1.SAf.sf$ZULULANDNeighbor <- ifelse((sf::st_intersects(ADM2.1.SAf.sf, 
-                                                            ADM1.DREAMS.SAf.sf.2.ZULULAND,
-                                                            sparse = F) & !(ADM2.1.SAf.sf$ADM2_NAME %in% DREAMS_Districts_SouthAfrica)),
-                                         1,
-                                         0)
-
-sf::sf_use_s2(TRUE)
-# 
-# sf_check(ADM2.1.SAf.sf)
-# # 
-# poly_check(ADM2.1.SAf.sf, ADM1.DREAMS.SAf.sf.2.EKURHULENI)
-
-
-#Re-adds ones from the district
-ADM2.2.SAf.sf <- ADM2.1.SAf.sf
-
-ADM2.2.SAf.sf$ALFRED_NZONeighbor  <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "ALFRED NZO" | ADM2.2.SAf.sf$ALFRED_NZONeighbor  == 1),
-                                            1,
-                                            0)
-
-ADM2.2.SAf.sf$BOJANALANeighbor  <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "BOJANALA" | ADM2.2.SAf.sf$BOJANALANeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.SAf.sf$BUFFALO_CITYNeighbor  <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "BUFFALO CITY" | ADM2.2.SAf.sf$BUFFALO_CITYNeighbor == 1),
-                                              1,
-                                              0)
-
-ADM2.2.SAf.sf$CAPRICORNNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "CAPRICORN" | ADM2.2.SAf.sf$CAPRICORNNeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.SAf.sf$CITY_OF_CAPE_TOWNNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "CITY OF CAPE TOWN" | ADM2.2.SAf.sf$CITY_OF_CAPE_TOWNNeighbor == 1),
-                                                  1,
-                                                  0)
-
-ADM2.2.SAf.sf$CITY_OF_JOHANNESBURGNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "CITY OF JOHANNESBURG" | ADM2.2.SAf.sf$CITY_OF_JOHANNESBURGNeighbor == 1),
-                                                     1,
-                                                     0)
-
-ADM2.2.SAf.sf$CITY_OF_TSHWANENeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "CITY OF TSHWANE" | ADM2.2.SAf.sf$CITY_OF_TSHWANENeighbor  == 1),
-                                                1,
-                                                0)
-
-ADM2.2.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "DOCTOR KENNETH KAUNDA" | ADM2.2.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor == 1),
-                                                      1,
-                                                      0)
-
-ADM2.2.SAf.sf$EHLANZENINeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "EHLANZENI" | ADM2.2.SAf.sf$EHLANZENINeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.SAf.sf$EKURHULENINeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "EKURHULENI" | ADM2.2.SAf.sf$EKURHULENINeighbor == 1),
-                                           1,
-                                           0)
-
-ADM2.2.SAf.sf$ETHEKWININeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "ETHEKWINI" | ADM2.2.SAf.sf$ETHEKWININeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.SAf.sf$GERT_SIBANDENeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "GERT SIBANDE" | ADM2.2.SAf.sf$GERT_SIBANDENeighbor == 1),
-                                             1,
-                                             0)
-
-ADM2.2.SAf.sf$LEJWELEPUTSWANeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "LEJWELEPUTSWA" | ADM2.2.SAf.sf$LEJWELEPUTSWANeighbor  == 1),
-                                              1,
-                                              0)
-
-ADM2.2.SAf.sf$MOPANINeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "MOPANI" | ADM2.2.SAf.sf$MOPANINeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "NGAKA MODIRI MOLEMA" | ADM2.2.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor == 1),
-                                                    1,
-                                                    0)
-
-ADM2.2.SAf.sf$NKANGALANeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "NKANGALA" | ADM2.2.SAf.sf$NKANGALANeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.SAf.sf$OR_TAMBONeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "O.R. TAMBO" | ADM2.2.SAf.sf$OR_TAMBONeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.SAf.sf$SEDIBENGNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "SEDIBENG" | ADM2.2.SAf.sf$SEDIBENGNeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.SAf.sf$THABO_MOFUTSANYANENeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "THABO MOFUTSANYANE" | ADM2.2.SAf.sf$THABO_MOFUTSANYANENeighbor  == 1),
-                                                   1,
-                                                   0)
-
-ADM2.2.SAf.sf$UGUNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "UGU" | ADM2.2.SAf.sf$UGUNeighbor == 1),
-                                    1,
-                                    0)
-
-ADM2.2.SAf.sf$UMGUNGUNDLOVUNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "UMGUNGUNDLOVU" | ADM2.2.SAf.sf$UMGUNGUNDLOVUNeighbor == 1),
-                                              1,
-                                              0)
-
-ADM2.2.SAf.sf$UTHUKELANeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "UTHUKELA" | ADM2.2.SAf.sf$UTHUKELANeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.SAf.sf$UTHUNGULUNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "UTHUNGULU" | ADM2.2.SAf.sf$UTHUNGULUNeighbor == 1),
-                                          1,
-                                          0)
-
-ADM2.2.SAf.sf$ZULULANDNeighbor <- ifelse((ADM2.2.SAf.sf$ADM2_NAME == "ZULULAND" | ADM2.2.SAf.sf$ZULULANDNeighbor == 1),
-                                         1,
-                                         0)
-
-
-ADM2.2.SAf.sf <- ADM2.2.SAf.sf %>%
-  as.data.frame()
-
-neighborsLookupSouthAfrica <- ADM2.2.SAf.sf
-
-ADM2.2.SAf.sf$ALFRED_NZONeighbor <- c(ADM2.2.SAf.sf$ALFRED_NZONeighbor)
-ADM2.2.SAf.sf$BOJANALANeighbor <- c(ADM2.2.SAf.sf$BOJANALANeighbor)
-ADM2.2.SAf.sf$BUFFALO_CITYNeighbor <- c(ADM2.2.SAf.sf$BUFFALO_CITYNeighbor)
-ADM2.2.SAf.sf$CAPRICORNNeighbor <- c(ADM2.2.SAf.sf$CAPRICORNNeighbor)
-ADM2.2.SAf.sf$CITY_OF_CAPE_TOWNNeighbor <- c(ADM2.2.SAf.sf$CITY_OF_CAPE_TOWNNeighbor)
-ADM2.2.SAf.sf$CITY_OF_JOHANNESBURGNeighbor <- c(ADM2.2.SAf.sf$CITY_OF_JOHANNESBURGNeighbor)
-ADM2.2.SAf.sf$CITY_OF_TSHWANENeighbor <- c(ADM2.2.SAf.sf$CITY_OF_TSHWANENeighbor)
-ADM2.2.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor <- c(ADM2.2.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor)
-ADM2.2.SAf.sf$EHLANZENINeighbor <- c(ADM2.2.SAf.sf$EHLANZENINeighbor)
-ADM2.2.SAf.sf$EKURHULENINeighbor <- c(ADM2.2.SAf.sf$EKURHULENINeighbor)
-ADM2.2.SAf.sf$ETHEKWININeighbor <- c(ADM2.2.SAf.sf$ETHEKWININeighbor)
-ADM2.2.SAf.sf$GERT_SIBANDENeighbor <- c(ADM2.2.SAf.sf$GERT_SIBANDENeighbor)
-ADM2.2.SAf.sf$LEJWELEPUTSWANeighbor <- c(ADM2.2.SAf.sf$LEJWELEPUTSWANeighbor)
-ADM2.2.SAf.sf$MOPANINeighbor <- c(ADM2.2.SAf.sf$MOPANINeighbor)
-ADM2.2.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor <- c(ADM2.2.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor)
-ADM2.2.SAf.sf$NKANGALANeighbor <- c(ADM2.2.SAf.sf$NKANGALANeighbor)
-ADM2.2.SAf.sf$OR_TAMBONeighbor <- c(ADM2.2.SAf.sf$OR_TAMBONeighbor)
-ADM2.2.SAf.sf$SEDIBENGNeighbor <- c(ADM2.2.SAf.sf$SEDIBENGNeighbor)
-ADM2.2.SAf.sf$THABO_MOFUTSANYANENeighbor <- c(ADM2.2.SAf.sf$THABO_MOFUTSANYANENeighbor)
-ADM2.2.SAf.sf$UGUNeighbor <- c(ADM2.2.SAf.sf$UGUNeighbor)
-ADM2.2.SAf.sf$UMGUNGUNDLOVUNeighbor <- c(ADM2.2.SAf.sf$UMGUNGUNDLOVUNeighbor)
-ADM2.2.SAf.sf$UTHUKELANeighbor <- c(ADM2.2.SAf.sf$UTHUKELANeighbor)
-ADM2.2.SAf.sf$UTHUNGULUNeighbor <- c(ADM2.2.SAf.sf$UTHUNGULUNeighbor)
-ADM2.2.SAf.sf$ZULULANDNeighbor <- c(ADM2.2.SAf.sf$ZULULANDNeighbor)
-
-#sf_check(ADM2.2.Zim.sf)
-
-ADM2.2.SAf.sf$DREAMSneighbors <- ADM2.2.SAf.sf$ALFRED_NZONeighbor +
-  ADM2.2.SAf.sf$BOJANALANeighbor +
-  ADM2.2.SAf.sf$BUFFALO_CITYNeighbor +
-  ADM2.2.SAf.sf$CAPRICORNNeighbor +
-  ADM2.2.SAf.sf$CITY_OF_CAPE_TOWNNeighbor +
-  ADM2.2.SAf.sf$CITY_OF_JOHANNESBURGNeighbor +
-  ADM2.2.SAf.sf$CITY_OF_TSHWANENeighbor +
-  ADM2.2.SAf.sf$DOCTOR_KENNETH_KAUNDANeighbor +
-  ADM2.2.SAf.sf$EHLANZENINeighbor +
-  ADM2.2.SAf.sf$EKURHULENINeighbor +
-  ADM2.2.SAf.sf$ETHEKWININeighbor +
-  ADM2.2.SAf.sf$GERT_SIBANDENeighbor +
-  ADM2.2.SAf.sf$LEJWELEPUTSWANeighbor +
-  ADM2.2.SAf.sf$MOPANINeighbor +
-  ADM2.2.SAf.sf$NGAKA_MODIRI_MOLEMANeighbor +
-  ADM2.2.SAf.sf$NKANGALANeighbor +
-  ADM2.2.SAf.sf$OR_TAMBONeighbor +
-  ADM2.2.SAf.sf$SEDIBENGNeighbor +
-  ADM2.2.SAf.sf$THABO_MOFUTSANYANENeighbor +
-  ADM2.2.SAf.sf$UGUNeighbor +
-  ADM2.2.SAf.sf$UMGUNGUNDLOVUNeighbor +
-  ADM2.2.SAf.sf$UTHUKELANeighbor +
-  ADM2.2.SAf.sf$UTHUNGULUNeighbor +
-  ADM2.2.SAf.sf$ZULULANDNeighbor
-
-ADM2.2.SAf.sf <- ADM2.2.SAf.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM2_NAME %in% DREAMS_Districts_SouthAfrica) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-
-#sf_check(ADM2.2.Zim.sf)
-
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/SouthAfrica_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
            "ADM1_NAME",
            "ADM2_NAME",
-           "ADM3_NAME",
-           "ADM_LEVEL", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -2250,15 +1344,20 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
-  filter(ADM_LEVEL == 3) %>%
-  select(-c("ADM_LEVEL"))
+  filter(ADM_LEVEL == 2) %>%
+   dplyr::select(-c("ADM_LEVEL"))
 
 #Strip out remaining spatial parameters and unnecessary fields
-ADM2.3.SAf.sf <- ADM2.2.SAf.sf %>% 
-  select(-c("Shape_Leng", 
+ADM1.2.SAf.sf <- ADM1.1.SAf.sf %>% 
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng", 
             "Shape_Area",
             "ADM_LEVEL",
             "NSO_CODE",
@@ -2267,7 +1366,7 @@ ADM2.3.SAf.sf <- ADM2.2.SAf.sf %>%
             "geometry",
             "ADM2_NAME"))
 
-merged.00 <- merge(ADM2.3.SAf.sf, 
+merged.00 <- merge(ADM1.2.SAf.sf, 
                    Demographic.3, 
                    by.x = "GEO_MATCH", 
                    by.y = "GEO_MATCH", 
@@ -2277,1336 +1376,65 @@ merged.00 <- merge(ADM2.3.SAf.sf,
 
 ##Split off original figures for later re-join
 merged.1c <- merged.00 %>%
-  select(-c("AREA_NAME.y",
-            "ALFRED_NZONeighbor",
-            "BOJANALANeighbor",
-            "BUFFALO_CITYNeighbor",
-            "CAPRICORNNeighbor",
-            "CITY_OF_CAPE_TOWNNeighbor",
-            "CITY_OF_JOHANNESBURGNeighbor",
-            "CITY_OF_TSHWANENeighbor",
-            "DOCTOR_KENNETH_KAUNDANeighbor",
-            "EHLANZENINeighbor",
-            "EKURHULENINeighbor",
-            "ETHEKWININeighbor",
-            "GERT_SIBANDENeighbor",
-            "LEJWELEPUTSWANeighbor",
-            "MOPANINeighbor",
-            "NGAKA_MODIRI_MOLEMANeighbor",
-            "NKANGALANeighbor",
-            "OR_TAMBONeighbor",
-            "SEDIBENGNeighbor",
-            "THABO_MOFUTSANYANENeighbor",
-            "UGUNeighbor",
-            "UMGUNGUNDLOVUNeighbor",
-            "UTHUKELANeighbor",
-            "UTHUNGULUNeighbor",
-            "ZULULANDNeighbor",
+   dplyr::select(-c("AREA_NAME.y",
             "ADM1_NAME.y",
-            "ADM3_NAME.y",
-            "GEO_MATCH",
-            "DREAMSneighbors")) %>%
+            "GEO_MATCH")) %>%
   rename(AREA_NAME=AREA_NAME.x) %>%
   rename(ADM1_NAME=ADM1_NAME.x) %>%
-  rename(ADM3_NAME=ADM3_NAME.x) %>%
-  filter(ADM2_NAME %in% DREAMS_Districts_SouthAfrica)
+  filter(ADM2_NAME %in% DREAMS_Districts_SouthAfrica_USCB)
 
+merged.3b <-pivot_step1(merged.1c)
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
+merged.4b <-pivot_step2(merged.3b, 
+                        "South Africa")
 
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-##Create new pop total for each
-#Take those that border X (inc. X itself and exc. other DREAMS districts)
-merged.1.ALFRED_NZO <- merged.1 %>%
-  filter(ALFRED_NZONeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BOJANALA",
-                                                                              "BUFFALO CITY",
-                                                                              "CAPRICORN",
-                                                                              "CITY OF CAPE TOWN",
-                                                                              "CITY OF JOHANNESBURG",
-                                                                              "CITY OF TSHWANE",
-                                                                              "DOCTOR KENNETH KAUNDA",
-                                                                              "EHLANZENI",
-                                                                              "EKURHULENI",
-                                                                              "ETHEKWINI",
-                                                                              "GERT SIBANDE",
-                                                                              "LEJWELEPUTSWA",
-                                                                              "MOPANI",
-                                                                              "NGAKA MODIRI MOLEMA",
-                                                                              "NKANGALA",
-                                                                              "O.R. TAMBO",
-                                                                              "SEDIBENG",
-                                                                              "THABO MOFUTSANYANE",
-                                                                              "UGU",
-                                                                              "UMGUNGUNDLOVU",
-                                                                              "UTHUKELA",
-                                                                              "UTHUNGULU",
-                                                                              "ZULULAND")))) %>%
-  group_by(ALFRED_NZONeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.BOJANALA <- merged.1 %>%
-  filter(BOJANALANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "NKANGALA",
-                                                                            "O.R. TAMBO",
-                                                                            "SEDIBENG",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUKELA",
-                                                                            "UTHUNGULU",
-                                                                            "ZULULAND")))) %>%
-  group_by(BOJANALANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.BUFFALO_CITY <- merged.1 %>%
-  filter(BUFFALO_CITYNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                "BOJANALA",
-                                                                                "CAPRICORN",
-                                                                                "CITY OF CAPE TOWN",
-                                                                                "CITY OF JOHANNESBURG",
-                                                                                "CITY OF TSHWANE",
-                                                                                "DOCTOR KENNETH KAUNDA",
-                                                                                "EHLANZENI",
-                                                                                "EKURHULENI",
-                                                                                "ETHEKWINI",
-                                                                                "GERT SIBANDE",
-                                                                                "LEJWELEPUTSWA",
-                                                                                "MOPANI",
-                                                                                "NGAKA MODIRI MOLEMA",
-                                                                                "NKANGALA",
-                                                                                "O.R. TAMBO",
-                                                                                "SEDIBENG",
-                                                                                "THABO MOFUTSANYANE",
-                                                                                "UGU",
-                                                                                "UMGUNGUNDLOVU",
-                                                                                "UTHUKELA",
-                                                                                "UTHUNGULU",
-                                                                                "ZULULAND")))) %>%
-  group_by(BUFFALO_CITYNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.CAPRICORN <- merged.1 %>%
-  filter(CAPRICORNNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                             "BOJANALA",
-                                                                             "BUFFALO CITY",
-                                                                             "CITY OF CAPE TOWN",
-                                                                             "CITY OF JOHANNESBURG",
-                                                                             "CITY OF TSHWANE",
-                                                                             "DOCTOR KENNETH KAUNDA",
-                                                                             "EHLANZENI",
-                                                                             "EKURHULENI",
-                                                                             "ETHEKWINI",
-                                                                             "GERT SIBANDE",
-                                                                             "LEJWELEPUTSWA",
-                                                                             "MOPANI",
-                                                                             "NGAKA MODIRI MOLEMA",
-                                                                             "NKANGALA",
-                                                                             "O.R. TAMBO",
-                                                                             "SEDIBENG",
-                                                                             "THABO MOFUTSANYANE",
-                                                                             "UGU",
-                                                                             "UMGUNGUNDLOVU",
-                                                                             "UTHUKELA",
-                                                                             "UTHUNGULU",
-                                                                             "ZULULAND")))) %>%
-  group_by(CAPRICORNNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.CITY_OF_CAPE_TOWN <- merged.1 %>%
-  filter(CITY_OF_CAPE_TOWNNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                     "BOJANALA",
-                                                                                     "BUFFALO CITY",
-                                                                                     "CAPRICORN",
-                                                                                     "CITY OF JOHANNESBURG",
-                                                                                     "CITY OF TSHWANE",
-                                                                                     "DOCTOR KENNETH KAUNDA",
-                                                                                     "EHLANZENI",
-                                                                                     "EKURHULENI",
-                                                                                     "ETHEKWINI",
-                                                                                     "GERT SIBANDE",
-                                                                                     "LEJWELEPUTSWA",
-                                                                                     "MOPANI",
-                                                                                     "NGAKA MODIRI MOLEMA",
-                                                                                     "NKANGALA",
-                                                                                     "O.R. TAMBO",
-                                                                                     "SEDIBENG",
-                                                                                     "THABO MOFUTSANYANE",
-                                                                                     "UGU",
-                                                                                     "UMGUNGUNDLOVU",
-                                                                                     "UTHUKELA",
-                                                                                     "UTHUNGULU",
-                                                                                     "ZULULAND")))) %>%
-  group_by(CITY_OF_CAPE_TOWNNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.CITY_OF_JOHANNESBURG <- merged.1 %>%
-  filter(CITY_OF_JOHANNESBURGNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                        "BOJANALA",
-                                                                                        "BUFFALO CITY",
-                                                                                        "CAPRICORN",
-                                                                                        "CITY OF CAPE TOWN",
-                                                                                        "CITY OF TSHWANE",
-                                                                                        "DOCTOR KENNETH KAUNDA",
-                                                                                        "EHLANZENI",
-                                                                                        "EKURHULENI",
-                                                                                        "ETHEKWINI",
-                                                                                        "GERT SIBANDE",
-                                                                                        "LEJWELEPUTSWA",
-                                                                                        "MOPANI",
-                                                                                        "NGAKA MODIRI MOLEMA",
-                                                                                        "NKANGALA",
-                                                                                        "O.R. TAMBO",
-                                                                                        "SEDIBENG",
-                                                                                        "THABO MOFUTSANYANE",
-                                                                                        "UGU",
-                                                                                        "UMGUNGUNDLOVU",
-                                                                                        "UTHUKELA",
-                                                                                        "UTHUNGULU",
-                                                                                        "ZULULAND")))) %>%
-  group_by(CITY_OF_JOHANNESBURGNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.CITY_OF_TSHWANE <- merged.1 %>%
-  filter(CITY_OF_TSHWANENeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                   "BOJANALA",
-                                                                                   "BUFFALO CITY",
-                                                                                   "CAPRICORN",
-                                                                                   "CITY OF CAPE TOWN",
-                                                                                   "CITY OF JOHANNESBURG",
-                                                                                   "DOCTOR KENNETH KAUNDA",
-                                                                                   "EHLANZENI",
-                                                                                   "EKURHULENI",
-                                                                                   "ETHEKWINI",
-                                                                                   "GERT SIBANDE",
-                                                                                   "LEJWELEPUTSWA",
-                                                                                   "MOPANI",
-                                                                                   "NGAKA MODIRI MOLEMA",
-                                                                                   "NKANGALA",
-                                                                                   "O.R. TAMBO",
-                                                                                   "SEDIBENG",
-                                                                                   "THABO MOFUTSANYANE",
-                                                                                   "UGU",
-                                                                                   "UMGUNGUNDLOVU",
-                                                                                   "UTHUKELA",
-                                                                                   "UTHUNGULU",
-                                                                                   "ZULULAND")))) %>%
-  group_by(CITY_OF_TSHWANENeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.DOCTOR_KENNETH_KAUNDA <- merged.1 %>%
-  filter(DOCTOR_KENNETH_KAUNDANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                         "BOJANALA",
-                                                                                         "BUFFALO CITY",
-                                                                                         "CAPRICORN",
-                                                                                         "CITY OF CAPE TOWN",
-                                                                                         "CITY OF JOHANNESBURG",
-                                                                                         "CITY OF TSHWANE",
-                                                                                         "EHLANZENI",
-                                                                                         "EKURHULENI",
-                                                                                         "ETHEKWINI",
-                                                                                         "GERT SIBANDE",
-                                                                                         "LEJWELEPUTSWA",
-                                                                                         "MOPANI",
-                                                                                         "NGAKA MODIRI MOLEMA",
-                                                                                         "NKANGALA",
-                                                                                         "O.R. TAMBO",
-                                                                                         "SEDIBENG",
-                                                                                         "THABO MOFUTSANYANE",
-                                                                                         "UGU",
-                                                                                         "UMGUNGUNDLOVU",
-                                                                                         "UTHUKELA",
-                                                                                         "UTHUNGULU",
-                                                                                         "ZULULAND")))) %>%
-  group_by(DOCTOR_KENNETH_KAUNDANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.EHLANZENI <- merged.1 %>%
-  filter(EHLANZENINeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                             "BOJANALA",
-                                                                             "BUFFALO CITY",
-                                                                             "CAPRICORN",
-                                                                             "CITY OF CAPE TOWN",
-                                                                             "CITY OF JOHANNESBURG",
-                                                                             "CITY OF TSHWANE",
-                                                                             "DOCTOR KENNETH KAUNDA",
-                                                                             "EKURHULENI",
-                                                                             "ETHEKWINI",
-                                                                             "GERT SIBANDE",
-                                                                             "LEJWELEPUTSWA",
-                                                                             "MOPANI",
-                                                                             "NGAKA MODIRI MOLEMA",
-                                                                             "NKANGALA",
-                                                                             "O.R. TAMBO",
-                                                                             "SEDIBENG",
-                                                                             "THABO MOFUTSANYANE",
-                                                                             "UGU",
-                                                                             "UMGUNGUNDLOVU",
-                                                                             "UTHUKELA",
-                                                                             "UTHUNGULU",
-                                                                             "ZULULAND")))) %>%
-  group_by(EHLANZENINeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.EKURHULENI <- merged.1 %>%
-  filter(EKURHULENINeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                              "BOJANALA",
-                                                                              "BUFFALO CITY",
-                                                                              "CAPRICORN",
-                                                                              "CITY OF CAPE TOWN",
-                                                                              "CITY OF JOHANNESBURG",
-                                                                              "CITY OF TSHWANE",
-                                                                              "DOCTOR KENNETH KAUNDA",
-                                                                              "EHLANZENI",
-                                                                              "ETHEKWINI",
-                                                                              "GERT SIBANDE",
-                                                                              "LEJWELEPUTSWA",
-                                                                              "MOPANI",
-                                                                              "NGAKA MODIRI MOLEMA",
-                                                                              "NKANGALA",
-                                                                              "O.R. TAMBO",
-                                                                              "SEDIBENG",
-                                                                              "THABO MOFUTSANYANE",
-                                                                              "UGU",
-                                                                              "UMGUNGUNDLOVU",
-                                                                              "UTHUKELA",
-                                                                              "UTHUNGULU",
-                                                                              "ZULULAND")))) %>%
-  group_by(EKURHULENINeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.ETHEKWINI <- merged.1 %>%
-  filter(ETHEKWININeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                             "BOJANALA",
-                                                                             "BUFFALO CITY",
-                                                                             "CAPRICORN",
-                                                                             "CITY OF CAPE TOWN",
-                                                                             "CITY OF JOHANNESBURG",
-                                                                             "CITY OF TSHWANE",
-                                                                             "DOCTOR KENNETH KAUNDA",
-                                                                             "EHLANZENI",
-                                                                             "EKURHULENI",
-                                                                             "GERT SIBANDE",
-                                                                             "LEJWELEPUTSWA",
-                                                                             "MOPANI",
-                                                                             "NGAKA MODIRI MOLEMA",
-                                                                             "NKANGALA",
-                                                                             "O.R. TAMBO",
-                                                                             "SEDIBENG",
-                                                                             "THABO MOFUTSANYANE",
-                                                                             "UGU",
-                                                                             "UMGUNGUNDLOVU",
-                                                                             "UTHUKELA",
-                                                                             "UTHUNGULU",
-                                                                             "ZULULAND")))) %>%
-  group_by(ETHEKWININeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.GERT_SIBANDE <- merged.1 %>%
-  filter(GERT_SIBANDENeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                "BOJANALA",
-                                                                                "BUFFALO CITY",
-                                                                                "CAPRICORN",
-                                                                                "CITY OF CAPE TOWN",
-                                                                                "CITY OF JOHANNESBURG",
-                                                                                "CITY OF TSHWANE",
-                                                                                "DOCTOR KENNETH KAUNDA",
-                                                                                "EHLANZENI",
-                                                                                "EKURHULENI",
-                                                                                "ETHEKWINI",
-                                                                                "LEJWELEPUTSWA",
-                                                                                "MOPANI",
-                                                                                "NGAKA MODIRI MOLEMA",
-                                                                                "NKANGALA",
-                                                                                "O.R. TAMBO",
-                                                                                "SEDIBENG",
-                                                                                "THABO MOFUTSANYANE",
-                                                                                "UGU",
-                                                                                "UMGUNGUNDLOVU",
-                                                                                "UTHUKELA",
-                                                                                "UTHUNGULU",
-                                                                                "ZULULAND")))) %>%
-  group_by(GERT_SIBANDENeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.LEJWELEPUTSWA <- merged.1 %>%
-  filter(LEJWELEPUTSWANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                 "BOJANALA",
-                                                                                 "BUFFALO CITY",
-                                                                                 "CAPRICORN",
-                                                                                 "CITY OF CAPE TOWN",
-                                                                                 "CITY OF JOHANNESBURG",
-                                                                                 "CITY OF TSHWANE",
-                                                                                 "DOCTOR KENNETH KAUNDA",
-                                                                                 "EHLANZENI",
-                                                                                 "EKURHULENI",
-                                                                                 "ETHEKWINI",
-                                                                                 "GERT SIBANDE",
-                                                                                 "MOPANI",
-                                                                                 "NGAKA MODIRI MOLEMA",
-                                                                                 "NKANGALA",
-                                                                                 "O.R. TAMBO",
-                                                                                 "SEDIBENG",
-                                                                                 "THABO MOFUTSANYANE",
-                                                                                 "UGU",
-                                                                                 "UMGUNGUNDLOVU",
-                                                                                 "UTHUKELA",
-                                                                                 "UTHUNGULU",
-                                                                                 "ZULULAND")))) %>%
-  group_by(LEJWELEPUTSWANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.MOPANI <- merged.1 %>%
-  filter(MOPANINeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                          "BOJANALA",
-                                                                          "BUFFALO CITY",
-                                                                          "CAPRICORN",
-                                                                          "CITY OF CAPE TOWN",
-                                                                          "CITY OF JOHANNESBURG",
-                                                                          "CITY OF TSHWANE",
-                                                                          "DOCTOR KENNETH KAUNDA",
-                                                                          "EHLANZENI",
-                                                                          "EKURHULENI",
-                                                                          "ETHEKWINI",
-                                                                          "GERT SIBANDE",
-                                                                          "LEJWELEPUTSWA",
-                                                                          "NGAKA MODIRI MOLEMA",
-                                                                          "NKANGALA",
-                                                                          "O.R. TAMBO",
-                                                                          "SEDIBENG",
-                                                                          "THABO MOFUTSANYANE",
-                                                                          "UGU",
-                                                                          "UMGUNGUNDLOVU",
-                                                                          "UTHUKELA",
-                                                                          "UTHUNGULU",
-                                                                          "ZULULAND")))) %>%
-  group_by(MOPANINeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.NGAKA_MODIRI_MOLEMA <- merged.1 %>%
-  filter(NGAKA_MODIRI_MOLEMANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                       "BOJANALA",
-                                                                                       "BUFFALO CITY",
-                                                                                       "CAPRICORN",
-                                                                                       "CITY OF CAPE TOWN",
-                                                                                       "CITY OF JOHANNESBURG",
-                                                                                       "CITY OF TSHWANE",
-                                                                                       "DOCTOR KENNETH KAUNDA",
-                                                                                       "EHLANZENI",
-                                                                                       "EKURHULENI",
-                                                                                       "ETHEKWINI",
-                                                                                       "GERT SIBANDE",
-                                                                                       "LEJWELEPUTSWA",
-                                                                                       "MOPANI",
-                                                                                       "NKANGALA",
-                                                                                       "O.R. TAMBO",
-                                                                                       "SEDIBENG",
-                                                                                       "THABO MOFUTSANYANE",
-                                                                                       "UGU",
-                                                                                       "UMGUNGUNDLOVU",
-                                                                                       "UTHUKELA",
-                                                                                       "UTHUNGULU",
-                                                                                       "ZULULAND")))) %>%
-  group_by(NGAKA_MODIRI_MOLEMANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.NKANGALA <- merged.1 %>%
-  filter(NKANGALANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BOJANALA",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "O.R. TAMBO",
-                                                                            "SEDIBENG",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUKELA",
-                                                                            "UTHUNGULU",
-                                                                            "ZULULAND")))) %>%
-  group_by(NKANGALANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.OR_TAMBO <- merged.1 %>%
-  filter(OR_TAMBONeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BOJANALA",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "NKANGALA",
-                                                                            "SEDIBENG",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUKELA",
-                                                                            "UTHUNGULU",
-                                                                            "ZULULAND")))) %>%
-  group_by(OR_TAMBONeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.SEDIBENG <- merged.1 %>%
-  filter(SEDIBENGNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BOJANALA",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "NKANGALA",
-                                                                            "O.R. TAMBO",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUKELA",
-                                                                            "UTHUNGULU",
-                                                                            "ZULULAND")))) %>%
-  group_by(SEDIBENGNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.THABO_MOFUTSANYANE <- merged.1 %>%
-  filter(THABO_MOFUTSANYANENeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                      "BOJANALA",
-                                                                                      "BUFFALO CITY",
-                                                                                      "CAPRICORN",
-                                                                                      "CITY OF CAPE TOWN",
-                                                                                      "CITY OF JOHANNESBURG",
-                                                                                      "CITY OF TSHWANE",
-                                                                                      "DOCTOR KENNETH KAUNDA",
-                                                                                      "EHLANZENI",
-                                                                                      "EKURHULENI",
-                                                                                      "ETHEKWINI",
-                                                                                      "GERT SIBANDE",
-                                                                                      "LEJWELEPUTSWA",
-                                                                                      "MOPANI",
-                                                                                      "NGAKA MODIRI MOLEMA",
-                                                                                      "NKANGALA",
-                                                                                      "O.R. TAMBO",
-                                                                                      "SEDIBENG",
-                                                                                      "UGU",
-                                                                                      "UMGUNGUNDLOVU",
-                                                                                      "UTHUKELA",
-                                                                                      "UTHUNGULU",
-                                                                                      "ZULULAND")))) %>%
-  group_by(THABO_MOFUTSANYANENeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.UGU <- merged.1 %>%
-  filter(UGUNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                       "BOJANALA",
-                                                                       "BUFFALO CITY",
-                                                                       "CAPRICORN",
-                                                                       "CITY OF CAPE TOWN",
-                                                                       "CITY OF JOHANNESBURG",
-                                                                       "CITY OF TSHWANE",
-                                                                       "DOCTOR KENNETH KAUNDA",
-                                                                       "EHLANZENI",
-                                                                       "EKURHULENI",
-                                                                       "ETHEKWINI",
-                                                                       "GERT SIBANDE",
-                                                                       "LEJWELEPUTSWA",
-                                                                       "MOPANI",
-                                                                       "NGAKA MODIRI MOLEMA",
-                                                                       "NKANGALA",
-                                                                       "O.R. TAMBO",
-                                                                       "SEDIBENG",
-                                                                       "THABO MOFUTSANYANE",
-                                                                       "UMGUNGUNDLOVU",
-                                                                       "UTHUKELA",
-                                                                       "UTHUNGULU",
-                                                                       "ZULULAND")))) %>%
-  group_by(UGUNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.UMGUNGUNDLOVU <- merged.1 %>%
-  filter(UMGUNGUNDLOVUNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                                 "BOJANALA",
-                                                                                 "BUFFALO CITY",
-                                                                                 "CAPRICORN",
-                                                                                 "CITY OF CAPE TOWN",
-                                                                                 "CITY OF JOHANNESBURG",
-                                                                                 "CITY OF TSHWANE",
-                                                                                 "DOCTOR KENNETH KAUNDA",
-                                                                                 "EHLANZENI",
-                                                                                 "EKURHULENI",
-                                                                                 "ETHEKWINI",
-                                                                                 "GERT SIBANDE",
-                                                                                 "LEJWELEPUTSWA",
-                                                                                 "MOPANI",
-                                                                                 "NGAKA MODIRI MOLEMA",
-                                                                                 "NKANGALA",
-                                                                                 "O.R. TAMBO",
-                                                                                 "SEDIBENG",
-                                                                                 "THABO MOFUTSANYANE",
-                                                                                 "UGU",
-                                                                                 "UTHUKELA",
-                                                                                 "UTHUNGULU",
-                                                                                 "ZULULAND")))) %>%
-  group_by(UMGUNGUNDLOVUNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.UTHUKELA <- merged.1 %>%
-  filter(UTHUKELANeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BOJANALA",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "NKANGALA",
-                                                                            "O.R. TAMBO",
-                                                                            "SEDIBENG",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUNGULU",
-                                                                            "ZULULAND")))) %>%
-  group_by(UTHUKELANeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.UTHUNGULU <- merged.1 %>%
-  filter(UTHUNGULUNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                             "BOJANALA",
-                                                                             "BUFFALO CITY",
-                                                                             "CAPRICORN",
-                                                                             "CITY OF CAPE TOWN",
-                                                                             "CITY OF JOHANNESBURG",
-                                                                             "CITY OF TSHWANE",
-                                                                             "DOCTOR KENNETH KAUNDA",
-                                                                             "EHLANZENI",
-                                                                             "EKURHULENI",
-                                                                             "ETHEKWINI",
-                                                                             "GERT SIBANDE",
-                                                                             "LEJWELEPUTSWA",
-                                                                             "MOPANI",
-                                                                             "NGAKA MODIRI MOLEMA",
-                                                                             "NKANGALA",
-                                                                             "O.R. TAMBO",
-                                                                             "SEDIBENG",
-                                                                             "THABO MOFUTSANYANE",
-                                                                             "UGU",
-                                                                             "UMGUNGUNDLOVU",
-                                                                             "UTHUKELA",
-                                                                             "ZULULAND")))) %>%
-  group_by(UTHUNGULUNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.ZULULAND <- merged.1 %>%
-  filter(ZULULANDNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("ALFRED NZO",
-                                                                            "BOJANALA",
-                                                                            "BUFFALO CITY",
-                                                                            "CAPRICORN",
-                                                                            "CITY OF CAPE TOWN",
-                                                                            "CITY OF JOHANNESBURG",
-                                                                            "CITY OF TSHWANE",
-                                                                            "DOCTOR KENNETH KAUNDA",
-                                                                            "EHLANZENI",
-                                                                            "EKURHULENI",
-                                                                            "ETHEKWINI",
-                                                                            "GERT SIBANDE",
-                                                                            "LEJWELEPUTSWA",
-                                                                            "MOPANI",
-                                                                            "NGAKA MODIRI MOLEMA",
-                                                                            "NKANGALA",
-                                                                            "O.R. TAMBO",
-                                                                            "SEDIBENG",
-                                                                            "THABO MOFUTSANYANE",
-                                                                            "UGU",
-                                                                            "UMGUNGUNDLOVU",
-                                                                            "UTHUKELA",
-                                                                            "UTHUNGULU")))) %>%
-  group_by(ZULULANDNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.ALFRED_NZO$AREA_NAME <- "ALFRED NZO"
-merged.1.BOJANALA$AREA_NAME <- "BOJANALA"
-merged.1.BUFFALO_CITY$AREA_NAME <- "BUFFALO CITY"
-merged.1.CAPRICORN$AREA_NAME <- "CAPRICORN"
-merged.1.CITY_OF_CAPE_TOWN$AREA_NAME <- "CITY OF CAPE TOWN"
-merged.1.CITY_OF_JOHANNESBURG$AREA_NAME <- "CITY OF JOHANNESBURG"
-merged.1.CITY_OF_TSHWANE$AREA_NAME <- "CITY OF TSHWANE"
-merged.1.DOCTOR_KENNETH_KAUNDA$AREA_NAME <- "DOCTOR KENNETH KAUNDA"
-merged.1.EHLANZENI$AREA_NAME <- "EHLANZENI"
-merged.1.EKURHULENI$AREA_NAME <- "EKURHULENI"
-merged.1.ETHEKWINI$AREA_NAME <- "ETHEKWINI"
-merged.1.GERT_SIBANDE$AREA_NAME <- "GERT SIBANDE"
-merged.1.LEJWELEPUTSWA$AREA_NAME <- "LEJWELEPUTSWA"
-merged.1.MOPANI$AREA_NAME <- "MOPANI"
-merged.1.NGAKA_MODIRI_MOLEMA$AREA_NAME <- "NGAKA MODIRI MOLEMA"
-merged.1.NKANGALA$AREA_NAME <- "NKANGALA"
-merged.1.OR_TAMBO$AREA_NAME <- "O.R. TAMBO"
-merged.1.SEDIBENG$AREA_NAME <- "SEDIBENG"
-merged.1.THABO_MOFUTSANYANE$AREA_NAME <- "THABO MOFUTSANYANE"
-merged.1.UGU$AREA_NAME <- "UGU"
-merged.1.UMGUNGUNDLOVU$AREA_NAME <- "UMGUNGUNDLOVU"
-merged.1.UTHUKELA$AREA_NAME <- "UTHUKELA"
-merged.1.UTHUNGULU$AREA_NAME <- "UTHUNGULU"
-merged.1.ZULULAND$AREA_NAME <- "ZULULAND"
-
-
-merged.2a <- rbind(merged.1.ALFRED_NZO,
-                   merged.1.BOJANALA,
-                   merged.1.BUFFALO_CITY,
-                   merged.1.CAPRICORN,
-                   merged.1.CITY_OF_CAPE_TOWN,
-                   merged.1.CITY_OF_JOHANNESBURG,
-                   merged.1.CITY_OF_TSHWANE,
-                   merged.1.DOCTOR_KENNETH_KAUNDA,
-                   merged.1.EHLANZENI,
-                   merged.1.EKURHULENI,
-                   merged.1.ETHEKWINI,
-                   merged.1.GERT_SIBANDE,
-                   merged.1.LEJWELEPUTSWA,
-                   merged.1.MOPANI,
-                   merged.1.NGAKA_MODIRI_MOLEMA,
-                   merged.1.NKANGALA,
-                   merged.1.OR_TAMBO,
-                   merged.1.SEDIBENG,
-                   merged.1.THABO_MOFUTSANYANE,
-                   merged.1.UGU,
-                   merged.1.UMGUNGUNDLOVU,
-                   merged.1.UTHUKELA,
-                   merged.1.UTHUNGULU,
-                   merged.1.ZULULAND)
-
-merged.1d <- merged.1c %>%
-  filter(ADM2_NAME %in% DREAMS_Districts_SouthAfrica) %>%
-  group_by(ADM2_NAME) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = ADM2_NAME)
-
-merged.3a <-pivot_step1(merged.2a)
-merged.3b <-pivot_step1(merged.1d)
-
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
-
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.6, file = "SouthAfricaOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "SouthAfricaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6, file = "preprocessing/data/SouthAfricaOutput_Denominators.RDS")
-
-
-
+saveRDS(merged.5b, file = "preprocessing/data/SouthAfricaOutput_Denominators.RDS")
 # TANZANIA ----
 ###DENOMINATOR: Huge country, ADM1s dropped, ADM2s treated as ADM1s, ADM3s treated as ADM2s
 ##Start with District cohort pop by year
-##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Tan.sf <- st_read('preprocessing/data/Tanzania_adm1_uscb_2022.shp') %>%
-  st_as_sf() %>%
-  st_transform(crs = 4326)
-
 ADM2.1.Tan.sf <- st_read('preprocessing/data/Tanzania_adm2_uscb_2022.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326)  %>%
+  add_join_names()
 
-saveRDS(ADM1.1.Tan.sf, file = "data/TanzaniaADM1.RDS")
 saveRDS(ADM2.1.Tan.sf, file = "data/TanzaniaADM2.RDS")
 
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
+### KEEP AND USE NSO CODE FOR MATCHING FOR TANZANIA, THEY MATCH PEPFAR CODES (except for Mbeya)
 
-DREAMS_Districts_Tanzania <- c("MWANZA",
-                               "KAGERA")
+DREAMS_Districts_Tanzania_USCB <- c("Kahama TC",
+                               "Kyela DC",
+                               "Mbarali DC",
+                               "Mbeya City Council",
+                               "Msalala DC",
+                               "Mufindi DC",
+                               "Muleba DC",
+                               "Nyamagana MC",
+                               "Shinyanga DC",
+                               "Shinyanga MC",
+                               "Temeke MC",
+                               "Ushetu DC")
 
-ADM1.DREAMS.Tan.sf.1 <- ADM1.1.Tan.sf  %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Tanzania) %>%
-  filter(ADM1_NAME != "LAKE VICTORIA")
-
-ADM1.DREAMS.Tan.sf.2.Mwanza <- ADM1.DREAMS.Tan.sf.1 %>%
-  filter(AREA_NAME == "MWANZA")
-
-ADM1.DREAMS.Tan.sf.2.Kagera <- ADM1.DREAMS.Tan.sf.1 %>%
-  filter(AREA_NAME == "KAGERA")
-
-# poly_check(ADM2.1.Tan.sf, ADM2.1.Tan.sf)
-# poly_check(ADM1.1.Tan.sf, ADM1.DREAMS.Tan.sf.2.Kagera)
-# 
-# sf_check(ADM2.1.Tan.sf)
-
-##Create neighbors list, does not make something it's own neighbor
-sf::sf_use_s2(FALSE)
-
-ADM2.1.Tan.sf$MwanzaNeighbor <- ifelse((sf::st_intersects(ADM2.1.Tan.sf, 
-                                                          ADM1.DREAMS.Tan.sf.2.Mwanza,
-                                                          sparse = F) & !(ADM2.1.Tan.sf$ADM1_NAME %in% DREAMS_Districts_Tanzania)),
-                                       1,
-                                       0)
-
-ADM2.1.Tan.sf$KageraNeighbor <- ifelse((sf::st_intersects(ADM2.1.Tan.sf, 
-                                                          ADM1.DREAMS.Tan.sf.2.Kagera,
-                                                          sparse = F) & !(ADM2.1.Tan.sf$ADM1_NAME %in% DREAMS_Districts_Tanzania)),
-                                       1,
-                                       0)
-
-sf::sf_use_s2(TRUE)
-
-
-# sf_check(ADM2.1.Tan.sf)
-# 
-# poly_check(ADM1.1.Tan.sf, ADM1.DREAMS.Tan.sf.2.Mwanza)
-# 
-# test1 <- ADM2.1.Tan.sf %>%
-#   filter(MwanzaNeighbor == 1)
-# 
-# poly_check(ADM1.1.Tan.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Tan.sf.2.Mwanza, test1)
-
-
-#Re-adds ones from the district
-ADM2.2.Tan.sf <- ADM2.1.Tan.sf
-
-ADM2.2.Tan.sf$MwanzaNeighbor <- ifelse((ADM2.2.Tan.sf$ADM1_NAME == "MWANZA" | ADM2.2.Tan.sf$MwanzaNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Tan.sf$KageraNeighbor <- ifelse((ADM2.2.Tan.sf$ADM1_NAME == "KAGERA" | ADM2.2.Tan.sf$KageraNeighbor == 1),
-                                       1,
-                                       0)
-
-# sf_check(ADM2.2.Bot.sf)
-# 
-# test1 <- ADM2.2.Bot.sf %>%
-#   filter(SouthernNeighbor == 1)
-# 
-# poly_check(ADM1.1.Bot.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Bot.sf.2.Southern, test1)
-
-ADM2.2.Tan.sf <- ADM2.2.Tan.sf %>%
-  as.data.frame()
-
-neighborsLookupTanzania <- ADM2.2.Tan.sf
-
-ADM2.2.Tan.sf$MwanzaNeighbor <- c(ADM2.2.Tan.sf$MwanzaNeighbor)
-ADM2.2.Tan.sf$KageraNeighbor <- c(ADM2.2.Tan.sf$KageraNeighbor)
-
-ADM2.2.Tan.sf$DREAMSneighbors <- ADM2.2.Tan.sf$MwanzaNeighbor + ADM2.2.Tan.sf$KageraNeighbor
-
-ADM2.2.Tan.sf <- ADM2.2.Tan.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Tanzania) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
 
 ##Attach demographic data
 Demographic.1 <- readxl::read_xlsx("preprocessing/data/Tanzania_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
            "ADM1_NAME",
            "ADM2_NAME",
-           "ADM_LEVEL", 
+           "NSO_NAME",
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -3622,23 +1450,28 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
   filter(ADM_LEVEL == 2) %>%
-  select(-c("ADM_LEVEL"))
+   dplyr::select(-c("ADM_LEVEL"))
 
 #Strip out remaining spatial parameters and unnecessary fields
-ADM2.3.Tan.sf <- ADM2.2.Tan.sf %>% 
-  select(-c("Shape_Leng", 
+ADM2.2.Tan.sf <- ADM2.1.Tan.sf %>% 
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng", 
             "Shape_Area",
             "ADM_LEVEL",
             "GEO_CONCAT",
             "CNTRY_NAME",
             "geometry",
-            "ADM2_NAME"))
+            "ADM1_NAME"))
 
-merged.00 <- merge(ADM2.3.Tan.sf, 
+merged.00 <- merge(ADM2.2.Tan.sf, 
                    Demographic.3, 
                    by.x = "GEO_MATCH", 
                    by.y = "GEO_MATCH", 
@@ -3648,321 +1481,74 @@ merged.00 <- merge(ADM2.3.Tan.sf,
 
 ##Split off original figures for later re-join
 merged.1c <- merged.00 %>%
-  select(-c("AREA_NAME.y",
-            "MwanzaNeighbor",
-            "KageraNeighbor",
-            "ADM1_NAME.y",
-            "ADM2_NAME",
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM2_NAME.y",
             "GEO_MATCH",
-            "DREAMSneighbors",
-            "NSO_NAME",
+            "NSO_NAME.y",
             "USCBCMNT")) %>%
   rename(AREA_NAME=AREA_NAME.x) %>%
-  rename(ADM1_NAME=ADM1_NAME.x) %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Tanzania)
+  rename(ADM2_NAME=ADM2_NAME.x) %>%
+  rename(NSO_NAME=NSO_NAME.x) %>%
+  filter(NSO_NAME %in% DREAMS_Districts_Tanzania_USCB)
 
+merged.3b <-pivot_step1(merged.1c)
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
+merged.4b <-pivot_step2(merged.3b, 
+                        "Tanzania")
 
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-##Create new pop total for each
-#Take those that border X (inc. X itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Mwanza <- merged.1 %>%
-  filter(MwanzaNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("KAGERA")))) %>%
-  group_by(MwanzaNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Kagera <- merged.1 %>%
-  filter(KageraNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("MWANZA")))) %>%
-  group_by(KageraNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Mwanza$AREA_NAME <- "MWANZA"
-merged.1.Kagera$AREA_NAME <- "KAGERA"
-
-merged.2a <- rbind(merged.1.Mwanza,
-                   merged.1.Kagera)
-
-merged.1d <- merged.1c %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Tanzania) %>%
-  group_by(ADM1_NAME) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = ADM1_NAME)
-
-merged.3a <-pivot_step1(merged.2a)
-merged.3b <-pivot_step1(merged.1d)
-
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
-
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.6, file = "BotswanaOutput_Denominators.csv") #purely for external inspection
+#write_excel_csv(merged.5b, file = "TanzaniaOutput_Denominators.csv") #purely for external inspection
 #For import to app
-saveRDS(merged.6, file = "preprocessing/data/TanzaniaOutput_Denominators.RDS")
+saveRDS(merged.5b, file = "preprocessing/data/TanzaniaOutput_Denominators.RDS")
 
-# ZIMBABWE ----
-###DENOMINATOR: Larger country, ADM1 and 2
-##Start with District cohort pop by year
-##Add surrounding ADM2s to cohort pop by year
-ADM1.1.Zim.sf <- st_read('preprocessing/data/Zimbabwe_adm1_uscb_2022.shp') %>%
+# UGANDA ----
+ADM1.1.Uga.sf <- st_read('preprocessing/data/Uganda_adm1_uscb_2020.shp') %>%
   st_as_sf() %>%
-  st_transform(crs = 4326)
+  st_transform(crs = 4326)  %>%
+  add_join_names()
 
-ADM2.1.Zim.sf <- st_read('preprocessing/data/Zimbabwe_adm2_uscb_2022.shp') %>%
-  st_as_sf() %>%
-  st_transform(crs = 4326)
+saveRDS(ADM1.1.Uga.sf, file = "data/UgandaADM1.RDS")
 
-saveRDS(ADM1.1.Zim.sf, file = "data/ZimbabweADM1.RDS")
-saveRDS(ADM2.1.Zim.sf, file = "data/ZimbabweADM2.RDS")
-
-#NOTE Can possibly eliminate this step and use the "NSO_NAME" field instead (if it's consistently a match)
-
-DREAMS_Districts_Zimbabwe <- c("BULAWAYO", 
-                               "MANICALAND", 
-                               "MASHONALAND CENTRAL", 
-                               "MATABELELAND NORTH", 
-                               "MATABELELAND SOUTH", 
-                               "MIDLANDS")
-
-ADM1.DREAMS.Zim.sf.1 <- ADM1.1.Zim.sf  %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Zimbabwe)
-
-ADM1.DREAMS.Zim.sf.2.Bulawayo <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "BULAWAYO")
-
-ADM1.DREAMS.Zim.sf.2.Manicaland <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "MANICALAND")
-
-ADM1.DREAMS.Zim.sf.2.MCentral <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "MASHONALAND CENTRAL")
-
-ADM1.DREAMS.Zim.sf.2.MNorth <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "MATABELELAND NORTH")
-
-ADM1.DREAMS.Zim.sf.2.MSouth <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "MATABELELAND SOUTH")
-
-ADM1.DREAMS.Zim.sf.2.Midlands <- ADM1.DREAMS.Zim.sf.1%>%
-  filter(AREA_NAME == "MIDLANDS")
-# 
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.Bulawayo)
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.Manicaland)
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.MCentral)
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.MNorth)
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.MSouth)
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.Midlands)
-# sf_check(ADM1.1.Zim.sf)
-
-##Create neighbors list, does not make something it's own neighbor.
-ADM2.1.Zim.sf$BulawayoNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                            ADM1.DREAMS.Zim.sf.2.Bulawayo,
-                                                            sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                         1,
-                                         0)
-
-ADM2.1.Zim.sf$ManicalandNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                              ADM1.DREAMS.Zim.sf.2.Manicaland,
-                                                              sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                           1,
-                                           0)
-
-ADM2.1.Zim.sf$MCentralNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                            ADM1.DREAMS.Zim.sf.2.MCentral,
-                                                            sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                         1,
-                                         0)
-
-
-ADM2.1.Zim.sf$MNorthNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                          ADM1.DREAMS.Zim.sf.2.MNorth,
-                                                          sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                       1,
-                                       0)
-
-ADM2.1.Zim.sf$MSouthNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                          ADM1.DREAMS.Zim.sf.2.MSouth,
-                                                          sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                       1,
-                                       0)
-
-ADM2.1.Zim.sf$MidlandsNeighbor <- ifelse((sf::st_intersects(ADM2.1.Zim.sf, 
-                                                            ADM1.DREAMS.Zim.sf.2.Midlands,
-                                                            sparse = F) & !(ADM2.1.Zim.sf$ADM1_NAME %in% DREAMS_Districts_Zimbabwe)),
-                                         1,
-                                         0)
-
-# sf_check(ADM2.1.Zim.sf)
-# 
-# poly_check(ADM1.1.Zim.sf, ADM1.DREAMS.Zim.sf.2.Midlands)
-
-# test1 <- ADM2.1.Zim.sf %>%
-#   filter(MNorthNeighbor == 1)
-# 
-# poly_check(ADM1.1.Zim.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Zim.sf.2.MNorth, test1)
-
-
-#Re-adds ones from the district
-ADM2.2.Zim.sf <- ADM2.1.Zim.sf
-
-ADM2.2.Zim.sf$BulawayoNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "BULAWAYO" | ADM2.2.Zim.sf$BulawayoNeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.Zim.sf$ManicalandNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "MANICALAND" | ADM2.2.Zim.sf$ManicalandNeighbor == 1),
-                                           1,
-                                           0)
-
-ADM2.2.Zim.sf$MCentralNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "MASHONALAND CENTRAL" | ADM2.2.Zim.sf$MCentralNeighbor == 1),
-                                         1,
-                                         0)
-
-ADM2.2.Zim.sf$MNorthNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "MATABELELAND NORTH" | ADM2.2.Zim.sf$MNorthNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Zim.sf$MSouthNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "MATABELELAND SOUTH" | ADM2.2.Zim.sf$MSouthNeighbor == 1),
-                                       1,
-                                       0)
-
-ADM2.2.Zim.sf$MidlandsNeighbor <- ifelse((ADM2.2.Zim.sf$ADM1_NAME == "MIDLANDS" | ADM2.2.Zim.sf$MidlandsNeighbor == 1),
-                                         1,
-                                         0)
-
-# sf_check(ADM2.2.Zim.sf)
-# 
-# test1 <- ADM2.2.Zim.sf %>%
-#   filter(MNorthNeighbor == 1)
-# 
-# poly_check(ADM1.1.Zim.sf, test1)
-# 
-# poly_check(ADM1.DREAMS.Zim.sf.2.MNorth, test1)
-
-
-# sf_check(ADM2.2.Zim.sf)
-
-ADM2.2.Zim.sf <- ADM2.2.Zim.sf %>%
-  as.data.frame()
-
-neighborsLookupZimbabwe <- ADM2.2.Zim.sf
-
-ADM2.2.Zim.sf$BulawayoNeighbor <- c(ADM2.2.Zim.sf$BulawayoNeighbor)
-ADM2.2.Zim.sf$ManicalandNeighbor <- c(ADM2.2.Zim.sf$ManicalandNeighbor)
-ADM2.2.Zim.sf$MCentralNeighbor <- c(ADM2.2.Zim.sf$MCentralNeighbor)
-ADM2.2.Zim.sf$MNorthNeighbor <- c(ADM2.2.Zim.sf$MNorthNeighbor)
-ADM2.2.Zim.sf$MSouthNeighbor <- c(ADM2.2.Zim.sf$MSouthNeighbor)
-ADM2.2.Zim.sf$MidlandsNeighbor <- c(ADM2.2.Zim.sf$MidlandsNeighbor)
-
-#sf_check(ADM2.2.Zim.sf)
-
-ADM2.2.Zim.sf$DREAMSneighbors <- ADM2.2.Zim.sf$BulawayoNeighbor + ADM2.2.Zim.sf$ManicalandNeighbor + ADM2.2.Zim.sf$MCentralNeighbor + ADM2.2.Zim.sf$MNorthNeighbor + ADM2.2.Zim.sf$MSouthNeighbor + ADM2.2.Zim.sf$MidlandsNeighbor
-
-ADM2.2.Zim.sf <- ADM2.2.Zim.sf %>%
-  mutate(
-    DREAMSneighbors = case_when(
-      (ADM1_NAME %in% DREAMS_Districts_Zimbabwe) ~ 0,
-      TRUE ~ as.numeric(DREAMSneighbors)
-    )
-  )
-#sf_check(ADM2.2.Zim.sf)
+DREAMS_Districts_Uganda_USCB <- c("BUKOMANSIMBI",
+                             "GOMBA",
+                             "KALANGALA",
+                             "KYOTERA",
+                             "LWENGO",
+                             "LYANTONDE",
+                             "MASAKA",
+                             "RAKAI",
+                             "SEMBABULE",
+                             "WAKISO",
+                             "KASANDA",
+                             "LUWERO",
+                             "MITYANA",
+                             "MUBENDE",
+                             "MUKONO",
+                             "KAMPALA",
+                             "AGAGO",
+                             "APAC",
+                             "GULU",
+                             "KWANIA",
+                             "LIRA",
+                             "OMORO",
+                             "OYAM",
+                             "MBARARA")
 
 ##Attach demographic data
-Demographic.1 <- readxl::read_xlsx("preprocessing/data/Zimbabwe_USCB.xlsx")
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Uganda_USCB.xlsx")
 
 Demographic.2 <- Demographic.1 %>%
-  select(c("AREA_NAME", 
+   dplyr::select(c("AREA_NAME", 
            "GEO_MATCH", 
-           "ADM1_NAME",
-           "ADM2_NAME",
-           "ADM_LEVEL", 
+           "ADM1_NAME", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
            "F1014_2019",
            "F1519_2019",
            "F2024_2019",
@@ -3978,15 +1564,478 @@ Demographic.2 <- Demographic.1 %>%
            "F1014_2022",
            "F1519_2022",
            "F2024_2022",
-           "F2529_2022"))
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
+
+Demographic.3 <- Demographic.2 %>%
+  filter(ADM_LEVEL == 1) %>%
+   dplyr::select(-c("ADM_LEVEL"))
+
+ADM1.2.Uga.sf <- ADM1.1.Uga.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
+            "Shape_Area",
+            "ADM_LEVEL",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "GENC_CODE",
+            "FIPS_CODE",
+            "USCBCMNT"))
+
+merged.00 <- merge(ADM1.2.Uga.sf, 
+                   Demographic.3, 
+                   by.x = "GEO_MATCH", 
+                   by.y = "GEO_MATCH", 
+                   all.x = TRUE)
+
+#Check for any mismatches between paired X and Y dataset shared fields
+
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM1_NAME.x",
+            "ADM1_NAME.y",
+            "GEO_MATCH")) %>%
+  rename(AREA_NAME=AREA_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Uganda_USCB)
+
+merged.3b <-pivot_step1(merged.1c)
+
+merged.4b <-pivot_step2(merged.3b, 
+                        "Uganda")
+
+merged.5b <- adjust_ages(merged.4b)
+
+##Export Results
+#For any manual checking
+#write_excel_csv(merged.5b, file = "UgandaOutput_Denominators.csv") #purely for external inspection
+#For import to app
+saveRDS(merged.5b,file = "preprocessing/data/UgandaOutput_Denominators.RDS")
+# ZAMBIA ----
+###DENOMINATOR ADM2s = PSNUs
+ADM2.1.Zam.sf <- st_read('preprocessing/data/Zambia_adm2_uscb_2021.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326)  %>%
+  add_join_names()
+
+saveRDS(ADM2.1.Zam.sf, file = "data/ZambiaADM2.RDS")
+
+DREAMS_Districts_Zambia_USCB <- c("CHINGOLA",
+                             "CHIPATA",
+                             "KABWE", 
+                             "KAPIRI MPOSHI",
+                             "KASAMA",
+                             "KITWE",
+                             "LIVINGSTONE",
+                             "LUANSHYA",
+                             "LUSAKA",
+                             "MAZABUKA",
+                             "MONZE",
+                             "MONGU",
+                             "MUFULIRA",
+                             "NDOLA",
+                             "SOUTHERN PROVINCE")
+
+##Attach demographic data
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Zambia_USCB.xlsx")
+
+Demographic.2 <- Demographic.1 %>%
+   dplyr::select(c("AREA_NAME", 
+           "GEO_MATCH", 
+           "ADM2_NAME", 
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
+           "F1014_2019",
+           "F1519_2019",
+           "F2024_2019",
+           "F2529_2019",
+           "F1014_2020",
+           "F1519_2020",
+           "F2024_2020",
+           "F2529_2020",
+           "F1014_2021",
+           "F1519_2021",
+           "F2024_2021",
+           "F2529_2021",
+           "F1014_2022",
+           "F1519_2022",
+           "F2024_2022",
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
 
 Demographic.3 <- Demographic.2 %>%
   filter(ADM_LEVEL == 2) %>%
-  select(-c("ADM_LEVEL"))
+   dplyr::select(-c("ADM_LEVEL"))
+
+ADM2.2.Zam.sf <- ADM2.1.Zam.sf %>%
+  as.data.frame() %>%
+   dplyr::select(-c("Shape_Leng",
+            "Shape_Area",
+            "ADM_LEVEL",
+            "GEO_CONCAT",
+            "CNTRY_NAME",
+            "geometry",
+            "USCBCMNT"))
+
+merged.00 <- merge(ADM2.2.Zam.sf, 
+                   Demographic.3, 
+                   by.x = "GEO_MATCH", 
+                   by.y = "GEO_MATCH", 
+                   all.x = TRUE)
+
+#Check for any mismatches between paired X and Y dataset shared fields
+
+merged.1c <- merged.00 %>%
+   dplyr::select(-c("AREA_NAME.y",
+            "ADM2_NAME.x",
+            "ADM2_NAME.y",
+            "GEO_MATCH")) %>%
+  rename(AREA_NAME=AREA_NAME.x) %>%
+  filter(AREA_NAME %in% DREAMS_Districts_Zambia_USCB)
+
+merged.3b <-pivot_step1(merged.1c)
+
+merged.4b <-pivot_step2(merged.3b, 
+                        "Zambia")
+
+merged.5b <- adjust_ages(merged.4b)
+
+##Export Results
+#For any manual checking
+#write_excel_csv(merged.5b, file = "ZambiaOutput_Denominators.csv") #purely for external inspection
+#For import to app
+saveRDS(merged.5b,file = "preprocessing/data/ZambiaOutput_Denominators.RDS")
+
+# ZIMBABWE ----
+###DENOMINATOR: Larger country, ADM1 and 2
+##Start with District cohort pop by year
+
+ADM2.0.Zim.sf <- st_read('preprocessing/data/Zimbabwe_adm2_uscb_2022.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326)
+
+#merge rural/urban pieces
+
+OtherPolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(!(AREA_NAME %in% c("CHIPINGE URBAN", 
+                                   "CHIPINGE RURAL", 
+                                   "MUTARE URBAN", 
+                                   "MUTARE RURAL",
+                                   "BEITBRIDGE URBAN", 
+                                   "BEITBRIDGE RURAL",
+                                   "GWANDA URBAN", 
+                                   "GWANDA",
+                                   "GWERU", 
+                                   "GWERU RURAL")))
+
+ChipingePolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(AREA_NAME %in% c("CHIPINGE URBAN", 
+                                 "CHIPINGE RURAL")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+MutarePolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(AREA_NAME %in% c("MUTARE URBAN", 
+                                 "MUTARE RURAL")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+BeitbridgePolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(AREA_NAME %in% c("BEITBRIDGE URBAN", 
+                                 "BEITBRIDGE RURAL")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+GwandaPolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(AREA_NAME %in% c("GWANDA URBAN", 
+                                 "GWANDA")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+GweruPolys <- ADM2.0.Zim.sf %>%
+  dplyr::filter(AREA_NAME %in% c("GWERU", 
+                                 "GWERU RURAL")) %>%
+  group_by(CNTRY_NAME) %>%
+  summarize()
+
+ChipingePolys$ADM2_NAME <- "CHIPINGE"
+ChipingePolys$AREA_NAME <- "CHIPINGE"
+MutarePolys$ADM2_NAME <- "MUTARE"
+MutarePolys$AREA_NAME <- "MUTARE"
+BeitbridgePolys$ADM2_NAME <- "BEITBRIDGE"
+BeitbridgePolys$AREA_NAME <- "BEITBRIDGE"
+GwandaPolys$ADM2_NAME <- "GWANDA"
+GwandaPolys$AREA_NAME <- "GWANDA"
+GweruPolys$ADM2_NAME <- "GWERU"
+GweruPolys$AREA_NAME <- "GWERU"
+
+
+Polys <- bind_rows(OtherPolys,
+                   ChipingePolys,
+                   MutarePolys,
+                   BeitbridgePolys,
+                   GwandaPolys,
+                   GweruPolys)
+
+Polys$ADM2_NAME <- Polys$ADM2_NAME
+
+ADM2.1.Zim.sf <- Polys  %>%
+  add_join_names()
+
+saveRDS(ADM2.1.Zim.sf, file = "data/ZimbabweADM2.RDS")
+
+DREAMS_Districts_Zimbabwe_USCB <- c("BEITBRIDGE",
+                               "BUBI",
+                               "BULAWAYO",
+                               "BULILIMA",
+                               "CHIPINGE",
+                               "GWANDA",
+                               "GWERU",
+                               "INSIZA",
+                               "LUPANE",
+                               "MAKONI",
+                               "MANGWE",
+                               "MATOBO",
+                               "MAZOWE",
+                               "MUTARE",
+                               "NKAYI",
+                               "TSHOLOTSHO")
+
+##Attach demographic data
+Demographic.1 <- readxl::read_xlsx("preprocessing/data/Zimbabwe_USCB.xlsx")
+
+Demographic.2 <- Demographic.1 %>%
+   dplyr::select(c("AREA_NAME", 
+           "GEO_MATCH", 
+           "ADM1_NAME",
+           "ADM2_NAME",
+           "ADM_LEVEL",
+           "F1014_2018",
+           "F1519_2018",
+           "F2024_2018",
+           "F2529_2018",
+           "F1014_2019",
+           "F1519_2019",
+           "F2024_2019",
+           "F2529_2019",
+           "F1014_2020",
+           "F1519_2020",
+           "F2024_2020",
+           "F2529_2020",
+           "F1014_2021",
+           "F1519_2021",
+           "F2024_2021",
+           "F2529_2021",
+           "F1014_2022",
+           "F1519_2022",
+           "F2024_2022",
+           "F2529_2022",
+           "F1014_2023",
+           "F1519_2023",
+           "F2024_2023",
+           "F2529_2023"))
+
+Demographic.2.Other <- Demographic.2 %>%
+  dplyr::filter(!(AREA_NAME %in% c("CHIPINGE URBAN", 
+                                   "CHIPINGE RURAL", 
+                                   "MUTARE URBAN", 
+                                   "MUTARE RURAL",
+                                   "BEITBRIDGE URBAN", 
+                                   "BEITBRIDGE RURAL",
+                                   "GWANDA URBAN", 
+                                   "GWANDA",
+                                   "GWERU", 
+                                   "GWERU RURAL")))
+
+Demographic.2.Chipinge <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("CHIPINGE URBAN", 
+                                 "CHIPINGE RURAL")) %>%
+  mutate(AREA_NAME = "CHIPINGE") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "CHIPINGE",
+         ADM_LEVEL = 2)
+
+Demographic.2.Mutare <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("MUTARE URBAN", 
+                                 "MUTARE RURAL")) %>%
+  mutate(AREA_NAME = "MUTARE") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "MUTARE",
+         ADM_LEVEL = 2)
+
+Demographic.2.Beitbridge <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("BEITBRIDGE URBAN", 
+                                 "BEITBRIDGE RURAL")) %>%
+  mutate(AREA_NAME = "BEITBRIDGE") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "BEITBRIDGE",
+         ADM_LEVEL = 2)
+
+Demographic.2.Gwanda <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("GWANDA URBAN", 
+                                 "GWANDA")) %>%
+  mutate(AREA_NAME = "GWANDA") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "GWANDA",
+         ADM_LEVEL = 2)
+
+Demographic.2.Gweru <- Demographic.2 %>%
+  dplyr::filter(AREA_NAME %in% c("GWERU", 
+                                 "GWERU RURAL")) %>%
+  mutate(AREA_NAME = "GWERU") %>%
+  group_by(AREA_NAME) %>%
+  summarize(F1014_2018 = sum(F1014_2018),
+            F1519_2018 = sum(F1519_2018),
+            F2024_2018 = sum(F2024_2018),
+            F2529_2018 = sum(F2529_2018),
+            F1014_2019 = sum(F1014_2019),
+            F1519_2019 = sum(F1519_2019),
+            F2024_2019 = sum(F2024_2019),
+            F2529_2019 = sum(F2529_2019),
+            F1014_2020 = sum(F1014_2020),
+            F1519_2020 = sum(F1519_2020),
+            F2024_2020 = sum(F2024_2020),
+            F2529_2020 = sum(F2529_2020),
+            F1014_2021 = sum(F1014_2021),
+            F1519_2021 = sum(F1519_2021),
+            F2024_2021 = sum(F2024_2021),
+            F2529_2021 = sum(F2529_2021),
+            F1014_2022 = sum(F1014_2022),
+            F1519_2022 = sum(F1519_2022),
+            F2024_2022 = sum(F2024_2022),
+            F2529_2022 = sum(F2529_2022),
+            F1014_2023 = sum(F1014_2023),
+            F1519_2023 = sum(F1519_2023),
+            F2024_2023 = sum(F2024_2023),
+            F2529_2023 = sum(F2529_2023)
+  ) %>%
+  mutate(ADM2_NAME = "GWERU",
+         ADM_LEVEL = 2)
+
+Demographic.3 <- bind_rows(Demographic.2.Other,
+                           Demographic.2.Chipinge,
+                           Demographic.2.Mutare,
+                           Demographic.2.Beitbridge,
+                           Demographic.2.Gwanda, 
+                           Demographic.2.Gweru)
+
+Demographic.4 <- Demographic.3 %>%
+  filter(ADM_LEVEL == 2) %>%
+   dplyr::select(-c("ADM_LEVEL"))
 
 #Strip out remaining spatial parameters and unnecessary fields
-ADM2.3.Zim.sf <- ADM2.2.Zim.sf %>% 
-  select(-c("USCBCMNT",
+ADM2.2.Zim.sf <- ADM2.1.Zim.sf %>% 
+  as.data.frame() %>%
+   dplyr::select(-c("USCBCMNT",
             "Shape_Leng", 
             "Shape_Area",
             "ADM_LEVEL",
@@ -3995,761 +2044,632 @@ ADM2.3.Zim.sf <- ADM2.2.Zim.sf %>%
             "CNTRY_NAME",
             "geometry",
             "NSO_NAME",
-            "ADM2_NAME"))
+            "ADM1_NAME"))
 
-merged.00 <- merge(ADM2.3.Zim.sf, 
-                   Demographic.3, 
-                   by.x = "GEO_MATCH", 
-                   by.y = "GEO_MATCH", 
+merged.00 <- merge(ADM2.2.Zim.sf, 
+                   Demographic.4, 
+                   by.x = "AREA_NAME", 
+                   by.y = "AREA_NAME", 
                    all.x = TRUE)
 
 #Stop here and visually check for any mismatches between paired X and Y dataset shared fields
 
-##Split off original figures for later re-join
 merged.1c <- merged.00 %>%
-  select(-c("AREA_NAME.y",
-            "BulawayoNeighbor",
-            "ManicalandNeighbor",
-            "MCentralNeighbor",
-            "MNorthNeighbor",
-            "MSouthNeighbor",
-            "MidlandsNeighbor",
-            "ADM1_NAME.y",
-            "ADM2_NAME",
-            "GEO_MATCH",
-            "DREAMSneighbors")) %>%
-  rename(AREA_NAME=AREA_NAME.x) %>%
-  rename(ADM1_NAME=ADM1_NAME.x) %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Zimbabwe)
+   dplyr::select(-c("ADM1_NAME",
+            "ADM2_NAME.y",
+            "GEO_MATCH.y",
+            "GEO_MATCH.x")) %>%
+  rename(ADM2_NAME=ADM2_NAME.x) %>%
+  filter(ADM2_NAME %in% DREAMS_Districts_Zimbabwe_USCB)
 
+merged.3b <-pivot_step1(merged.1c)
 
-##Adjust for multiple DREAMS neighbors.
-#Takes non-dreams districts, divides their population by the number of adjoining DREAMS districts
-#for apportionment between those districts
+merged.4b <-pivot_step2(merged.3b, 
+                        "Zimbabwe")
 
-merged.0a <- merged.00 %>%
-  filter(DREAMSneighbors == 0)
-merged.0b <- merged.00 %>%
-  filter(DREAMSneighbors != 0)
-
-merged.0b$F1014_2019 <- round((merged.0b$F1014_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2019 <- round((merged.0b$F1519_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2019 <- round((merged.0b$F2024_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2019 <- round((merged.0b$F2529_2019/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2020 <- round((merged.0b$F1014_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2020 <- round((merged.0b$F1519_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2020 <- round((merged.0b$F2024_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2020 <- round((merged.0b$F2529_2020/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2021 <- round((merged.0b$F1014_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2021 <- round((merged.0b$F1519_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2021 <- round((merged.0b$F2024_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2021 <- round((merged.0b$F2529_2021/merged.0b$DREAMSneighbors),0)
-merged.0b$F1014_2022 <- round((merged.0b$F1014_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F1519_2022 <- round((merged.0b$F1519_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2024_2022 <- round((merged.0b$F2024_2022/merged.0b$DREAMSneighbors),0)
-merged.0b$F2529_2022 <- round((merged.0b$F2529_2022/merged.0b$DREAMSneighbors),0)
-
-merged.1 <- rbind(merged.0a,
-                  merged.0b)
-
-##Create new pop total for each
-#Take those that border Berea (inc. Berea itself and exc. other DREAMS districts)
-### XXX WHY !is.na(F1014_2019)?
-merged.1.Bulawayo <- merged.1 %>%
-  filter(BulawayoNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("MANICALAND", 
-                                                                            "MASHONALAND CENTRAL", 
-                                                                            "MATABELELAND NORTH", 
-                                                                            "MATABELELAND SOUTH", 
-                                                                            "MIDLANDS")))) %>%
-  group_by(BulawayoNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Manicaland <- merged.1 %>%
-  filter(ManicalandNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BULAWAYO", 
-                                                                              "MASHONALAND CENTRAL", 
-                                                                              "MATABELELAND NORTH", 
-                                                                              "MATABELELAND SOUTH", 
-                                                                              "MIDLANDS")))) %>%
-  group_by(ManicalandNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.MCentral <- merged.1 %>%
-  filter(MCentralNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BULAWAYO", 
-                                                                            "MANICALAND", 
-                                                                            "MATABELELAND NORTH", 
-                                                                            "MATABELELAND SOUTH", 
-                                                                            "MIDLANDS")))) %>%
-  group_by(MCentralNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.MNorth <- merged.1 %>%
-  filter(MNorthNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BULAWAYO", 
-                                                                          "MANICALAND", 
-                                                                          "MASHONALAND CENTRAL", 
-                                                                          "MATABELELAND SOUTH", 
-                                                                          "MIDLANDS")))) %>%
-  group_by(MNorthNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.MSouth <- merged.1 %>%
-  filter(MSouthNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BULAWAYO", 
-                                                                          "MANICALAND", 
-                                                                          "MASHONALAND CENTRAL", 
-                                                                          "MATABELELAND NORTH", 
-                                                                          "MIDLANDS")))) %>%
-  group_by(MSouthNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Midlands <- merged.1 %>%
-  filter(MidlandsNeighbor == 1 & !is.na(F1014_2019) & (!(AREA_NAME.x %in% c("BULAWAYO", 
-                                                                            "MANICALAND", 
-                                                                            "MASHONALAND CENTRAL", 
-                                                                            "MATABELELAND NORTH", 
-                                                                            "MATABELELAND SOUTH")))) %>%
-  group_by(MidlandsNeighbor) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = 1)
-
-merged.1.Bulawayo$AREA_NAME <- "BULAWAYO"
-merged.1.Manicaland$AREA_NAME <- "MANICALAND"
-merged.1.MCentral$AREA_NAME <- "MASHONALAND CENTRAL"
-merged.1.MNorth$AREA_NAME <- "MATABELELAND NORTH"
-merged.1.MSouth$AREA_NAME <- "MATABELELAND SOUTH"
-merged.1.Midlands$AREA_NAME <- "MIDLANDS"
-
-merged.2a <- rbind(merged.1.Bulawayo,
-                   merged.1.Manicaland,
-                   merged.1.MCentral,
-                   merged.1.MNorth,
-                   merged.1.MSouth,
-                   merged.1.Midlands)
-
-merged.1d <- merged.1c %>%
-  filter(ADM1_NAME %in% DREAMS_Districts_Zimbabwe) %>%
-  group_by(ADM1_NAME) %>%
-  summarize(F1014_2019=sum(F1014_2019),
-            F1519_2019=sum(F1519_2019),
-            F2024_2019=sum(F2024_2019),
-            F2529_2019=sum(F2529_2019),
-            F1014_2020=sum(F1014_2020),
-            F1519_2020=sum(F1519_2020),
-            F2024_2020=sum(F2024_2020),
-            F2529_2020=sum(F2529_2020),
-            F1014_2021=sum(F1014_2021),
-            F1519_2021=sum(F1519_2021),
-            F2024_2021=sum(F2024_2021),
-            F2529_2021=sum(F2529_2021),
-            F1014_2022=sum(F1014_2022),
-            F1519_2022=sum(F1519_2022),
-            F2024_2022=sum(F2024_2022),
-            F2529_2022=sum(F2529_2022)
-  ) %>%
-  rename(AREA_NAME = ADM1_NAME)
-
-merged.3a <-pivot_step1(merged.2a)
-merged.3b <-pivot_step1(merged.1d)
-
-merged.3a$populationtx <- "Expanded"
-merged.3b$populationtx <- "DistrictOnly"
-
-merged.4a <-pivot_step2(merged.3a)
-merged.4b <-pivot_step2(merged.3b)
-
-merged.5a <- adjust_ages(merged.4a)
 merged.5b <- adjust_ages(merged.4b)
-
-merged.6 <- rbind(merged.5a,
-                  merged.5b)
 
 ##Export Results
 #For any manual checking
-#write_excel_csv(merged.6, file = "ZimbabweOutput_Denominators.csv")  #purely for external inspection
+#write_excel_csv(merged.5b, file = "ZimbabweOutput_Denominators.csv")  #purely for external inspection
 #For import to app
-saveRDS(merged.6,file = "preprocessing/data/ZimbabweOutput_Denominators.RDS")
+saveRDS(merged.5b,file = "preprocessing/data/ZimbabweOutput_Denominators.RDS")
 
+
+
+
+
+
+
+## NEXT PEPFAR SHAPEFILES (HTI, ESW, CDI)
+PEPFARAll <- st_read('preprocessing/data/VcPepfarPolygons.shp') %>%
+  st_as_sf() %>%
+  st_transform(crs = 4326)
+
+# COTE D'IVOIRE ----
+ADM0.1.CDI.sf <- PEPFARAll %>%
+  filter(uid == "ds0ADyc9UCU") %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+AboboEstCDI <- PEPFARAll %>%
+  filter(uid == "m4hsNX3VTKP")
+
+CocodyBingervilleCDI <- PEPFARAll %>%
+  filter(uid == "uum3VZlFaKv")
+
+DaloaCDI <- PEPFARAll %>%
+  filter(uid == "Afx3d2MkpEG")
+
+ManCDI <- PEPFARAll %>%
+  filter(uid == "GeLP2HBm78g")
+
+ADM2.1.CDI.sf <- rbind(AboboEstCDI,
+                       CocodyBingervilleCDI,
+                       DaloaCDI,
+                       ManCDI) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+ADM2.2.CDI.sf <- rbind(ADM2.1.CDI.sf,
+                       ADM0.1.CDI.sf)
+
+# saveRDS(ADM0.1.CDI.sf, file = "data/CDIADM0.RDS")
+saveRDS(ADM2.2.CDI.sf, file = "data/CDIADM2.RDS")
+
+# ESWATINI ----
+ADM0.1.Esw.sf <- PEPFARAll %>%
+  filter(uid == "V0qMZH29CtN") %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+HhohhoEswatini <- PEPFARAll %>%
+  filter(uid == "qYzGABaWyCf")
+
+LubomboEswatini <- PEPFARAll %>%
+  filter(uid == "nxGb6sd7p7D")
+
+ManziniEswatini <- PEPFARAll %>%
+  filter(uid == "Z3IDOaDDkwG")
+
+ShiselweniEswatini <- PEPFARAll %>%
+  filter(uid == "qRppsyyTP4A")
+
+ADM1.1.Esw.sf <- rbind(HhohhoEswatini,
+                       LubomboEswatini,
+                       ManziniEswatini,
+                       ShiselweniEswatini) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+ADM1.2.Esw.sf <- rbind(ADM1.1.Esw.sf,
+                       ADM0.1.Esw.sf)
+  
+
+#saveRDS(ADM0.1.Esw.sf, file = "data/EswADM0.RDS")
+saveRDS(ADM1.2.Esw.sf, file = "data/EswADM1.RDS")
+
+# HAITI ----
+ADM0.1.Hai.sf <- PEPFARAll %>%
+  filter(uid == "JTypsdEUNPw") %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+DessalinesHaiti <- PEPFARAll %>%
+  filter(uid == "lDgHhlAPrbI")
+
+SaintMarcHaiti <- PEPFARAll %>%
+  filter(uid == "A4RKAXHmMJz")
+
+##Cap-Haïtien
+CapHaitienHaiti <- PEPFARAll %>%
+  filter(uid == "JVXPyu8T2fO")
+
+PortauPrinceHaiti <- PEPFARAll %>%
+  filter(uid == "C4PnwquCK8U")
+
+ADM2.1.Hai.sf <- rbind(DessalinesHaiti,
+                       SaintMarcHaiti,
+                       CapHaitienHaiti,
+                       PortauPrinceHaiti) %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  ) 
+
+ADM2.2.Hai.sf <- rbind(ADM2.1.Hai.sf,
+                       ADM0.1.Hai.sf)
+
+# saveRDS(ADM0.1.Hai.sf, file = "data/HaiADM0.RDS")
+saveRDS(ADM2.2.Hai.sf, file = "data/HaiADM2.RDS")
+
+rm(PEPFARAll)
+
+## NEXT WORLDPOP ESTIMATES  (HTI, ESW, CDI)
+
+# COTE D'IVOIRE ----
+CDI_F10_14_2018 <- raster("preprocessing/data/WorldPop/civ_f_10_2018.tif")
+CDI_F15_19_2018 <- raster("preprocessing/data/WorldPop/civ_f_15_2018.tif")
+CDI_F20_24_2018 <- raster("preprocessing/data/WorldPop/civ_f_20_2018.tif")
+CDI_F25_29_2018 <- raster("preprocessing/data/WorldPop/civ_f_25_2018.tif")
+CDI_F10_14_2019 <- raster("preprocessing/data/WorldPop/civ_f_10_2019.tif")
+CDI_F15_19_2019 <- raster("preprocessing/data/WorldPop/civ_f_15_2019.tif")
+CDI_F20_24_2019 <- raster("preprocessing/data/WorldPop/civ_f_20_2019.tif")
+CDI_F25_29_2019 <- raster("preprocessing/data/WorldPop/civ_f_25_2019.tif")
+CDI_F10_14_2020 <- raster("preprocessing/data/WorldPop/civ_f_10_2020.tif")
+CDI_F15_19_2020 <- raster("preprocessing/data/WorldPop/civ_f_15_2020.tif")
+CDI_F20_24_2020 <- raster("preprocessing/data/WorldPop/civ_f_20_2020.tif")
+CDI_F25_29_2020 <- raster("preprocessing/data/WorldPop/civ_f_25_2020.tif")
+
+CDI_SF_Temp_10 <- ADM2.1.CDI.sf
+CDI_SF_Temp_15 <- ADM2.1.CDI.sf
+CDI_SF_Temp_20 <- ADM2.1.CDI.sf
+CDI_SF_Temp_25 <- ADM2.1.CDI.sf
+
+CDI_SF_Temp_10$`2018` <- exact_extract(CDI_F10_14_2018, CDI_SF_Temp_10, "sum") %>%
+  round(0)
+CDI_SF_Temp_10$`2019` <- exact_extract(CDI_F10_14_2019, CDI_SF_Temp_10, "sum") %>%
+  round(0)
+CDI_SF_Temp_10$`2020` <- exact_extract(CDI_F10_14_2020, CDI_SF_Temp_10, "sum") %>%
+  round(0)
+CDI_SF_Temp_10$`2021` <- CDI_SF_Temp_10$`2020`
+CDI_SF_Temp_10$`2022` <- CDI_SF_Temp_10$`2020`
+CDI_SF_Temp_10$`2023` <- CDI_SF_Temp_10$`2020`
+CDI_SF_Temp_10$ageasentered <- "10-14"
+
+CDI_SF_Temp_15$`2018` <- exact_extract(CDI_F15_19_2018, CDI_SF_Temp_15, "sum") %>%
+  round(0)
+CDI_SF_Temp_15$`2019` <- exact_extract(CDI_F15_19_2019, CDI_SF_Temp_15, "sum") %>%
+  round(0)
+CDI_SF_Temp_15$`2020` <- exact_extract(CDI_F15_19_2020, CDI_SF_Temp_15, "sum") %>%
+  round(0)
+CDI_SF_Temp_15$`2021` <- CDI_SF_Temp_15$`2020`
+CDI_SF_Temp_15$`2022` <- CDI_SF_Temp_15$`2020`
+CDI_SF_Temp_15$`2023` <- CDI_SF_Temp_15$`2020`
+CDI_SF_Temp_15$ageasentered <- "15-19"
+
+CDI_SF_Temp_20$`2018` <- exact_extract(CDI_F20_24_2018, CDI_SF_Temp_20, "sum") %>%
+  round(0)
+CDI_SF_Temp_20$`2019` <- exact_extract(CDI_F20_24_2019, CDI_SF_Temp_20, "sum") %>%
+  round(0)
+CDI_SF_Temp_20$`2020` <- exact_extract(CDI_F20_24_2020, CDI_SF_Temp_20, "sum") %>%
+  round(0)
+CDI_SF_Temp_20$`2021` <- CDI_SF_Temp_20$`2020`
+CDI_SF_Temp_20$`2022` <- CDI_SF_Temp_20$`2020`
+CDI_SF_Temp_20$`2023` <- CDI_SF_Temp_20$`2020`
+CDI_SF_Temp_20$ageasentered <- "20-24"
+
+CDI_SF_Temp_25$`2018` <- exact_extract(CDI_F25_29_2018, CDI_SF_Temp_25, "sum") %>%
+  round(0)
+CDI_SF_Temp_25$`2019` <- exact_extract(CDI_F25_29_2019, CDI_SF_Temp_25, "sum") %>%
+  round(0)
+CDI_SF_Temp_25$`2020` <- exact_extract(CDI_F25_29_2020, CDI_SF_Temp_25, "sum") %>%
+  round(0)
+CDI_SF_Temp_25$`2021` <- CDI_SF_Temp_25$`2020`
+CDI_SF_Temp_25$`2022` <- CDI_SF_Temp_25$`2020`
+CDI_SF_Temp_25$`2023` <- CDI_SF_Temp_25$`2020`
+CDI_SF_Temp_25$ageasentered <- "25-29"
+
+CDI_SF_Temp <- rbind(CDI_SF_Temp_10,
+                     CDI_SF_Temp_15,
+                     CDI_SF_Temp_20,
+                     CDI_SF_Temp_25)
+
+CDI_SF_Temp$country <- "Cote d'Ivoire"
+CDI_SF_Temp$NSO_NAME <- ""
+CDI_SF_Temp$AREA_NAME <- as.character("")
+CDI_SF_Temp <- CDI_SF_Temp %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+CDI_WorldPop <- CDI_SF_Temp %>%
+  as.data.frame() %>%
+  dplyr::select(-c("geometry"))
+
+saveRDS(CDI_WorldPop, file = "preprocessing/data/CotedIvoireOutput_Denominators.RDS")
+
+# ESWATINI ----
+Esw_F10_14_2018 <- raster("preprocessing/data/WorldPop/swz_f_10_2018.tif")
+Esw_F15_19_2018 <- raster("preprocessing/data/WorldPop/swz_f_15_2018.tif")
+Esw_F20_24_2018 <- raster("preprocessing/data/WorldPop/swz_f_20_2018.tif")
+Esw_F25_29_2018 <- raster("preprocessing/data/WorldPop/swz_f_25_2018.tif")
+Esw_F10_14_2019 <- raster("preprocessing/data/WorldPop/swz_f_10_2019.tif")
+Esw_F15_19_2019 <- raster("preprocessing/data/WorldPop/swz_f_15_2019.tif")
+Esw_F20_24_2019 <- raster("preprocessing/data/WorldPop/swz_f_20_2019.tif")
+Esw_F25_29_2019 <- raster("preprocessing/data/WorldPop/swz_f_25_2019.tif")
+Esw_F10_14_2020 <- raster("preprocessing/data/WorldPop/swz_f_10_2020.tif")
+Esw_F15_19_2020 <- raster("preprocessing/data/WorldPop/swz_f_15_2020.tif")
+Esw_F20_24_2020 <- raster("preprocessing/data/WorldPop/swz_f_20_2020.tif")
+Esw_F25_29_2020 <- raster("preprocessing/data/WorldPop/swz_f_25_2020.tif")
+
+Esw_SF_Temp_10 <- ADM1.1.Esw.sf
+Esw_SF_Temp_15 <- ADM1.1.Esw.sf
+Esw_SF_Temp_20 <- ADM1.1.Esw.sf
+Esw_SF_Temp_25 <- ADM1.1.Esw.sf
+
+Esw_SF_Temp_10$`2018` <- exact_extract(Esw_F10_14_2018, Esw_SF_Temp_10, "sum") %>%
+  round(0)
+Esw_SF_Temp_10$`2019` <- exact_extract(Esw_F10_14_2019, Esw_SF_Temp_10, "sum") %>%
+  round(0)
+Esw_SF_Temp_10$`2020` <- exact_extract(Esw_F10_14_2020, Esw_SF_Temp_10, "sum") %>%
+  round(0)
+Esw_SF_Temp_10$`2021` <- Esw_SF_Temp_10$`2020`
+Esw_SF_Temp_10$`2022` <- Esw_SF_Temp_10$`2020`
+Esw_SF_Temp_10$`2023` <- Esw_SF_Temp_10$`2020`
+Esw_SF_Temp_10$ageasentered <- "10-14"
+
+Esw_SF_Temp_15$`2018` <- exact_extract(Esw_F15_19_2018, Esw_SF_Temp_15, "sum") %>%
+  round(0)
+Esw_SF_Temp_15$`2019` <- exact_extract(Esw_F15_19_2019, Esw_SF_Temp_15, "sum") %>%
+  round(0)
+Esw_SF_Temp_15$`2020` <- exact_extract(Esw_F15_19_2020, Esw_SF_Temp_15, "sum") %>%
+  round(0)
+Esw_SF_Temp_15$`2021` <- Esw_SF_Temp_15$`2020`
+Esw_SF_Temp_15$`2022` <- Esw_SF_Temp_15$`2020`
+Esw_SF_Temp_15$`2023` <- Esw_SF_Temp_15$`2020`
+Esw_SF_Temp_15$ageasentered <- "15-19"
+
+Esw_SF_Temp_20$`2018` <- exact_extract(Esw_F20_24_2018, Esw_SF_Temp_20, "sum") %>%
+  round(0)
+Esw_SF_Temp_20$`2019` <- exact_extract(Esw_F20_24_2019, Esw_SF_Temp_20, "sum") %>%
+  round(0)
+Esw_SF_Temp_20$`2020` <- exact_extract(Esw_F20_24_2020, Esw_SF_Temp_20, "sum") %>%
+  round(0)
+Esw_SF_Temp_20$`2021` <- Esw_SF_Temp_20$`2020`
+Esw_SF_Temp_20$`2022` <- Esw_SF_Temp_20$`2020`
+Esw_SF_Temp_20$`2023` <- Esw_SF_Temp_20$`2020`
+Esw_SF_Temp_20$ageasentered <- "20-24"
+
+Esw_SF_Temp_25$`2018` <- exact_extract(Esw_F25_29_2018, Esw_SF_Temp_25, "sum") %>%
+  round(0)
+Esw_SF_Temp_25$`2019` <- exact_extract(Esw_F25_29_2019, Esw_SF_Temp_25, "sum") %>%
+  round(0)
+Esw_SF_Temp_25$`2020` <- exact_extract(Esw_F25_29_2020, Esw_SF_Temp_25, "sum") %>%
+  round(0)
+Esw_SF_Temp_25$`2021` <- Esw_SF_Temp_25$`2020`
+Esw_SF_Temp_25$`2022` <- Esw_SF_Temp_25$`2020`
+Esw_SF_Temp_25$`2023` <- Esw_SF_Temp_25$`2020`
+Esw_SF_Temp_25$ageasentered <- "25-29"
+
+Esw_SF_Temp <- rbind(Esw_SF_Temp_10,
+                     Esw_SF_Temp_15,
+                     Esw_SF_Temp_20,
+                     Esw_SF_Temp_25)
+
+Esw_SF_Temp$country <- "Eswatini"
+Esw_SF_Temp$NSO_NAME <- ""
+Esw_SF_Temp$AREA_NAME <- as.character("")
+Esw_SF_Temp <- Esw_SF_Temp %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("bobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+Esw_WorldPop <- Esw_SF_Temp %>%
+  as.data.frame() %>%
+  dplyr::select(-c("geometry"))
+  
+
+saveRDS(Esw_WorldPop, file = "preprocessing/data/EswatiniOutput_Denominators.RDS")
+
+# HAITI ----
+Hai_F10_14_2018 <- raster("preprocessing/data/WorldPop/hti_f_10_2018.tif")
+Hai_F15_19_2018 <- raster("preprocessing/data/WorldPop/hti_f_15_2018.tif")
+Hai_F20_24_2018 <- raster("preprocessing/data/WorldPop/hti_f_20_2018.tif")
+Hai_F25_29_2018 <- raster("preprocessing/data/WorldPop/hti_f_25_2018.tif")
+Hai_F10_14_2019 <- raster("preprocessing/data/WorldPop/hti_f_10_2019.tif")
+Hai_F15_19_2019 <- raster("preprocessing/data/WorldPop/hti_f_15_2019.tif")
+Hai_F20_24_2019 <- raster("preprocessing/data/WorldPop/hti_f_20_2019.tif")
+Hai_F25_29_2019 <- raster("preprocessing/data/WorldPop/hti_f_25_2019.tif")
+Hai_F10_14_2020 <- raster("preprocessing/data/WorldPop/hti_f_10_2020.tif")
+Hai_F15_19_2020 <- raster("preprocessing/data/WorldPop/hti_f_15_2020.tif")
+Hai_F20_24_2020 <- raster("preprocessing/data/WorldPop/hti_f_20_2020.tif")
+Hai_F25_29_2020 <- raster("preprocessing/data/WorldPop/hti_f_25_2020.tif")
+
+Hai_SF_Temp_10 <- ADM2.1.Hai.sf
+Hai_SF_Temp_15 <- ADM2.1.Hai.sf
+Hai_SF_Temp_20 <- ADM2.1.Hai.sf
+Hai_SF_Temp_25 <- ADM2.1.Hai.sf
+
+Hai_SF_Temp_10$`2018` <- exact_extract(Hai_F10_14_2018, Hai_SF_Temp_10, "sum") %>%
+  round(0)
+Hai_SF_Temp_10$`2019` <- exact_extract(Hai_F10_14_2019, Hai_SF_Temp_10, "sum") %>%
+  round(0)
+Hai_SF_Temp_10$`2020` <- exact_extract(Hai_F10_14_2020, Hai_SF_Temp_10, "sum") %>%
+  round(0)
+Hai_SF_Temp_10$`2021` <- Hai_SF_Temp_10$`2020`
+Hai_SF_Temp_10$`2022` <- Hai_SF_Temp_10$`2020`
+Hai_SF_Temp_10$`2023` <- Hai_SF_Temp_10$`2020`
+Hai_SF_Temp_10$ageasentered <- "10-14"
+
+Hai_SF_Temp_15$`2018` <- exact_extract(Hai_F15_19_2018, Hai_SF_Temp_15, "sum") %>%
+  round(0)
+Hai_SF_Temp_15$`2019` <- exact_extract(Hai_F15_19_2019, Hai_SF_Temp_15, "sum") %>%
+  round(0)
+Hai_SF_Temp_15$`2020` <- exact_extract(Hai_F15_19_2020, Hai_SF_Temp_15, "sum") %>%
+  round(0)
+Hai_SF_Temp_15$`2021` <- Hai_SF_Temp_15$`2020`
+Hai_SF_Temp_15$`2022` <- Hai_SF_Temp_15$`2020`
+Hai_SF_Temp_15$`2023` <- Hai_SF_Temp_15$`2020`
+Hai_SF_Temp_15$ageasentered <- "15-19"
+
+Hai_SF_Temp_20$`2018` <- exact_extract(Hai_F20_24_2018, Hai_SF_Temp_20, "sum") %>%
+  round(0)
+Hai_SF_Temp_20$`2019` <- exact_extract(Hai_F20_24_2019, Hai_SF_Temp_20, "sum") %>%
+  round(0)
+Hai_SF_Temp_20$`2020` <- exact_extract(Hai_F20_24_2020, Hai_SF_Temp_20, "sum") %>%
+  round(0)
+Hai_SF_Temp_20$`2021` <- Hai_SF_Temp_20$`2020`
+Hai_SF_Temp_20$`2022` <- Hai_SF_Temp_20$`2020`
+Hai_SF_Temp_20$`2023` <- Hai_SF_Temp_20$`2020`
+Hai_SF_Temp_20$ageasentered <- "20-24"
+
+Hai_SF_Temp_25$`2018` <- exact_extract(Hai_F25_29_2018, Hai_SF_Temp_25, "sum") %>%
+  round(0)
+Hai_SF_Temp_25$`2019` <- exact_extract(Hai_F25_29_2019, Hai_SF_Temp_25, "sum") %>%
+  round(0)
+Hai_SF_Temp_25$`2020` <- exact_extract(Hai_F25_29_2020, Hai_SF_Temp_25, "sum") %>%
+  round(0)
+Hai_SF_Temp_25$`2021` <- Hai_SF_Temp_25$`2020`
+Hai_SF_Temp_25$`2022` <- Hai_SF_Temp_25$`2020`
+Hai_SF_Temp_25$`2023` <- Hai_SF_Temp_25$`2020`
+Hai_SF_Temp_25$ageasentered <- "25-29"
+
+Hai_SF_Temp <- rbind(Hai_SF_Temp_10,
+                     Hai_SF_Temp_15,
+                     Hai_SF_Temp_20,
+                     Hai_SF_Temp_25)
+
+Hai_SF_Temp$country <- "Haiti"
+Hai_SF_Temp$NSO_NAME <- ""
+Hai_SF_Temp$AREA_NAME <- as.character("")
+Hai_SF_Temp <- Hai_SF_Temp %>%
+  mutate(
+    AREA_NAME = case_when(
+      (uid == "JTypsdEUNPw") ~ as.character("Haiti"),
+      (uid == "lDgHhlAPrbI") ~ as.character("Dessalines"),
+      (uid == "A4RKAXHmMJz") ~ as.character("Saint-Marc"),
+      (uid == "JVXPyu8T2fO") ~ as.character("Cap-Haïtien"),
+      (uid == "C4PnwquCK8U") ~ as.character("Port-au-Prince"),
+      (uid == "V0qMZH29CtN") ~ as.character("Eswatini"),
+      (uid == "qYzGABaWyCf") ~ as.character("Hhohho"),
+      (uid == "nxGb6sd7p7D") ~ as.character("Lubombo"),
+      (uid == "Z3IDOaDDkwG") ~ as.character("Manzini"),
+      (uid == "qRppsyyTP4A") ~ as.character("Shiselweni"),
+      (uid == "ds0ADyc9UCU") ~ as.character("Cote d'Ivoire"),
+      (uid == "m4hsNX3VTKP") ~ as.character("Abobo-Est"),
+      (uid == "uum3VZlFaKv") ~ as.character("Cocody-Bingerville"),
+      (uid == "Afx3d2MkpEG") ~ as.character("Daloa"),
+      (uid == "GeLP2HBm78g") ~ as.character("Man"),
+      TRUE ~ as.character("ERROR")
+    )
+  )
+
+Hai_WorldPop <- Hai_SF_Temp %>%
+  as.data.frame() %>%
+  dplyr::select(-c("geometry"))
+
+saveRDS(Hai_WorldPop, file = "preprocessing/data/HaitiOutput_Denominators.RDS")
 
 # COMBINE AND PREPROCESS ----
 Bot_Data <- readRDS('preprocessing/data/BotswanaOutput_Denominators.RDS') %>%
-  mutate(country = "Botswana")
+  mutate(country = "Botswana") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
+CDI_Data <- readRDS('preprocessing/data/CotedIvoireOutput_Denominators.RDS')
+Esw_Data <- readRDS('preprocessing/data/EswatiniOutput_Denominators.RDS')
+Hai_Data <- readRDS('preprocessing/data/HaitiOutput_Denominators.RDS')
 Ken_Data <- readRDS('preprocessing/data/KenyaOutput_Denominators.RDS') %>%
-  mutate(country = "Kenya")
+  mutate(country = "Kenya") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 Les_Data <- readRDS('preprocessing/data/LesothoOutput_Denominators.RDS') %>%
-  mutate(country = "Lesotho")
+  mutate(country = "Lesotho") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 Mal_Data <- readRDS('preprocessing/data/MalawiOutput_Denominators.RDS') %>%
-  mutate(country = "Malawi")
+  mutate(country = "Malawi") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
+Moz_Data <- readRDS('preprocessing/data/MozambiqueOutput_Denominators.RDS') %>%
+  mutate(country = "Mozambique") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
+Nam_Data <- readRDS('preprocessing/data/NamibiaOutput_Denominators.RDS') %>%
+  mutate(country = "Namibia") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
+Rwa_Data <- readRDS('preprocessing/data/RwandaOutput_Denominators.RDS') %>%
+  mutate(country = "Rwanda") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 SAf_Data <- readRDS('preprocessing/data/SouthAfricaOutput_Denominators.RDS') %>%
-  mutate(country = "South Africa")
+  mutate(country = "South Africa") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 Tan_Data <- readRDS('preprocessing/data/TanzaniaOutput_Denominators.RDS') %>%
-  mutate(country = "Tanzania")
+  mutate(country = "Tanzania")  %>%
+  mutate(uid="")
+Uga_Data <- readRDS('preprocessing/data/UgandaOutput_Denominators.RDS') %>%
+  mutate(country = "Uganda") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
+Zam_Data <- readRDS('preprocessing/data/ZambiaOutput_Denominators.RDS') %>%
+  mutate(country = "Zambia") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 Zim_Data <- readRDS('preprocessing/data/ZimbabweOutput_Denominators.RDS') %>%
-  mutate(country = "Zimbabwe")
+  mutate(country = "Zimbabwe") %>%
+  mutate(NSO_NAME="") %>%
+  mutate(uid="")
 
 countryData <- rbind(Bot_Data,
+                     CDI_Data,
+                     Esw_Data,
+                     Hai_Data,
                      Ken_Data,
                      Les_Data,
                      Mal_Data,
+                     Moz_Data,
+                     Nam_Data,
+                     Rwa_Data,
                      SAf_Data,
                      Tan_Data,
+                     Uga_Data,
+                     Zam_Data,
                      Zim_Data) 
 
 countryData <- countryData %>%
   pivot_longer(
-    cols = `2019`:`2022`,
+    cols = `2018`:`2023`,
     names_to = c("fiscal_year"), 
     names_prefix = "F",
     values_to = "population"
-  )
+  ) %>%
+  rename(JOIN_NAME = AREA_NAME)
 
 countryData$fiscal_year <- countryData$fiscal_year %>%
   as.numeric()
 
 saveRDS(countryData, file = "data/countryData.RDS")
 
-
-# NEIGHBORS LOOKUP PREPROCESSING ----
-
-## Original version (nixed b/c too 'inelegant') ----
-# 
-# neighborsLesotho_Berea <- neighborsLookupLesotho %>%
-#   filter(BereaNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
-# 
-# neighborsLesotho_Mafeteng <- neighborsLookupLesotho %>%
-#   filter(MafetengNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
-# 
-# neighborsLesotho_Maseru <- neighborsLookupLesotho %>%
-#   filter(MaseruNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
-# 
-# neighborsLesotho_MHoek <- neighborsLookupLesotho %>%
-#   filter(MHoekNeighbor == 1 & (!AREA_NAME %in% DREAMS_Districts_Lesotho))
-# 
-# Lesotho_BEREA <- unique(neighborsLesotho_Berea$AREA_NAME)
-# Lesotho_BEREA_Names <- rep("BEREA", length(Lesotho_BEREA))
-# 
-# Lesotho_MAFETENG <- unique(neighborsLesotho_Mafeteng$AREA_NAME)
-# Lesotho_MAFETENG_Names <- rep("MAFETENG", length(Lesotho_MAFETENG))
-# 
-# Lesotho_MASERU <- unique(neighborsLesotho_Maseru$AREA_NAME)
-# Lesotho_MASERU_Names <- rep("MASERU", length(Lesotho_MASERU))
-# 
-# Lesotho_MHOEK <- unique(neighborsLesotho_MHoek$AREA_NAME)
-# Lesotho_MHOEK_Names <- rep("MOHALE'S HOEK", length(Lesotho_MHOEK))
-# 
-# childNamesLesotho <- Lesotho_BEREA %>% append(Lesotho_MAFETENG) %>%
-#   append(Lesotho_MASERU) %>%
-#   append(Lesotho_MHOEK)
-# 
-# parentNamesLesotho <- Lesotho_BEREA_Names %>% append(Lesotho_MAFETENG_Names) %>%
-#   append(Lesotho_MASERU_Names) %>%
-#   append(Lesotho_MHOEK_Names)
-# 
-# neighborsLookupLesotho_p <- data.frame(parent = parentNamesLesotho,
-#            child = childNamesLesotho)
-# 
-# saveRDS(neighborsLookupLesotho, file = "data/neighborsLookup.RDS")
-
-## Functionalized version ----
-### Function for assigning neighbors ----
-assignNeighbors <- function(lookup_df, neighbor, dreams_input) {
-
-  # filter regions
-  res <- lookup_df %>%
-    filter(get(neighbor) == 1 & (!AREA_NAME %in% dreams_input)) %>%
-    select(child = AREA_NAME) %>%
-    unique() %>%
-    mutate(parent = neighbor) %>%
-    select(parent, child)
-  #print(res)
-
-  #pull unique region names
-
-  return(
-    res
-  )
-}
-
-
-### lets create a vector to loop through and build ----
-
-bot_neighbors <- c("CentralNeighbor",
-                   "KgatlengNeighbor",
-                   "KwenengNeighbor",
-                   "NorthEastNeighbor",
-                   "SouthEastNeighbor",
-                   "SouthernNeighbor")
-ken_neighbors <- c("HomaNeighbor",
-                   "KiambuNeighbor",
-                   "KisumuNeighbor",
-                   "MigoriNeighbor",
-                   "MombasaNeighbor",
-                   "NairobiNeighbor", 
-                   "SiayaNeighbor")
-les_neighbors <- c("BereaNeighbor",
-                   "MafetengNeighbor",
-                   "MaseruNeighbor",
-                   "MHoekNeighbor")
-mal_neighbors <- c("BlantyreNeighbor",
-                   "MachingaNeighbor",
-                   "ZombaNeighbor")
-saf_neighbors <- c("ALFRED_NZONeighbor",
-                   "BOJANALANeighbor",
-                   "BUFFALO_CITYNeighbor",
-                   "CAPRICORNNeighbor",
-                   "CITY_OF_CAPE_TOWNNeighbor",
-                   "CITY_OF_JOHANNESBURGNeighbor",
-                   "CITY_OF_TSHWANENeighbor",
-                   "DOCTOR_KENNETH_KAUNDANeighbor",
-                   "EHLANZENINeighbor",
-                   "EKURHULENINeighbor",
-                   "ETHEKWININeighbor",
-                   "GERT_SIBANDENeighbor",
-                   "LEJWELEPUTSWANeighbor",
-                   "MOPANINeighbor",
-                   "NGAKA_MODIRI_MOLEMANeighbor",
-                   "NKANGALANeighbor",
-                   "OR_TAMBONeighbor",
-                   "SEDIBENGNeighbor",
-                   "THABO_MOFUTSANYANENeighbor",
-                   "UGUNeighbor",
-                   "UMGUNGUNDLOVUNeighbor",
-                   "UTHUKELANeighbor",
-                   "UTHUNGULUNeighbor",
-                   "ZULULANDNeighbor")
-tan_neighbors <- c("MwanzaNeighbor",
-                   "KageraNeighbor")
-zim_neighbors <- c("BulawayoNeighbor",
-                   "ManicalandNeighbor",
-                   "MCentralNeighbor",
-                   "MNorthNeighbor", 
-                   "MSouthNeighbor", 
-                   "MidlandsNeighbor")
-
-### loop through for each country ----
-#### Botswana ----
-neighborsLookupBotswana_p_functional <- lapply(bot_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupBotswana,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Botswana
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "CentralNeighbor") ~ as.character("CENTRAL"),
-      (parent == "KgatlengNeighbor") ~ as.character("KGATLENG"),
-      (parent == "KwenengNeighbor") ~ as.character("KWENENG"),
-      (parent == "NorthEastNeighbor") ~ as.character("NORTH EAST"),
-      (parent == "SouthEastNeighbor") ~ as.character("SOUTH EAST"),
-      (parent == "SouthernNeighbor") ~ as.character("SOUTHERN")
-    )
-  )
-
-neighborsLookupBotswana_p_functional_counts <- neighborsLookupBotswana_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupBotswana_forExport <- left_join(neighborsLookupBotswana_p_functional,
-          neighborsLookupBotswana_p_functional_counts)
-
-neighborsLookupBotswana_forExport$country <- "Botswana"
-
-#### Kenya ----
-neighborsLookupKenya_p_functional <- lapply(ken_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupKenya,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Kenya
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "HomaNeighbor") ~ as.character("HOMA BAY"),
-      (parent == "KiambuNeighbor") ~ as.character("KIAMBU"),
-      (parent == "KisumuNeighbor") ~ as.character("KISUMU"),
-      (parent == "MigoriNeighbor") ~ as.character("MIGORI"),
-      (parent == "MombasaNeighbor") ~ as.character("MOMBASA"),
-      (parent == "NairobiNeighbor") ~ as.character("NAIROBI CITY"),
-      (parent == "SiayaNeighbor") ~ as.character("SIAYA")
-    )
-  )
-
-neighborsLookupKenya_p_functional_counts <- neighborsLookupKenya_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupKenya_forExport <- left_join(neighborsLookupKenya_p_functional,
-                                               neighborsLookupKenya_p_functional_counts)
-
-neighborsLookupKenya_forExport$country <- "Kenya"
-
-#### Lesotho ----
-neighborsLookupLesotho_p_functional <- lapply(les_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupLesotho,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Lesotho
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "BereaNeighbor") ~ as.character("BEREA"),
-      (parent == "MafetengNeighbor") ~ as.character("MAFETENG"),
-      (parent == "MaseruNeighbor") ~ as.character("MASERU"),
-      (parent == "MHoekNeighbor") ~ as.character("MOHALE'S HOEK"))
-  )
-
-neighborsLookupLesotho_p_functional_counts <- neighborsLookupLesotho_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupLesotho_forExport <- left_join(neighborsLookupLesotho_p_functional,
-                                    neighborsLookupLesotho_p_functional_counts)
-
-neighborsLookupLesotho_forExport$country <- "Lesotho"
-
-#### Malawi ----
-neighborsLookupMalawi_p_functional <- lapply(mal_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupMalawi,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Malawi
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "BlantyreNeighbor") ~ as.character("BLANTYRE"),
-      (parent == "MachingaNeighbor") ~ as.character("MACHINGA"),
-      (parent == "ZombaNeighbor") ~ as.character("ZOMBA")
-    )
-  )
-
-neighborsLookupMalawi_p_functional_counts <- neighborsLookupMalawi_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupMalawi_forExport <- left_join(neighborsLookupMalawi_p_functional,
-                                               neighborsLookupMalawi_p_functional_counts)
-
-neighborsLookupMalawi_forExport$country <- "Malawi"
-
-
-#### South Africa ----
-neighborsLookupSouthAfrica_p_functional <- lapply(saf_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupSouthAfrica,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_SouthAfrica
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "ALFRED_NZONeighbor") ~ as.character("ALFRED NZO"),
-      (parent == "BOJANALANeighbor") ~ as.character("BOJANALA"),
-      (parent == "BUFFALO_CITYNeighbor") ~ as.character("BUFFALO CITY"),
-      (parent == "CAPRICORNNeighbor") ~ as.character("CAPRICORN"),
-      (parent == "CITY_OF_CAPE_TOWNNeighbor") ~ as.character("CITY OF CAPE TOWN"),
-      (parent == "CITY_OF_JOHANNESBURGNeighbor") ~ as.character("CITY OF JOHANNESBURG"),
-      (parent == "CITY_OF_TSHWANENeighbor") ~ as.character("CITY OF TSHWANE"),
-      (parent == "DOCTOR_KENNETH_KAUNDANeighbor") ~ as.character("DOCTOR KENNETH KAUNDA"),
-      (parent == "EHLANZENINeighbor") ~ as.character("EHLANZENI"),
-      (parent == "EKURHULENINeighbor") ~ as.character("EKURHULENI"),
-      (parent == "ETHEKWININeighbor") ~ as.character("ETHEKWINI"),
-      (parent == "GERT_SIBANDENeighbor") ~ as.character("GERT SIBANDE"),
-      (parent == "LEJWELEPUTSWANeighbor") ~ as.character("LEJWELEPUTSWA"),
-      (parent == "MOPANINeighbor") ~ as.character("MOPANI"),
-      (parent == "NGAKA_MODIRI_MOLEMANeighbor") ~ as.character("NGAKA MODIRI MOLEMA"),
-      (parent == "NKANGALANeighbor") ~ as.character("NKANGALA"),
-      (parent == "OR_TAMBONeighbor") ~ as.character("O.R. TAMBO"),
-      (parent == "SEDIBENGNeighbor") ~ as.character("SEDIBENG"),
-      (parent == "THABO_MOFUTSANYANENeighbor") ~ as.character("THABO MOFUTSANYANE"),
-      (parent == "UGUNeighbor") ~ as.character("UGU"),
-      (parent == "UMGUNGUNDLOVUNeighbor") ~ as.character("UMGUNGUNDLOVU"),
-      (parent == "UTHUKELANeighbor") ~ as.character("UTHUKELA"),
-      (parent == "UTHUNGULUNeighbor") ~ as.character("UTHUNGULU"),
-      (parent == "ZULULANDNeighbor") ~ as.character("ZULULAND")
-    )
-  )
-
-neighborsLookupSouthAfrica_p_functional_counts <- neighborsLookupSouthAfrica_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupSouthAfrica_forExport <- left_join(neighborsLookupSouthAfrica_p_functional,
-                                               neighborsLookupSouthAfrica_p_functional_counts)
-
-neighborsLookupSouthAfrica_forExport$country <- "South Africa"
-
-
-#### Tanzania ----
-neighborsLookupTanzania_p_functional <- lapply(tan_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupTanzania,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Tanzania
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "MwanzaNeighbor") ~ as.character("MWANZA"),
-      (parent == "KageraNeighbor") ~ as.character("KAGERA")
-    )
-  )
-
-neighborsLookupTanzania_p_functional_counts <- neighborsLookupTanzania_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupTanzania_forExport <- left_join(neighborsLookupTanzania_p_functional,
-                                               neighborsLookupTanzania_p_functional_counts)
-
-neighborsLookupTanzania_forExport$country <- "Tanzania"
-
-
-#### Zimbabwe ----
-neighborsLookupZimbabwe_p_functional <- lapply(zim_neighbors, function(x) {
-  neighbor_df <- assignNeighbors(
-    lookup_df = neighborsLookupZimbabwe,
-    neighbor = x,
-    dreams_input = DREAMS_Districts_Zimbabwe
-  )
-}) %>% 
-  dplyr::bind_rows() %>%
-  dplyr::mutate(
-    parent = case_when(
-      (parent == "BulawayoNeighbor") ~ as.character("BULAWAYO"),
-      (parent == "ManicalandNeighbor") ~ as.character("MANICALAND"),
-      (parent == "MCentralNeighbor") ~ as.character("MASHONALAND CENTRAL"),
-      (parent == "MNorthNeighbor") ~ as.character("MATABELELAND NORTH"),
-      (parent == "MSouthNeighbor") ~ as.character("MATABELELAND SOUTH"),
-      (parent == "MidlandsNeighbor") ~ as.character("MIDLANDS")
-    )
-  )
-
-neighborsLookupZimbabwe_p_functional_counts <- neighborsLookupZimbabwe_p_functional %>%
-  group_by(parent) %>%
-  tally() %>%
-  rename(neighbors = n)
-
-neighborsLookupZimbabwe_forExport <- left_join(neighborsLookupZimbabwe_p_functional,
-                                            neighborsLookupZimbabwe_p_functional_counts)
-
-neighborsLookupZimbabwe_forExport$country <- "Zimbabwe"
-
-#### Create grouped df
-
-neighborsLookupAll <- bind_rows(neighborsLookupBotswana_forExport,
-                               neighborsLookupKenya_forExport,
-                               neighborsLookupLesotho_forExport,
-                               neighborsLookupMalawi_forExport,
-                               neighborsLookupSouthAfrica_forExport,
-                               neighborsLookupTanzania_forExport,
-                               neighborsLookupZimbabwe_forExport
-                               )
-
-### Save results for app ----
-#### Original (outdated as now all being exported together) ----
-#saveRDS(neighborsLookupLesotho, file = "data/neighborsLookup.RDS")
-
-saveRDS(neighborsLookupAll, file = "data/neighborsLookupAll.RDS")
-
-## Other possible approaches, nixed for now ----
-# # 
-# # # compare (the parent name will need some work)
-# # print(neighborsLookupLesotho_p_functional)
-# # print(neighborsLookupLesotho_p)
-# # 
-# # # how do we extend to a country? ----
-# # 
-# # # we can either do a manual run of the above function on every country
-# # # it will be manual but still look a lot cleaner
-# # # or we can attempt a loop as shown below
-# # 
-# # # INPUTS -----
-# # 
-# # # we can create a multi-country dataframe
-# # # here we create a fake congo data frame
-# neighborsLookupCongo <- neighborsLookupLesotho %>%
-#   select(-c(CNTRY_NAME)) %>%
-#   mutate("CNTRY_NAME" = "CONGO") %>%
-#   select(AREA_NAME, CNTRY_NAME, BereaNeighbor, MafetengNeighbor, MaseruNeighbor, MHoekNeighbor)
-# #
-# 
-# neighborsLookupCongo_p_functional <- lapply(neighbors, function(x) {
-#   neighbor_df <- assignNeighbors(
-#     lookup_df = neighborsLookupCongo,
-#     neighbor = x,
-#     dreams_input = DREAMS_Districts_Lesotho
-#   )
-# }) %>% dplyr::bind_rows()
-# 
-# 
-# # # imagine a list 16 countries in it each with their own regions
-# # # another option is a list of data frames
-# # master_geo <- 
-# #   list(
-# #     LESOTHO = neighborsLookupLesotho,
-# #     CONGO = neighborsLookupCongo
-# #   )
-# # 
-# # # imagine a list with all 16 neighbor regions
-# # dreams_dristrict_list <- 
-# #   list(
-# #     LESOTHO = c("BEREA", 
-# #                 "MAFETENG",
-# #                 "MASERU",
-# #                 "MOHALE'S HOEK"),
-# #     CONGO = c("BEREA", 
-# #               "MAFETENG",
-# #               "MASERU",
-# #               "MOHALE'S HOEK")
-# #   )
-# # 
-# # neighbors_list <- 
-# #   list(
-# #     LESOTHO = neighbors,
-# #     CONGO = neighbors # each country would get their own list
-# #   )
-# # 
-# # # PROCESS----
-# # 
-# # master_list <- list()
-# # for (country in unique(names(master_geo))) {
-# #   
-# #   print(paste0("processing for country ", country))
-# #   
-# #   # in this case we just have one vector for neighbors but we would probably have
-# #   # a dataframe or something of a lookup for neighbors as well
-# #   neighbors <- neighbors_list[[country]]
-# #   df_lookup <- master_geo[[country]]
-# #   dreams_districts <- dreams_dristrict_list[[country]]
-# #   
-# #   
-# #   neighbors_result <- lapply(neighbors, function(x) {
-# #     neighbor_df <- assignNeighbors(
-# #       lookup_df = df_lookup, 
-# #       neighbor = x, 
-# #       dreams_input = DREAMS_Districts_Lesotho
-# #     )
-# #   }) %>% dplyr::bind_rows()
-# #   
-# #   print(neighbors_result)
-# #   
-# #   master_list[[country]] <- neighbors_result
-# #   
-# # }
-# # 
-# # # the final result, you can bind or work with the list
-# # dplyr::bind_rows(master_list)
 

@@ -50,6 +50,14 @@ SingleYearNationalAGYWPops <- Joined %>%
     values_from = "CohortProportion"
   )
 
+SingleYearNationalAGYWPops <- SingleYearNationalAGYWPops %>%
+  mutate(
+    country = case_when(
+      (country == "Côte d'Ivoire") ~ "Cote d'Ivoire",
+      TRUE ~ as.character(country)
+    )
+  )
+
 rm(CohortPops)
 rm(Joined)
 
