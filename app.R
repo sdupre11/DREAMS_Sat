@@ -23,13 +23,13 @@ library(datimutils)
 # uncomment when running manually ------
 source("functions.R")
 
-tryCatch({
-  s3_connect()
-},
-error = function(e) {
-  print(e)
-})
-source("data_load.R")
+# tryCatch({
+#   s3_connect()
+# },
+# error = function(e) {
+#   print(e)
+# })
+# source("data_load.R")
 
 ### js ----
 # allows for using the enter button for the log in
@@ -203,6 +203,15 @@ server <- function(input, output, session) {
     )
     
     if (exists("d2_default_session")) {
+      
+      # initiate s3 connection if login is successful
+      tryCatch({
+        s3_connect()
+      },
+      error = function(e) {
+        print(e)
+      })
+      source("data_load.R")
       
       user_input$authenticated  <-  TRUE
       user_input$d2_session  <-  d2_default_session$clone()
