@@ -121,13 +121,13 @@ server <- function(input, output, session) {
           br()
         ),
         fluidRow(
-          #textInput("user_name", "Username: ", width = "500px"),
-          #passwordInput("password", "Password:", width = "500px"),
-          #actionButton("login_button", "Log in!"),
+          textInput("user_name", "Username: ", width = "500px"),
+          passwordInput("password", "Password:", width = "500px"),
+          actionButton("login_button", "Log in!"),
           
-          actionButton("login_button_oauth", "Log in with DATIM"),
-          uiOutput("ui_hasauth"),
-          uiOutput("ui_redirect")
+          # actionButton("login_button_oauth", "Log in with DATIM"),
+          # uiOutput("ui_hasauth"),
+          # uiOutput("ui_redirect")
         )
       )
     )
@@ -2605,6 +2605,54 @@ server <- function(input, output, session) {
     return(b)
   })
   
+  # NON OAUTH Login process ----
+  observeEvent(input$login_button, {
+    tryCatch({
+      datimutils::loginToDATIM(base_url = Sys.getenv("BASE_URL"),
+                               username = input$user_name,
+                               password = input$password,
+                               d2_session_envir = parent.env(environment())
+      )
+    },
+    # This function throws an error if the login is not successful
+    error = function(e) {
+      flog.info(paste0("User ", input$username, " login failed."), name = "datapack")
+    }
+    )
+    
+    if (exists("d2_default_session")) {
+      if (any(class(d2_default_session) == "d2Session")) {
+        user_input$authenticated  <-  TRUE
+        user_input$d2_session  <-  d2_default_session$clone()
+        d2_default_session <- NULL
+        
+        
+        # Need to check the user is a member of the PRIME Data Systems Group, COP Memo group, or a super user
+        user_input$memo_authorized  <-
+          grepl("VDEqY8YeCEk|ezh8nmc4JbX", user_input$d2_session$me$userGroups) |
+          grepl(
+            "jtzbVV4ZmdP",
+            user_input$d2_session$me$userCredentials$userRoles
+          )
+        flog.info(
+          paste0(
+            "User ",
+            user_input$d2_session$me$userCredentials$username,
+            " logged in."
+          ),
+          name = "datapack"
+        )
+      }
+    } else {
+      sendSweetAlert(
+        session,
+        title = "Login failed",
+        text = "Please check your username/password!",
+        type = "error"
+      )
+    }
+  })
+
   # Set outputOptions ----
   
   outputOptions(output, 'paramsUploaded', suspendWhenHidden = FALSE)
