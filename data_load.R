@@ -339,7 +339,7 @@ DREAMS_Districts_Zimbabwe_USCB <- c("BEITBRIDGE",
 countryData <- readRDS("data/countryData.RDS")
 
 AGYW_PREV <- s3read_using(FUN = read.csv,
-             bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+             bucket = Sys.getenv("WRITE_S3"),
              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
   as.data.frame()
 
