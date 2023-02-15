@@ -33,7 +33,7 @@
         "Packaged": "2021-12-14 21:51:21 UTC; edd",
         "Repository": "CRAN",
         "Date/Publication": "2021-12-15 07:50:08 UTC",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:37 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 18:35:11 UTC; unix"
       }
     },
     "DBI": {
@@ -67,9 +67,9 @@
         "Packaged": "2022-06-18 01:24:38 UTC; kirill",
         "Author": "R Special Interest Group on Databases (R-SIG-DB) [aut],\n  Hadley Wickham [aut],\n  Kirill Müller [aut, cre] (<https://orcid.org/0000-0002-1416-3412>),\n  R Consortium [fnd]",
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-06-18 07:10:15 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:09 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:43:22 UTC; unix"
       }
     },
     "DT": {
@@ -98,9 +98,9 @@
         "NeedsCompilation": "no",
         "Packaged": "2022-10-18 23:11:25 UTC; yihui",
         "Author": "Yihui Xie [aut, cre],\n  Joe Cheng [aut],\n  Xianying Tan [aut],\n  JJ Allaire [ctb],\n  Maximilian Girlich [ctb],\n  Greg Freedman Ellis [ctb],\n  Johannes Rauh [ctb],\n  SpryMedia Limited [ctb, cph] (DataTables in htmlwidgets/lib),\n  Brian Reavis [ctb, cph] (selectize.js in htmlwidgets/lib),\n  Leon Gersen [ctb, cph] (noUiSlider in htmlwidgets/lib),\n  Bartek Szopka [ctb, cph] (jquery.highlight.js in htmlwidgets/lib),\n  Alex Pickering [ctb],\n  William Holmes [ctb],\n  Mikko Marttila [ctb],\n  Andres Quintero [ctb],\n  Stéphane Laurent [ctb],\n  RStudio, PBC [cph]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-10-19 00:17:54 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:47:31 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:16 UTC; unix"
       }
     },
     "KernSmooth": {
@@ -225,10 +225,9 @@
         "Packaged": "2021-08-06 20:18:46 UTC; winston",
         "Author": "Winston Chang [aut, cre]",
         "Maintainer": "Winston Chang <winston@stdout.org>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-19 14:00:05 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-11-22 22:52:41 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:00:41 UTC; unix"
       }
     },
     "RColorBrewer": {
@@ -253,7 +252,7 @@
         "NeedsCompilation": "no",
         "Repository": "CRAN",
         "Date/Publication": "2022-04-03 19:20:13 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:39 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:32:57 UTC; unix"
       }
     },
     "Rcpp": {
@@ -280,10 +279,9 @@
         "RoxygenNote": "6.1.1",
         "NeedsCompilation": "yes",
         "Packaged": "2022-07-02 15:34:02 UTC; edd",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-07-08 23:10:06 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:42:39 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-08-22 16:13:12 UTC; unix"
       }
     },
     "anytime": {
@@ -315,7 +313,7 @@
         "Packaged": "2020-08-26 17:46:45.898451 UTC; edd",
         "Repository": "CRAN",
         "Date/Publication": "2020-08-27 11:40:21 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-01-03 21:35:40 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 18:35:14 UTC; unix"
       }
     },
     "askpass": {
@@ -345,9 +343,9 @@
         "Packaged": "2019-01-13 12:08:17 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>)",
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2019-01-13 12:50:03 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:27 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:20:44 UTC; unix"
       }
     },
     "assertthat": {
@@ -375,7 +373,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-03-21 14:53:46 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-12-05 22:26:15 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-03-28 15:05:07 UTC; unix"
       }
     },
     "aws.s3": {
@@ -403,9 +401,9 @@
         "NeedsCompilation": "no",
         "Packaged": "2020-04-07 20:31:01 UTC; svnuser",
         "Author": "Thomas J. Leeper [aut] (<https://orcid.org/0000-0003-4097-6326>),\n  Boettiger Carl [ctb],\n  Andrew Martin [ctb],\n  Mark Thompson [ctb],\n  Tyler Hunt [ctb],\n  Steven Akins [ctb],\n  Bao Nguyen [ctb],\n  Thierry Onkelinx [ctb],\n  Andrii Degtiarov [ctb],\n  Dhruv Aggarwal [ctb],\n  Alyssa Columbus [ctb],\n  Simon Urbanek [cre, ctb]",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2020-04-07 21:10:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:28:12 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:37:11 UTC; unix"
       }
     },
     "aws.signature": {
@@ -433,10 +431,9 @@
         "Packaged": "2020-06-01 09:51:14 UTC; jon_m",
         "Author": "Thomas J. Leeper [aut] (<https://orcid.org/0000-0003-4097-6326>),\n  Jonathan Stott [cre, aut],\n  Mike Kaminsky [ctb]",
         "Maintainer": "Jonathan Stott <jonathan.stott@magairports.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2020-06-01 10:10:02 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-12-02 18:28:10 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:37:10 UTC; unix"
       }
     },
     "backports": {
@@ -466,7 +463,7 @@
         "Author": "Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),\n  R Core Team [aut]",
         "Repository": "CRAN",
         "Date/Publication": "2021-12-13 11:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:01:36 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-05-25 13:31:16 UTC; unix"
       }
     },
     "base64enc": {
@@ -489,10 +486,9 @@
         "URL": "http://www.rforge.net/base64enc",
         "NeedsCompilation": "yes",
         "Packaged": "2015-02-04 20:31:00 UTC; svnuser",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2015-07-28 08:03:37",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:29:58 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:03:33 UTC; unix"
       }
     },
     "bit": {
@@ -524,7 +520,7 @@
         "Packaged": "2022-11-13 21:22:09 UTC; jo",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-15 21:20:16 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:36:08 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 16:15:04 UTC; unix"
       }
     },
     "bit64": {
@@ -549,14 +545,14 @@
         "ByteCompile": "yes",
         "URL": "https://github.com/truecluster/bit64",
         "Encoding": "UTF-8",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Repository/R-Forge/Project": "ff",
         "Repository/R-Forge/Revision": "177",
         "Repository/R-Forge/DateTimeStamp": "2018-08-17 17:45:18",
         "Date/Publication": "2020-08-30 07:20:02 UTC",
         "NeedsCompilation": "yes",
         "Packaged": "2020-08-29 10:56:45 UTC; jo",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:36:14 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-03-01 16:54:11 UTC; unix"
       }
     },
     "blob": {
@@ -588,7 +584,7 @@
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
         "Repository": "CRAN",
         "Date/Publication": "2022-04-10 06:22:28 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:07 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:33:25 UTC; unix"
       }
     },
     "boot": {
@@ -632,15 +628,15 @@
         "Type": "Package",
         "Package": "broom",
         "Title": "Convert Statistical Objects into Tidy Tibbles",
-        "Version": "1.0.1",
-        "Authors@R": "\n    c(person(given = \"David\",\n             family = \"Robinson\",\n             role = \"aut\",\n             email = \"admiral.david@gmail.com\"),\n      person(given = \"Alex\",\n             family = \"Hayes\",\n             role = \"aut\",\n             email = \"alexpghayes@gmail.com\",\n             comment = c(ORCID = \"0000-0002-4985-5160\")),\n      person(given = \"Simon\",\n             family = \"Couch\",\n             role = c(\"aut\", \"cre\"),\n             email = \"simonpatrickcouch@gmail.com\",\n             comment = c(ORCID = \"0000-0001-5676-5107\")),\n      person(\"RStudio\", role = c(\"cph\", \"fnd\")),\n      person(given = \"Indrajeet\",\n             family = \"Patil\",\n             role = \"ctb\",\n             email = \"patilindrajeet.science@gmail.com\",\n             comment = c(ORCID = \"0000-0003-1995-6531\")),\n      person(given = \"Derek\",\n             family = \"Chiu\",\n             role = \"ctb\",\n             email = \"dchiu@bccrc.ca\"),\n      person(given = \"Matthieu\",\n             family = \"Gomez\",\n             role = \"ctb\",\n             email = \"mattg@princeton.edu\"),\n      person(given = \"Boris\",\n             family = \"Demeshev\",\n             role = \"ctb\",\n             email = \"boris.demeshev@gmail.com\"),\n      person(given = \"Dieter\",\n             family = \"Menne\",\n             role = \"ctb\",\n             email = \"dieter.menne@menne-biomed.de\"),\n      person(given = \"Benjamin\",\n             family = \"Nutter\",\n             role = \"ctb\",\n             email = \"nutter@battelle.org\"),\n      person(given = \"Luke\",\n             family = \"Johnston\",\n             role = \"ctb\",\n             email = \"luke.johnston@mail.utoronto.ca\"),\n      person(given = \"Ben\",\n             family = \"Bolker\",\n             role = \"ctb\",\n             email = \"bolker@mcmaster.ca\"),\n      person(given = \"Francois\",\n             family = \"Briatte\",\n             role = \"ctb\",\n             email = \"f.briatte@gmail.com\"),\n      person(given = \"Jeffrey\",\n             family = \"Arnold\",\n             role = \"ctb\",\n             email = \"jeffrey.arnold@gmail.com\"),\n      person(given = \"Jonah\",\n             family = \"Gabry\",\n             role = \"ctb\",\n             email = \"jsg2201@columbia.edu\"),\n      person(given = \"Luciano\",\n             family = \"Selzer\",\n             role = \"ctb\",\n             email = \"luciano.selzer@gmail.com\"),\n      person(given = \"Gavin\",\n             family = \"Simpson\",\n             role = \"ctb\",\n             email = \"ucfagls@gmail.com\"),\n      person(given = \"Jens\",\n             family = \"Preussner\",\n             role = \"ctb\",\n             email = \" jens.preussner@mpi-bn.mpg.de\"),\n      person(given = \"Jay\",\n             family = \"Hesselberth\",\n             role = \"ctb\",\n             email = \"jay.hesselberth@gmail.com\"),\n      person(given = \"Hadley\",\n             family = \"Wickham\",\n             role = \"ctb\",\n             email = \"hadley@rstudio.com\"),\n      person(given = \"Matthew\",\n             family = \"Lincoln\",\n             role = \"ctb\",\n             email = \"matthew.d.lincoln@gmail.com\"),\n      person(given = \"Alessandro\",\n             family = \"Gasparini\",\n             role = \"ctb\",\n             email = \"ag475@leicester.ac.uk\"),\n      person(given = \"Lukasz\",\n             family = \"Komsta\",\n             role = \"ctb\",\n             email = \"lukasz.komsta@umlub.pl\"),\n      person(given = \"Frederick\",\n             family = \"Novometsky\",\n             role = \"ctb\"),\n      person(given = \"Wilson\",\n             family = \"Freitas\",\n             role = \"ctb\"),\n      person(given = \"Michelle\",\n             family = \"Evans\",\n             role = \"ctb\"),\n      person(given = \"Jason Cory\",\n             family = \"Brunson\",\n             role = \"ctb\",\n             email = \"cornelioid@gmail.com\"),\n      person(given = \"Simon\",\n             family = \"Jackson\",\n             role = \"ctb\",\n             email = \"drsimonjackson@gmail.com\"),\n      person(given = \"Ben\",\n             family = \"Whalley\",\n             role = \"ctb\",\n             email = \"ben.whalley@plymouth.ac.uk\"),\n      person(given = \"Karissa\",\n             family = \"Whiting\",\n             role = \"ctb\",\n             email = \"karissa.whiting@gmail.com\"),\n      person(given = \"Yves\",\n             family = \"Rosseel\",\n             role = \"ctb\",\n             email = \"yrosseel@gmail.com\"),\n      person(given = \"Michael\",\n             family = \"Kuehn\",\n             role = \"ctb\",\n             email = \"mkuehn10@gmail.com\"),\n      person(given = \"Jorge\",\n             family = \"Cimentada\",\n             role = \"ctb\",\n             email = \"cimentadaj@gmail.com\"),\n      person(given = \"Erle\",\n             family = \"Holgersen\",\n             role = \"ctb\",\n             email = \"erle.holgersen@gmail.com\"),\n      person(given = \"Karl\",\n             family = \"Dunkle Werner\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0003-0523-7309\")),\n      person(given = \"Ethan\",\n             family = \"Christensen\",\n             role = \"ctb\",\n             email = \"christensen.ej@gmail.com\"),\n      person(given = \"Steven\",\n             family = \"Pav\",\n             role = \"ctb\",\n             email = \"shabbychef@gmail.com\"),\n      person(given = \"Paul\",\n             family = \"PJ\",\n             role = \"ctb\",\n             email = \"pjpaul.stephens@gmail.com\"),\n      person(given = \"Ben\",\n             family = \"Schneider\",\n             role = \"ctb\",\n             email = \"benjamin.julius.schneider@gmail.com\"),\n      person(given = \"Patrick\",\n             family = \"Kennedy\",\n             role = \"ctb\",\n             email = \"pkqstr@protonmail.com\"),\n      person(given = \"Lily\",\n             family = \"Medina\",\n             role = \"ctb\",\n             email = \"lilymiru@gmail.com\"),\n      person(given = \"Brian\",\n             family = \"Fannin\",\n             role = \"ctb\",\n             email = \"captain@pirategrunt.com\"),\n      person(given = \"Jason\",\n             family = \"Muhlenkamp\",\n             role = \"ctb\",\n             email = \"jason.muhlenkamp@gmail.com\"),\n      person(given = \"Matt\",\n             family = \"Lehman\",\n             role = \"ctb\"),\n      person(given = \"Bill\",\n             family = \"Denney\",\n             role = \"ctb\",\n             email = \"wdenney@humanpredictions.com\",\n             comment = c(ORCID = \"0000-0002-5759-428X\")),\n      person(given = \"Nic\",\n             family = \"Crane\",\n             role = \"ctb\"),\n      person(given = \"Andrew\",\n             family = \"Bates\",\n             role = \"ctb\"),\n      person(given = \"Vincent\",\n             family = \"Arel-Bundock\",\n             role = \"ctb\",\n             email = \"vincent.arel-bundock@umontreal.ca\",\n             comment = c(ORCID = \"0000-0003-2042-7063\")),\n      person(given = \"Hideaki\",\n             family = \"Hayashi\",\n             role = \"ctb\"),\n      person(given = \"Luis\",\n             family = \"Tobalina\",\n             role = \"ctb\"),\n      person(given = \"Annie\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"anniewang.uc@gmail.com\"),\n      person(given = \"Wei Yang\",\n             family = \"Tham\",\n             role = \"ctb\",\n             email = \"weiyang.tham@gmail.com\"),\n      person(given = \"Clara\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"clara.wang.94@gmail.com\"),\n      person(given = \"Abby\",\n             family = \"Smith\",\n             role = \"ctb\",\n             email = \"als1@u.northwestern.edu\",\n             comment = c(ORCID = \"0000-0002-3207-0375\")),\n      person(given = \"Jasper\",\n             family = \"Cooper\",\n             role = \"ctb\",\n             email = \"jaspercooper@gmail.com\",\n             comment = c(ORCID = \"0000-0002-8639-3188\")),\n      person(given = \"E Auden\",\n             family = \"Krauska\",\n             role = \"ctb\",\n             email = \"krauskae@gmail.com\",\n             comment = c(ORCID = \"0000-0002-1466-5850\")),\n      person(given = \"Alex\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"x249wang@uwaterloo.ca\"),\n      person(given = \"Malcolm\",\n             family = \"Barrett\",\n             role = \"ctb\",\n             email = \"malcolmbarrett@gmail.com\",\n             comment = c(ORCID = \"0000-0003-0299-5825\")),\n      person(given = \"Charles\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"charlestigray@gmail.com\",\n             comment = c(ORCID = \"0000-0002-9978-011X\")),\n      person(given = \"Jared\",\n             family = \"Wilber\",\n             role = \"ctb\"),\n      person(given = \"Vilmantas\",\n             family = \"Gegzna\",\n             role = \"ctb\",\n             email = \"GegznaV@gmail.com\",\n             comment = c(ORCID = \"0000-0002-9500-5167\")),\n      person(given = \"Eduard\",\n             family = \"Szoecs\",\n             role = \"ctb\",\n             email = \"eduardszoecs@gmail.com\"),\n      person(given = \"Frederik\",\n             family = \"Aust\",\n             role = \"ctb\",\n             email = \"frederik.aust@uni-koeln.de\",\n             comment = c(ORCID = \"0000-0003-4900-788X\")),\n      person(given = \"Angus\",\n             family = \"Moore\",\n             role = \"ctb\",\n             email = \"angusmoore9@gmail.com\"),\n      person(given = \"Nick\",\n             family = \"Williams\",\n             role = \"ctb\",\n             email = \"ntwilliams.personal@gmail.com\"),\n      person(given = \"Marius\",\n             family = \"Barth\",\n             role = \"ctb\",\n             email = \"marius.barth.uni.koeln@gmail.com\",\n             comment = c(ORCID = \"0000-0002-3421-6665\")),\n      person(given = \"Bruna\",\n             family = \"Wundervald\",\n             role = \"ctb\",\n             email = \"brunadaviesw@gmail.com\",\n             comment = c(ORCID = \"0000-0001-8163-220X\")),\n      person(given = \"Joyce\",\n             family = \"Cahoon\",\n             role = \"ctb\",\n             email = \"joyceyu48@gmail.com\",\n             comment = c(ORCID = \"0000-0001-7217-4702\")),\n      person(given = \"Grant\",\n             family = \"McDermott\",\n             role = \"ctb\",\n             email = \"grantmcd@uoregon.edu\",\n             comment = c(ORCID = \"0000-0001-7883-8573\")),\n      person(given = \"Kevin\",\n             family = \"Zarca\",\n             role = \"ctb\",\n             email = \"kevin.zarca@gmail.com\"),\n      person(given = \"Shiro\",\n             family = \"Kuriwaki\",\n             role = \"ctb\",\n             email = \"shirokuriwaki@gmail.com\",\n             comment = c(ORCID = \"0000-0002-5687-2647\")),\n      person(given = \"Lukas\",\n             family = \"Wallrich\",\n             role = \"ctb\",\n             email = \"lukas.wallrich@gmail.com\",\n             comment = c(ORCID = \"0000-0003-2121-5177\")),\n      person(given = \"James\",\n             family = \"Martherus\",\n             role = \"ctb\",\n             email = \"james@martherus.com\",\n             comment = c(ORCID = \"0000-0002-8285-3300\")),\n      person(given = \"Chuliang\",\n             family = \"Xiao\",\n             role = \"ctb\",\n             email = \"cxiao@umich.edu\",\n             comment = c(ORCID = \"0000-0002-8466-9398\")),\n      person(given = \"Joseph\",\n             family = \"Larmarange\",\n             role = \"ctb\",\n             email = \"joseph@larmarange.net\"),\n      person(given = \"Max\",\n             family = \"Kuhn\",\n             role = \"ctb\",\n             email = \"max@rstudio.com\"),\n      person(given = \"Michal\",\n             family = \"Bojanowski\",\n             role = \"ctb\",\n             email = \"michal2992@gmail.com\"),\n      person(given = \"Hakon\",\n             family = \"Malmedal\",\n             role = \"ctb\",\n             email = \"hmalmedal@gmail.com\"),\n      person(given = \"Clara\",\n             family = \"Wang\",\n             role = \"ctb\"),\n      person(given = \"Sergio\",\n             family = \"Oller\",\n             role = \"ctb\",\n             email = \"sergioller@gmail.com\"),\n      person(given = \"Luke\",\n             family = \"Sonnet\",\n             role = \"ctb\",\n             email = \"luke.sonnet@gmail.com\"),\n      person(given = \"Jim\",\n             family = \"Hester\",\n             role = \"ctb\",\n             email = \"jim.hester@rstudio.com\"),\n      person(given = \"Cory\",\n             family = \"Brunson\",\n             role = \"ctb\",\n             email = \"cornelioid@gmail.com\"),\n      person(given = \"Ben\",\n             family = \"Schneider\",\n             role = \"ctb\",\n             email = \"benjamin.julius.schneider@gmail.com\"),\n      person(given = \"Bernie\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"bfgray3@gmail.com\",\n             comment = c(ORCID = \"0000-0001-9190-6032\")),\n      person(given = \"Mara\",\n             family = \"Averick\",\n             role = \"ctb\",\n             email = \"mara@rstudio.com\"),\n      person(given = \"Aaron\",\n             family = \"Jacobs\",\n             role = \"ctb\",\n             email = \"atheriel@gmail.com\"),\n      person(given = \"Andreas\",\n             family = \"Bender\",\n             role = \"ctb\",\n             email = \"bender.at.R@gmail.com\"),\n      person(given = \"Sven\",\n             family = \"Templer\",\n             role = \"ctb\",\n             email = \"sven.templer@gmail.com\"),\n      person(given = \"Paul-Christian\",\n             family = \"Buerkner\",\n             role = \"ctb\",\n             email = \"paul.buerkner@gmail.com\"),\n      person(given = \"Matthew\",\n             family = \"Kay\",\n             role = \"ctb\",\n             email = \"mjskay@umich.edu\"),\n      person(given = \"Erwan\",\n             family = \"Le Pennec\",\n             role = \"ctb\",\n             email = \"lepennec@gmail.com\"),\n      person(given = \"Johan\",\n             family = \"Junkka\",\n             role = \"ctb\",\n             email = \"johan.junkka@umu.se\"),\n      person(given = \"Hao\",\n             family = \"Zhu\",\n             role = \"ctb\",\n             email = \"haozhu233@gmail.com\"),\n      person(given = \"Benjamin\",\n             family = \"Soltoff\",\n             role = \"ctb\",\n             email = \"soltoffbc@uchicago.edu\"),\n      person(given = \"Zoe\",\n             family = \"Wilkinson Saldana\",\n             role = \"ctb\",\n             email = \"zoewsaldana@gmail.com\"),\n      person(given = \"Tyler\",\n             family = \"Littlefield\",\n             role = \"ctb\",\n             email = \"tylurp1@gmail.com\"),\n      person(given = \"Charles T.\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"charlestigray@gmail.com\"),\n      person(given = \"Shabbh E.\",\n             family = \"Banks\",\n             role = \"ctb\"),\n      person(given = \"Serina\",\n             family = \"Robinson\",\n             role = \"ctb\",\n             email = \"robi0916@umn.edu\"),\n      person(given = \"Roger\",\n             family = \"Bivand\",\n             role = \"ctb\",\n             email = \"Roger.Bivand@nhh.no\"),\n      person(given = \"Riinu\",\n             family = \"Ots\",\n             role = \"ctb\",\n             email = \"riinuots@gmail.com\"),\n      person(given = \"Nicholas\",\n             family = \"Williams\",\n             role = \"ctb\",\n             email = \"ntwilliams.personal@gmail.com\"),\n      person(given = \"Nina\",\n             family = \"Jakobsen\",\n             role = \"ctb\"),\n      person(given = \"Michael\",\n             family = \"Weylandt\",\n             role = \"ctb\",\n             email = \"michael.weylandt@gmail.com\"),\n      person(given = \"Lisa\",\n             family = \"Lendway\",\n             role = \"ctb\",\n             email = \"llendway@macalester.edu\"),\n      person(given = \"Karl\",\n             family = \"Hailperin\",\n             role = \"ctb\",\n             email = \"khailper@gmail.com\"),\n      person(given = \"Josue\",\n             family = \"Rodriguez\",\n             role = \"ctb\",\n             email = \"jerrodriguez@ucdavis.edu\"),\n      person(given = \"Jenny\",\n             family = \"Bryan\",\n             role = \"ctb\",\n             email = \"jenny@rstudio.com\"),\n      person(given = \"Chris\",\n             family = \"Jarvis\",\n             role = \"ctb\",\n             email = \"Christopher1.jarvis@gmail.com\"),\n      person(given = \"Greg\",\n             family = \"Macfarlane\",\n             role = \"ctb\",\n             email = \"gregmacfarlane@gmail.com\"),\n      person(given = \"Brian\",\n             family = \"Mannakee\",\n             role = \"ctb\",\n             email = \"bmannakee@gmail.com\"),\n      person(given = \"Drew\",\n             family = \"Tyre\",\n             role = \"ctb\",\n             email = \"atyre2@unl.edu\"),\n      person(given = \"Shreyas\",\n             family = \"Singh\",\n             role = \"ctb\",\n             email = \"shreyas.singh.298@gmail.com\"),\n      person(given = \"Laurens\",\n             family = \"Geffert\",\n             role = \"ctb\",\n             email = \"laurensgeffert@gmail.com\"),\n      person(given = \"Hong\",\n             family = \"Ooi\",\n             role = \"ctb\",\n             email = \"hongooi@microsoft.com\"),\n      person(given = \"Henrik\",\n             family = \"Bengtsson\",\n             role = \"ctb\",\n             email = \"henrikb@braju.com\"),\n      person(given = \"Eduard\",\n             family = \"Szocs\",\n             role = \"ctb\",\n             email = \"eduardszoecs@gmail.com\"),\n      person(given = \"David\",\n             family = \"Hugh-Jones\",\n             role = \"ctb\",\n             email = \"davidhughjones@gmail.com\"),\n      person(given = \"Matthieu\",\n             family = \"Stigler\",\n             role = \"ctb\",\n             email = \"Matthieu.Stigler@gmail.com\"),\n      person(given = \"Hugo\",\n             family = \"Tavares\",\n             role = \"ctb\",\n             email = \"hm533@cam.ac.uk\",\n             comment = c(ORCID = \"0000-0001-9373-2726\")),\n\t    person(given = \"R. Willem\",\n             family = \"Vervoort\",\n             role = \"ctb\",\n             email = \"Willemvervoort@gmail.com\"),\n      person(given = \"Brenton M.\",\n             family = \"Wiernik\",\n             role = \"ctb\",\n             email = \"brenton@wiernik.org\"),\n      person(given = \"Josh\",\n             family = \"Yamamoto\",\n             role = \"ctb\",\n             email = \"joshuayamamoto5@gmail.com\"),\n      person(given = \"Jasme\",\n             family = \"Lee\",\n             role = \"ctb\"),\n      person(given = \"Taren\",\n             family = \"Sanders\",\n             role = \"ctb\",\n             email = \"taren.sanders@acu.edu.au\",\n             comment = c(ORCID = \"0000-0002-4504-6008\")),\n      person(given = \"Ilaria\",\n             family = \"Prosdocimi\",\n             role = \"ctb\",\n             email = \"prosdocimi.ilaria@gmail.com\",\n            comment = c(ORCID = \"0000-0001-8565-094X\")),\n      person(given = \"Daniel D.\",\n             family = \"Sjoberg\",\n             role = \"ctb\",\n             email = \"danield.sjoberg@gmail.com\",\n             comment = c(ORCID = \"0000-0003-0862-2018\")),\n      person(given = \"Alex\",\n             family = \"Reinhart\",\n             role = \"ctb\",\n             email = \"areinhar@stat.cmu.edu\",\n             comment = c(ORCID = \"0000-0002-6658-514X\")))",
+        "Version": "1.0.2",
+        "Authors@R": "\n    c(person(given = \"David\",\n             family = \"Robinson\",\n             role = \"aut\",\n             email = \"admiral.david@gmail.com\"),\n      person(given = \"Alex\",\n             family = \"Hayes\",\n             role = \"aut\",\n             email = \"alexpghayes@gmail.com\",\n             comment = c(ORCID = \"0000-0002-4985-5160\")),\n      person(given = \"Simon\",\n             family = \"Couch\",\n             role = c(\"aut\", \"cre\"),\n             email = \"simonpatrickcouch@gmail.com\",\n             comment = c(ORCID = \"0000-0001-5676-5107\")),\n      person(\"RStudio\", role = c(\"cph\", \"fnd\")),\n      person(given = \"Indrajeet\",\n             family = \"Patil\",\n             role = \"ctb\",\n             email = \"patilindrajeet.science@gmail.com\",\n             comment = c(ORCID = \"0000-0003-1995-6531\")),\n      person(given = \"Derek\",\n             family = \"Chiu\",\n             role = \"ctb\",\n             email = \"dchiu@bccrc.ca\"),\n      person(given = \"Matthieu\",\n             family = \"Gomez\",\n             role = \"ctb\",\n             email = \"mattg@princeton.edu\"),\n      person(given = \"Boris\",\n             family = \"Demeshev\",\n             role = \"ctb\",\n             email = \"boris.demeshev@gmail.com\"),\n      person(given = \"Dieter\",\n             family = \"Menne\",\n             role = \"ctb\",\n             email = \"dieter.menne@menne-biomed.de\"),\n      person(given = \"Benjamin\",\n             family = \"Nutter\",\n             role = \"ctb\",\n             email = \"nutter@battelle.org\"),\n      person(given = \"Luke\",\n             family = \"Johnston\",\n             role = \"ctb\",\n             email = \"luke.johnston@mail.utoronto.ca\"),\n      person(given = \"Ben\",\n             family = \"Bolker\",\n             role = \"ctb\",\n             email = \"bolker@mcmaster.ca\"),\n      person(given = \"Francois\",\n             family = \"Briatte\",\n             role = \"ctb\",\n             email = \"f.briatte@gmail.com\"),\n      person(given = \"Jeffrey\",\n             family = \"Arnold\",\n             role = \"ctb\",\n             email = \"jeffrey.arnold@gmail.com\"),\n      person(given = \"Jonah\",\n             family = \"Gabry\",\n             role = \"ctb\",\n             email = \"jsg2201@columbia.edu\"),\n      person(given = \"Luciano\",\n             family = \"Selzer\",\n             role = \"ctb\",\n             email = \"luciano.selzer@gmail.com\"),\n      person(given = \"Gavin\",\n             family = \"Simpson\",\n             role = \"ctb\",\n             email = \"ucfagls@gmail.com\"),\n      person(given = \"Jens\",\n             family = \"Preussner\",\n             role = \"ctb\",\n             email = \" jens.preussner@mpi-bn.mpg.de\"),\n      person(given = \"Jay\",\n             family = \"Hesselberth\",\n             role = \"ctb\",\n             email = \"jay.hesselberth@gmail.com\"),\n      person(given = \"Hadley\",\n             family = \"Wickham\",\n             role = \"ctb\",\n             email = \"hadley@rstudio.com\"),\n      person(given = \"Matthew\",\n             family = \"Lincoln\",\n             role = \"ctb\",\n             email = \"matthew.d.lincoln@gmail.com\"),\n      person(given = \"Alessandro\",\n             family = \"Gasparini\",\n             role = \"ctb\",\n             email = \"ag475@leicester.ac.uk\"),\n      person(given = \"Lukasz\",\n             family = \"Komsta\",\n             role = \"ctb\",\n             email = \"lukasz.komsta@umlub.pl\"),\n      person(given = \"Frederick\",\n             family = \"Novometsky\",\n             role = \"ctb\"),\n      person(given = \"Wilson\",\n             family = \"Freitas\",\n             role = \"ctb\"),\n      person(given = \"Michelle\",\n             family = \"Evans\",\n             role = \"ctb\"),\n      person(given = \"Jason Cory\",\n             family = \"Brunson\",\n             role = \"ctb\",\n             email = \"cornelioid@gmail.com\"),\n      person(given = \"Simon\",\n             family = \"Jackson\",\n             role = \"ctb\",\n             email = \"drsimonjackson@gmail.com\"),\n      person(given = \"Ben\",\n             family = \"Whalley\",\n             role = \"ctb\",\n             email = \"ben.whalley@plymouth.ac.uk\"),\n      person(given = \"Karissa\",\n             family = \"Whiting\",\n             role = \"ctb\",\n             email = \"karissa.whiting@gmail.com\"),\n      person(given = \"Yves\",\n             family = \"Rosseel\",\n             role = \"ctb\",\n             email = \"yrosseel@gmail.com\"),\n      person(given = \"Michael\",\n             family = \"Kuehn\",\n             role = \"ctb\",\n             email = \"mkuehn10@gmail.com\"),\n      person(given = \"Jorge\",\n             family = \"Cimentada\",\n             role = \"ctb\",\n             email = \"cimentadaj@gmail.com\"),\n      person(given = \"Erle\",\n             family = \"Holgersen\",\n             role = \"ctb\",\n             email = \"erle.holgersen@gmail.com\"),\n      person(given = \"Karl\",\n             family = \"Dunkle Werner\",\n             role = \"ctb\",\n             comment = c(ORCID = \"0000-0003-0523-7309\")),\n      person(given = \"Ethan\",\n             family = \"Christensen\",\n             role = \"ctb\",\n             email = \"christensen.ej@gmail.com\"),\n      person(given = \"Steven\",\n             family = \"Pav\",\n             role = \"ctb\",\n             email = \"shabbychef@gmail.com\"),\n      person(given = \"Paul\",\n             family = \"PJ\",\n             role = \"ctb\",\n             email = \"pjpaul.stephens@gmail.com\"),\n      person(given = \"Ben\",\n             family = \"Schneider\",\n             role = \"ctb\",\n             email = \"benjamin.julius.schneider@gmail.com\"),\n      person(given = \"Patrick\",\n             family = \"Kennedy\",\n             role = \"ctb\",\n             email = \"pkqstr@protonmail.com\"),\n      person(given = \"Lily\",\n             family = \"Medina\",\n             role = \"ctb\",\n             email = \"lilymiru@gmail.com\"),\n      person(given = \"Brian\",\n             family = \"Fannin\",\n             role = \"ctb\",\n             email = \"captain@pirategrunt.com\"),\n      person(given = \"Jason\",\n             family = \"Muhlenkamp\",\n             role = \"ctb\",\n             email = \"jason.muhlenkamp@gmail.com\"),\n      person(given = \"Matt\",\n             family = \"Lehman\",\n             role = \"ctb\"),\n      person(given = \"Bill\",\n             family = \"Denney\",\n             role = \"ctb\",\n             email = \"wdenney@humanpredictions.com\",\n             comment = c(ORCID = \"0000-0002-5759-428X\")),\n      person(given = \"Nic\",\n             family = \"Crane\",\n             role = \"ctb\"),\n      person(given = \"Andrew\",\n             family = \"Bates\",\n             role = \"ctb\"),\n      person(given = \"Vincent\",\n             family = \"Arel-Bundock\",\n             role = \"ctb\",\n             email = \"vincent.arel-bundock@umontreal.ca\",\n             comment = c(ORCID = \"0000-0003-2042-7063\")),\n      person(given = \"Hideaki\",\n             family = \"Hayashi\",\n             role = \"ctb\"),\n      person(given = \"Luis\",\n             family = \"Tobalina\",\n             role = \"ctb\"),\n      person(given = \"Annie\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"anniewang.uc@gmail.com\"),\n      person(given = \"Wei Yang\",\n             family = \"Tham\",\n             role = \"ctb\",\n             email = \"weiyang.tham@gmail.com\"),\n      person(given = \"Clara\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"clara.wang.94@gmail.com\"),\n      person(given = \"Abby\",\n             family = \"Smith\",\n             role = \"ctb\",\n             email = \"als1@u.northwestern.edu\",\n             comment = c(ORCID = \"0000-0002-3207-0375\")),\n      person(given = \"Jasper\",\n             family = \"Cooper\",\n             role = \"ctb\",\n             email = \"jaspercooper@gmail.com\",\n             comment = c(ORCID = \"0000-0002-8639-3188\")),\n      person(given = \"E Auden\",\n             family = \"Krauska\",\n             role = \"ctb\",\n             email = \"krauskae@gmail.com\",\n             comment = c(ORCID = \"0000-0002-1466-5850\")),\n      person(given = \"Alex\",\n             family = \"Wang\",\n             role = \"ctb\",\n             email = \"x249wang@uwaterloo.ca\"),\n      person(given = \"Malcolm\",\n             family = \"Barrett\",\n             role = \"ctb\",\n             email = \"malcolmbarrett@gmail.com\",\n             comment = c(ORCID = \"0000-0003-0299-5825\")),\n      person(given = \"Charles\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"charlestigray@gmail.com\",\n             comment = c(ORCID = \"0000-0002-9978-011X\")),\n      person(given = \"Jared\",\n             family = \"Wilber\",\n             role = \"ctb\"),\n      person(given = \"Vilmantas\",\n             family = \"Gegzna\",\n             role = \"ctb\",\n             email = \"GegznaV@gmail.com\",\n             comment = c(ORCID = \"0000-0002-9500-5167\")),\n      person(given = \"Eduard\",\n             family = \"Szoecs\",\n             role = \"ctb\",\n             email = \"eduardszoecs@gmail.com\"),\n      person(given = \"Frederik\",\n             family = \"Aust\",\n             role = \"ctb\",\n             email = \"frederik.aust@uni-koeln.de\",\n             comment = c(ORCID = \"0000-0003-4900-788X\")),\n      person(given = \"Angus\",\n             family = \"Moore\",\n             role = \"ctb\",\n             email = \"angusmoore9@gmail.com\"),\n      person(given = \"Nick\",\n             family = \"Williams\",\n             role = \"ctb\",\n             email = \"ntwilliams.personal@gmail.com\"),\n      person(given = \"Marius\",\n             family = \"Barth\",\n             role = \"ctb\",\n             email = \"marius.barth.uni.koeln@gmail.com\",\n             comment = c(ORCID = \"0000-0002-3421-6665\")),\n      person(given = \"Bruna\",\n             family = \"Wundervald\",\n             role = \"ctb\",\n             email = \"brunadaviesw@gmail.com\",\n             comment = c(ORCID = \"0000-0001-8163-220X\")),\n      person(given = \"Joyce\",\n             family = \"Cahoon\",\n             role = \"ctb\",\n             email = \"joyceyu48@gmail.com\",\n             comment = c(ORCID = \"0000-0001-7217-4702\")),\n      person(given = \"Grant\",\n             family = \"McDermott\",\n             role = \"ctb\",\n             email = \"grantmcd@uoregon.edu\",\n             comment = c(ORCID = \"0000-0001-7883-8573\")),\n      person(given = \"Kevin\",\n             family = \"Zarca\",\n             role = \"ctb\",\n             email = \"kevin.zarca@gmail.com\"),\n      person(given = \"Shiro\",\n             family = \"Kuriwaki\",\n             role = \"ctb\",\n             email = \"shirokuriwaki@gmail.com\",\n             comment = c(ORCID = \"0000-0002-5687-2647\")),\n      person(given = \"Lukas\",\n             family = \"Wallrich\",\n             role = \"ctb\",\n             email = \"lukas.wallrich@gmail.com\",\n             comment = c(ORCID = \"0000-0003-2121-5177\")),\n      person(given = \"James\",\n             family = \"Martherus\",\n             role = \"ctb\",\n             email = \"james@martherus.com\",\n             comment = c(ORCID = \"0000-0002-8285-3300\")),\n      person(given = \"Chuliang\",\n             family = \"Xiao\",\n             role = \"ctb\",\n             email = \"cxiao@umich.edu\",\n             comment = c(ORCID = \"0000-0002-8466-9398\")),\n      person(given = \"Joseph\",\n             family = \"Larmarange\",\n             role = \"ctb\",\n             email = \"joseph@larmarange.net\"),\n      person(given = \"Max\",\n             family = \"Kuhn\",\n             role = \"ctb\",\n             email = \"max@rstudio.com\"),\n      person(given = \"Michal\",\n             family = \"Bojanowski\",\n             role = \"ctb\",\n             email = \"michal2992@gmail.com\"),\n      person(given = \"Hakon\",\n             family = \"Malmedal\",\n             role = \"ctb\",\n             email = \"hmalmedal@gmail.com\"),\n      person(given = \"Clara\",\n             family = \"Wang\",\n             role = \"ctb\"),\n      person(given = \"Sergio\",\n             family = \"Oller\",\n             role = \"ctb\",\n             email = \"sergioller@gmail.com\"),\n      person(given = \"Luke\",\n             family = \"Sonnet\",\n             role = \"ctb\",\n             email = \"luke.sonnet@gmail.com\"),\n      person(given = \"Jim\",\n             family = \"Hester\",\n             role = \"ctb\",\n             email = \"jim.hester@rstudio.com\"),\n      person(given = \"Ben\",\n             family = \"Schneider\",\n             role = \"ctb\",\n             email = \"benjamin.julius.schneider@gmail.com\"),\n      person(given = \"Bernie\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"bfgray3@gmail.com\",\n             comment = c(ORCID = \"0000-0001-9190-6032\")),\n      person(given = \"Mara\",\n             family = \"Averick\",\n             role = \"ctb\",\n             email = \"mara@rstudio.com\"),\n      person(given = \"Aaron\",\n             family = \"Jacobs\",\n             role = \"ctb\",\n             email = \"atheriel@gmail.com\"),\n      person(given = \"Andreas\",\n             family = \"Bender\",\n             role = \"ctb\",\n             email = \"bender.at.R@gmail.com\"),\n      person(given = \"Sven\",\n             family = \"Templer\",\n             role = \"ctb\",\n             email = \"sven.templer@gmail.com\"),\n      person(given = \"Paul-Christian\",\n             family = \"Buerkner\",\n             role = \"ctb\",\n             email = \"paul.buerkner@gmail.com\"),\n      person(given = \"Matthew\",\n             family = \"Kay\",\n             role = \"ctb\",\n             email = \"mjskay@umich.edu\"),\n      person(given = \"Erwan\",\n             family = \"Le Pennec\",\n             role = \"ctb\",\n             email = \"lepennec@gmail.com\"),\n      person(given = \"Johan\",\n             family = \"Junkka\",\n             role = \"ctb\",\n             email = \"johan.junkka@umu.se\"),\n      person(given = \"Hao\",\n             family = \"Zhu\",\n             role = \"ctb\",\n             email = \"haozhu233@gmail.com\"),\n      person(given = \"Benjamin\",\n             family = \"Soltoff\",\n             role = \"ctb\",\n             email = \"soltoffbc@uchicago.edu\"),\n      person(given = \"Zoe\",\n             family = \"Wilkinson Saldana\",\n             role = \"ctb\",\n             email = \"zoewsaldana@gmail.com\"),\n      person(given = \"Tyler\",\n             family = \"Littlefield\",\n             role = \"ctb\",\n             email = \"tylurp1@gmail.com\"),\n      person(given = \"Charles T.\",\n             family = \"Gray\",\n             role = \"ctb\",\n             email = \"charlestigray@gmail.com\"),\n      person(given = \"Shabbh E.\",\n             family = \"Banks\",\n             role = \"ctb\"),\n      person(given = \"Serina\",\n             family = \"Robinson\",\n             role = \"ctb\",\n             email = \"robi0916@umn.edu\"),\n      person(given = \"Roger\",\n             family = \"Bivand\",\n             role = \"ctb\",\n             email = \"Roger.Bivand@nhh.no\"),\n      person(given = \"Riinu\",\n             family = \"Ots\",\n             role = \"ctb\",\n             email = \"riinuots@gmail.com\"),\n      person(given = \"Nicholas\",\n             family = \"Williams\",\n             role = \"ctb\",\n             email = \"ntwilliams.personal@gmail.com\"),\n      person(given = \"Nina\",\n             family = \"Jakobsen\",\n             role = \"ctb\"),\n      person(given = \"Michael\",\n             family = \"Weylandt\",\n             role = \"ctb\",\n             email = \"michael.weylandt@gmail.com\"),\n      person(given = \"Lisa\",\n             family = \"Lendway\",\n             role = \"ctb\",\n             email = \"llendway@macalester.edu\"),\n      person(given = \"Karl\",\n             family = \"Hailperin\",\n             role = \"ctb\",\n             email = \"khailper@gmail.com\"),\n      person(given = \"Josue\",\n             family = \"Rodriguez\",\n             role = \"ctb\",\n             email = \"jerrodriguez@ucdavis.edu\"),\n      person(given = \"Jenny\",\n             family = \"Bryan\",\n             role = \"ctb\",\n             email = \"jenny@rstudio.com\"),\n      person(given = \"Chris\",\n             family = \"Jarvis\",\n             role = \"ctb\",\n             email = \"Christopher1.jarvis@gmail.com\"),\n      person(given = \"Greg\",\n             family = \"Macfarlane\",\n             role = \"ctb\",\n             email = \"gregmacfarlane@gmail.com\"),\n      person(given = \"Brian\",\n             family = \"Mannakee\",\n             role = \"ctb\",\n             email = \"bmannakee@gmail.com\"),\n      person(given = \"Drew\",\n             family = \"Tyre\",\n             role = \"ctb\",\n             email = \"atyre2@unl.edu\"),\n      person(given = \"Shreyas\",\n             family = \"Singh\",\n             role = \"ctb\",\n             email = \"shreyas.singh.298@gmail.com\"),\n      person(given = \"Laurens\",\n             family = \"Geffert\",\n             role = \"ctb\",\n             email = \"laurensgeffert@gmail.com\"),\n      person(given = \"Hong\",\n             family = \"Ooi\",\n             role = \"ctb\",\n             email = \"hongooi@microsoft.com\"),\n      person(given = \"Henrik\",\n             family = \"Bengtsson\",\n             role = \"ctb\",\n             email = \"henrikb@braju.com\"),\n      person(given = \"Eduard\",\n             family = \"Szocs\",\n             role = \"ctb\",\n             email = \"eduardszoecs@gmail.com\"),\n      person(given = \"David\",\n             family = \"Hugh-Jones\",\n             role = \"ctb\",\n             email = \"davidhughjones@gmail.com\"),\n      person(given = \"Matthieu\",\n             family = \"Stigler\",\n             role = \"ctb\",\n             email = \"Matthieu.Stigler@gmail.com\"),\n      person(given = \"Hugo\",\n             family = \"Tavares\",\n             role = \"ctb\",\n             email = \"hm533@cam.ac.uk\",\n             comment = c(ORCID = \"0000-0001-9373-2726\")),\n\t    person(given = \"R. Willem\",\n             family = \"Vervoort\",\n             role = \"ctb\",\n             email = \"Willemvervoort@gmail.com\"),\n      person(given = \"Brenton M.\",\n             family = \"Wiernik\",\n             role = \"ctb\",\n             email = \"brenton@wiernik.org\"),\n      person(given = \"Josh\",\n             family = \"Yamamoto\",\n             role = \"ctb\",\n             email = \"joshuayamamoto5@gmail.com\"),\n      person(given = \"Jasme\",\n             family = \"Lee\",\n             role = \"ctb\"),\n      person(given = \"Taren\",\n             family = \"Sanders\",\n             role = \"ctb\",\n             email = \"taren.sanders@acu.edu.au\",\n             comment = c(ORCID = \"0000-0002-4504-6008\")),\n      person(given = \"Ilaria\",\n             family = \"Prosdocimi\",\n             role = \"ctb\",\n             email = \"prosdocimi.ilaria@gmail.com\",\n            comment = c(ORCID = \"0000-0001-8565-094X\")),\n      person(given = \"Daniel D.\",\n             family = \"Sjoberg\",\n             role = \"ctb\",\n             email = \"danield.sjoberg@gmail.com\",\n             comment = c(ORCID = \"0000-0003-0862-2018\")),\n      person(given = \"Alex\",\n             family = \"Reinhart\",\n             role = \"ctb\",\n             email = \"areinhar@stat.cmu.edu\",\n             comment = c(ORCID = \"0000-0002-6658-514X\")))",
         "Description": "Summarizes key information about statistical\n    objects in tidy tibbles. This makes it easy to report results, create\n    plots and consistently work with large numbers of models at once.\n    Broom provides three verbs that each provide different types of\n    information about a model. tidy() summarizes information about model\n    components such as coefficients of a regression. glance() reports\n    information about an entire model, such as goodness of fit measures\n    like AIC and BIC. augment() adds information about individual\n    observations to a dataset, such as fitted values or influence\n    measures.",
         "License": "MIT + file LICENSE",
         "URL": "https://broom.tidymodels.org/, https://github.com/tidymodels/broom",
         "BugReports": "https://github.com/tidymodels/broom/issues",
         "Depends": "R (>= 3.1)",
-        "Imports": "backports, dplyr (>= 1.0.0), ellipsis, generics (>= 0.0.2),\nglue, purrr, rlang, stringr, tibble (>= 3.0.0), tidyr (>=\n1.0.0), ggplot2",
-        "Suggests": "AER, AUC, bbmle, betareg, biglm, binGroup, boot, btergm (>=\n1.10.6), car, carData, caret, cluster, cmprsk, coda, covr, drc,\ne1071, emmeans, epiR, ergm (>= 3.10.4), fixest (>= 0.9.0), gam\n(>= 1.15), gee, geepack, glmnet, glmnetUtils, gmm, Hmisc,\nirlba, interp, joineRML, Kendall, knitr, ks, Lahman, lavaan,\nleaps, lfe, lm.beta, lme4, lmodel2, lmtest (>= 0.9.38),\nlsmeans, maps, maptools, margins, MASS, mclust, mediation,\nmetafor, mfx, mgcv, mlogit, modeldata, modeltests, muhaz,\nmultcomp, network, nnet, orcutt (>= 2.2), ordinal, plm, poLCA,\npsych, quantreg, rgeos, rmarkdown, robust, robustbase, rsample,\nsandwich, sp, spdep (>= 1.1), spatialreg, speedglm, spelling,\nsurvey, survival, systemfit, testthat (>= 2.1.0), tseries,\nvars, zoo",
+        "Imports": "backports, dplyr (>= 1.0.0), ellipsis, generics (>= 0.0.2),\nglue, purrr, rlang, stringr, tibble (>= 3.0.0), tidyr (>=\n1.0.0)",
+        "Suggests": "AER, AUC, bbmle, betareg, biglm, binGroup, boot, btergm (>=\n1.10.6), car, carData, caret, cluster, cmprsk, coda, covr, drc,\ne1071, emmeans, epiR, ergm (>= 3.10.4), fixest (>= 0.9.0), gam\n(>= 1.15), gee, geepack, ggplot2, glmnet, glmnetUtils, gmm,\nHmisc, irlba, interp, joineRML, Kendall, knitr, ks, Lahman,\nlavaan, leaps, lfe, lm.beta, lme4, lmodel2, lmtest (>= 0.9.38),\nlsmeans, maps, maptools, margins, MASS, mclust, mediation,\nmetafor, mfx, mgcv, mlogit, modeldata, modeltests, muhaz,\nmultcomp, network, nnet, orcutt (>= 2.2), ordinal, plm, poLCA,\npsych, quantreg, rgeos, rmarkdown, robust, robustbase, rsample,\nsandwich, sp, spdep (>= 1.1), spatialreg, speedglm, spelling,\nsurvey, survival, systemfit, testthat (>= 2.1.0), tseries,\nvars, zoo",
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Encoding": "UTF-8",
@@ -648,12 +644,12 @@
         "Language": "en-US",
         "Collate": "'aaa-documentation-helper.R' 'null-and-default-tidiers.R'\n'aer-tidiers.R' 'auc-tidiers.R' 'base-tidiers.R'\n'bbmle-tidiers.R' 'betareg-tidiers.R' 'biglm-tidiers.R'\n'bingroup-tidiers.R' 'boot-tidiers.R' 'broom-package.R'\n'broom.R' 'btergm-tidiers.R' 'car-tidiers.R' 'caret-tidiers.R'\n'cluster-tidiers.R' 'cmprsk-tidiers.R' 'data-frame-tidiers.R'\n'deprecated-0-7-0.R' 'drc-tidiers.R' 'emmeans-tidiers.R'\n'epiR-tidiers.R' 'ergm-tidiers.R' 'fixest-tidiers.R'\n'gam-tidiers.R' 'geepack-tidiers.R'\n'glmnet-cv-glmnet-tidiers.R' 'glmnet-glmnet-tidiers.R'\n'gmm-tidiers.R' 'hmisc-tidiers.R' 'joinerml-tidiers.R'\n'kendall-tidiers.R' 'ks-tidiers.R' 'lavaan-tidiers.R'\n'leaps-tidiers.R' 'lfe-tidiers.R' 'list-irlba.R'\n'list-optim-tidiers.R' 'list-svd-tidiers.R' 'list-tidiers.R'\n'list-xyz-tidiers.R' 'lm-beta-tidiers.R' 'lmodel2-tidiers.R'\n'lmtest-tidiers.R' 'maps-tidiers.R' 'margins-tidiers.R'\n'mass-fitdistr-tidiers.R' 'mass-negbin-tidiers.R'\n'mass-polr-tidiers.R' 'mass-ridgelm-tidiers.R'\n'stats-lm-tidiers.R' 'mass-rlm-tidiers.R' 'mclust-tidiers.R'\n'mediation-tidiers.R' 'metafor-tidiers.R' 'mfx-tidiers.R'\n'mgcv-tidiers.R' 'mlogit-tidiers.R' 'muhaz-tidiers.R'\n'multcomp-tidiers.R' 'nnet-tidiers.R' 'nobs.R'\n'orcutt-tidiers.R' 'ordinal-clm-tidiers.R'\n'ordinal-clmm-tidiers.R' 'plm-tidiers.R' 'polca-tidiers.R'\n'psych-tidiers.R' 'stats-nls-tidiers.R'\n'quantreg-nlrq-tidiers.R' 'quantreg-rq-tidiers.R'\n'quantreg-rqs-tidiers.R' 'robust-glmrob-tidiers.R'\n'robust-lmrob-tidiers.R' 'robustbase-glmrob-tidiers.R'\n'robustbase-lmrob-tidiers.R' 'sp-tidiers.R' 'spdep-tidiers.R'\n'speedglm-speedglm-tidiers.R' 'speedglm-speedlm-tidiers.R'\n'stats-anova-tidiers.R' 'stats-arima-tidiers.R'\n'stats-decompose-tidiers.R' 'stats-factanal-tidiers.R'\n'stats-glm-tidiers.R' 'stats-htest-tidiers.R'\n'stats-kmeans-tidiers.R' 'stats-loess-tidiers.R'\n'stats-mlm-tidiers.R' 'stats-prcomp-tidiers.R'\n'stats-smooth.spline-tidiers.R' 'stats-summary-lm-tidiers.R'\n'stats-time-series-tidiers.R' 'survey-tidiers.R'\n'survival-aareg-tidiers.R' 'survival-cch-tidiers.R'\n'survival-coxph-tidiers.R' 'survival-pyears-tidiers.R'\n'survival-survdiff-tidiers.R' 'survival-survexp-tidiers.R'\n'survival-survfit-tidiers.R' 'survival-survreg-tidiers.R'\n'systemfit-tidiers.R' 'tseries-tidiers.R' 'utilities.R'\n'vars-tidiers.R' 'zoo-tidiers.R' 'zzz.R'",
         "NeedsCompilation": "no",
-        "Packaged": "2022-08-29 19:41:53 UTC; simoncouch",
-        "Author": "David Robinson [aut],\n  Alex Hayes [aut] (<https://orcid.org/0000-0002-4985-5160>),\n  Simon Couch [aut, cre] (<https://orcid.org/0000-0001-5676-5107>),\n  RStudio [cph, fnd],\n  Indrajeet Patil [ctb] (<https://orcid.org/0000-0003-1995-6531>),\n  Derek Chiu [ctb],\n  Matthieu Gomez [ctb],\n  Boris Demeshev [ctb],\n  Dieter Menne [ctb],\n  Benjamin Nutter [ctb],\n  Luke Johnston [ctb],\n  Ben Bolker [ctb],\n  Francois Briatte [ctb],\n  Jeffrey Arnold [ctb],\n  Jonah Gabry [ctb],\n  Luciano Selzer [ctb],\n  Gavin Simpson [ctb],\n  Jens Preussner [ctb],\n  Jay Hesselberth [ctb],\n  Hadley Wickham [ctb],\n  Matthew Lincoln [ctb],\n  Alessandro Gasparini [ctb],\n  Lukasz Komsta [ctb],\n  Frederick Novometsky [ctb],\n  Wilson Freitas [ctb],\n  Michelle Evans [ctb],\n  Jason Cory Brunson [ctb],\n  Simon Jackson [ctb],\n  Ben Whalley [ctb],\n  Karissa Whiting [ctb],\n  Yves Rosseel [ctb],\n  Michael Kuehn [ctb],\n  Jorge Cimentada [ctb],\n  Erle Holgersen [ctb],\n  Karl Dunkle Werner [ctb] (<https://orcid.org/0000-0003-0523-7309>),\n  Ethan Christensen [ctb],\n  Steven Pav [ctb],\n  Paul PJ [ctb],\n  Ben Schneider [ctb],\n  Patrick Kennedy [ctb],\n  Lily Medina [ctb],\n  Brian Fannin [ctb],\n  Jason Muhlenkamp [ctb],\n  Matt Lehman [ctb],\n  Bill Denney [ctb] (<https://orcid.org/0000-0002-5759-428X>),\n  Nic Crane [ctb],\n  Andrew Bates [ctb],\n  Vincent Arel-Bundock [ctb] (<https://orcid.org/0000-0003-2042-7063>),\n  Hideaki Hayashi [ctb],\n  Luis Tobalina [ctb],\n  Annie Wang [ctb],\n  Wei Yang Tham [ctb],\n  Clara Wang [ctb],\n  Abby Smith [ctb] (<https://orcid.org/0000-0002-3207-0375>),\n  Jasper Cooper [ctb] (<https://orcid.org/0000-0002-8639-3188>),\n  E Auden Krauska [ctb] (<https://orcid.org/0000-0002-1466-5850>),\n  Alex Wang [ctb],\n  Malcolm Barrett [ctb] (<https://orcid.org/0000-0003-0299-5825>),\n  Charles Gray [ctb] (<https://orcid.org/0000-0002-9978-011X>),\n  Jared Wilber [ctb],\n  Vilmantas Gegzna [ctb] (<https://orcid.org/0000-0002-9500-5167>),\n  Eduard Szoecs [ctb],\n  Frederik Aust [ctb] (<https://orcid.org/0000-0003-4900-788X>),\n  Angus Moore [ctb],\n  Nick Williams [ctb],\n  Marius Barth [ctb] (<https://orcid.org/0000-0002-3421-6665>),\n  Bruna Wundervald [ctb] (<https://orcid.org/0000-0001-8163-220X>),\n  Joyce Cahoon [ctb] (<https://orcid.org/0000-0001-7217-4702>),\n  Grant McDermott [ctb] (<https://orcid.org/0000-0001-7883-8573>),\n  Kevin Zarca [ctb],\n  Shiro Kuriwaki [ctb] (<https://orcid.org/0000-0002-5687-2647>),\n  Lukas Wallrich [ctb] (<https://orcid.org/0000-0003-2121-5177>),\n  James Martherus [ctb] (<https://orcid.org/0000-0002-8285-3300>),\n  Chuliang Xiao [ctb] (<https://orcid.org/0000-0002-8466-9398>),\n  Joseph Larmarange [ctb],\n  Max Kuhn [ctb],\n  Michal Bojanowski [ctb],\n  Hakon Malmedal [ctb],\n  Clara Wang [ctb],\n  Sergio Oller [ctb],\n  Luke Sonnet [ctb],\n  Jim Hester [ctb],\n  Cory Brunson [ctb],\n  Ben Schneider [ctb],\n  Bernie Gray [ctb] (<https://orcid.org/0000-0001-9190-6032>),\n  Mara Averick [ctb],\n  Aaron Jacobs [ctb],\n  Andreas Bender [ctb],\n  Sven Templer [ctb],\n  Paul-Christian Buerkner [ctb],\n  Matthew Kay [ctb],\n  Erwan Le Pennec [ctb],\n  Johan Junkka [ctb],\n  Hao Zhu [ctb],\n  Benjamin Soltoff [ctb],\n  Zoe Wilkinson Saldana [ctb],\n  Tyler Littlefield [ctb],\n  Charles T. Gray [ctb],\n  Shabbh E. Banks [ctb],\n  Serina Robinson [ctb],\n  Roger Bivand [ctb],\n  Riinu Ots [ctb],\n  Nicholas Williams [ctb],\n  Nina Jakobsen [ctb],\n  Michael Weylandt [ctb],\n  Lisa Lendway [ctb],\n  Karl Hailperin [ctb],\n  Josue Rodriguez [ctb],\n  Jenny Bryan [ctb],\n  Chris Jarvis [ctb],\n  Greg Macfarlane [ctb],\n  Brian Mannakee [ctb],\n  Drew Tyre [ctb],\n  Shreyas Singh [ctb],\n  Laurens Geffert [ctb],\n  Hong Ooi [ctb],\n  Henrik Bengtsson [ctb],\n  Eduard Szocs [ctb],\n  David Hugh-Jones [ctb],\n  Matthieu Stigler [ctb],\n  Hugo Tavares [ctb] (<https://orcid.org/0000-0001-9373-2726>),\n  R. Willem Vervoort [ctb],\n  Brenton M. Wiernik [ctb],\n  Josh Yamamoto [ctb],\n  Jasme Lee [ctb],\n  Taren Sanders [ctb] (<https://orcid.org/0000-0002-4504-6008>),\n  Ilaria Prosdocimi [ctb] (<https://orcid.org/0000-0001-8565-094X>),\n  Daniel D. Sjoberg [ctb] (<https://orcid.org/0000-0003-0862-2018>),\n  Alex Reinhart [ctb] (<https://orcid.org/0000-0002-6658-514X>)",
+        "Packaged": "2022-12-14 15:57:36 UTC; simoncouch",
+        "Author": "David Robinson [aut],\n  Alex Hayes [aut] (<https://orcid.org/0000-0002-4985-5160>),\n  Simon Couch [aut, cre] (<https://orcid.org/0000-0001-5676-5107>),\n  RStudio [cph, fnd],\n  Indrajeet Patil [ctb] (<https://orcid.org/0000-0003-1995-6531>),\n  Derek Chiu [ctb],\n  Matthieu Gomez [ctb],\n  Boris Demeshev [ctb],\n  Dieter Menne [ctb],\n  Benjamin Nutter [ctb],\n  Luke Johnston [ctb],\n  Ben Bolker [ctb],\n  Francois Briatte [ctb],\n  Jeffrey Arnold [ctb],\n  Jonah Gabry [ctb],\n  Luciano Selzer [ctb],\n  Gavin Simpson [ctb],\n  Jens Preussner [ctb],\n  Jay Hesselberth [ctb],\n  Hadley Wickham [ctb],\n  Matthew Lincoln [ctb],\n  Alessandro Gasparini [ctb],\n  Lukasz Komsta [ctb],\n  Frederick Novometsky [ctb],\n  Wilson Freitas [ctb],\n  Michelle Evans [ctb],\n  Jason Cory Brunson [ctb],\n  Simon Jackson [ctb],\n  Ben Whalley [ctb],\n  Karissa Whiting [ctb],\n  Yves Rosseel [ctb],\n  Michael Kuehn [ctb],\n  Jorge Cimentada [ctb],\n  Erle Holgersen [ctb],\n  Karl Dunkle Werner [ctb] (<https://orcid.org/0000-0003-0523-7309>),\n  Ethan Christensen [ctb],\n  Steven Pav [ctb],\n  Paul PJ [ctb],\n  Ben Schneider [ctb],\n  Patrick Kennedy [ctb],\n  Lily Medina [ctb],\n  Brian Fannin [ctb],\n  Jason Muhlenkamp [ctb],\n  Matt Lehman [ctb],\n  Bill Denney [ctb] (<https://orcid.org/0000-0002-5759-428X>),\n  Nic Crane [ctb],\n  Andrew Bates [ctb],\n  Vincent Arel-Bundock [ctb] (<https://orcid.org/0000-0003-2042-7063>),\n  Hideaki Hayashi [ctb],\n  Luis Tobalina [ctb],\n  Annie Wang [ctb],\n  Wei Yang Tham [ctb],\n  Clara Wang [ctb],\n  Abby Smith [ctb] (<https://orcid.org/0000-0002-3207-0375>),\n  Jasper Cooper [ctb] (<https://orcid.org/0000-0002-8639-3188>),\n  E Auden Krauska [ctb] (<https://orcid.org/0000-0002-1466-5850>),\n  Alex Wang [ctb],\n  Malcolm Barrett [ctb] (<https://orcid.org/0000-0003-0299-5825>),\n  Charles Gray [ctb] (<https://orcid.org/0000-0002-9978-011X>),\n  Jared Wilber [ctb],\n  Vilmantas Gegzna [ctb] (<https://orcid.org/0000-0002-9500-5167>),\n  Eduard Szoecs [ctb],\n  Frederik Aust [ctb] (<https://orcid.org/0000-0003-4900-788X>),\n  Angus Moore [ctb],\n  Nick Williams [ctb],\n  Marius Barth [ctb] (<https://orcid.org/0000-0002-3421-6665>),\n  Bruna Wundervald [ctb] (<https://orcid.org/0000-0001-8163-220X>),\n  Joyce Cahoon [ctb] (<https://orcid.org/0000-0001-7217-4702>),\n  Grant McDermott [ctb] (<https://orcid.org/0000-0001-7883-8573>),\n  Kevin Zarca [ctb],\n  Shiro Kuriwaki [ctb] (<https://orcid.org/0000-0002-5687-2647>),\n  Lukas Wallrich [ctb] (<https://orcid.org/0000-0003-2121-5177>),\n  James Martherus [ctb] (<https://orcid.org/0000-0002-8285-3300>),\n  Chuliang Xiao [ctb] (<https://orcid.org/0000-0002-8466-9398>),\n  Joseph Larmarange [ctb],\n  Max Kuhn [ctb],\n  Michal Bojanowski [ctb],\n  Hakon Malmedal [ctb],\n  Clara Wang [ctb],\n  Sergio Oller [ctb],\n  Luke Sonnet [ctb],\n  Jim Hester [ctb],\n  Ben Schneider [ctb],\n  Bernie Gray [ctb] (<https://orcid.org/0000-0001-9190-6032>),\n  Mara Averick [ctb],\n  Aaron Jacobs [ctb],\n  Andreas Bender [ctb],\n  Sven Templer [ctb],\n  Paul-Christian Buerkner [ctb],\n  Matthew Kay [ctb],\n  Erwan Le Pennec [ctb],\n  Johan Junkka [ctb],\n  Hao Zhu [ctb],\n  Benjamin Soltoff [ctb],\n  Zoe Wilkinson Saldana [ctb],\n  Tyler Littlefield [ctb],\n  Charles T. Gray [ctb],\n  Shabbh E. Banks [ctb],\n  Serina Robinson [ctb],\n  Roger Bivand [ctb],\n  Riinu Ots [ctb],\n  Nicholas Williams [ctb],\n  Nina Jakobsen [ctb],\n  Michael Weylandt [ctb],\n  Lisa Lendway [ctb],\n  Karl Hailperin [ctb],\n  Josue Rodriguez [ctb],\n  Jenny Bryan [ctb],\n  Chris Jarvis [ctb],\n  Greg Macfarlane [ctb],\n  Brian Mannakee [ctb],\n  Drew Tyre [ctb],\n  Shreyas Singh [ctb],\n  Laurens Geffert [ctb],\n  Hong Ooi [ctb],\n  Henrik Bengtsson [ctb],\n  Eduard Szocs [ctb],\n  David Hugh-Jones [ctb],\n  Matthieu Stigler [ctb],\n  Hugo Tavares [ctb] (<https://orcid.org/0000-0001-9373-2726>),\n  R. Willem Vervoort [ctb],\n  Brenton M. Wiernik [ctb],\n  Josh Yamamoto [ctb],\n  Jasme Lee [ctb],\n  Taren Sanders [ctb] (<https://orcid.org/0000-0002-4504-6008>),\n  Ilaria Prosdocimi [ctb] (<https://orcid.org/0000-0001-8565-094X>),\n  Daniel D. Sjoberg [ctb] (<https://orcid.org/0000-0003-0862-2018>),\n  Alex Reinhart [ctb] (<https://orcid.org/0000-0002-6658-514X>)",
         "Maintainer": "Simon Couch <simonpatrickcouch@gmail.com>",
-        "Repository": "CRAN",
-        "Date/Publication": "2022-08-29 21:00:08 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:00 UTC; unix"
+        "Repository": "RSPM",
+        "Date/Publication": "2022-12-15 13:10:20 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:51:08 UTC; unix"
       }
     },
     "bslib": {
@@ -686,9 +682,9 @@
         "Packaged": "2022-12-15 16:02:29 UTC; cpsievert",
         "Author": "Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Joe Cheng [aut],\n  RStudio [cph],\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Javi Aguilar [ctb, cph] (Bootstrap colorpicker library),\n  Thomas Park [ctb, cph] (Bootswatch library),\n  PayPal [ctb, cph] (Bootstrap accessibility plugin)",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-16 10:30:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-19 15:59:36 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:32:27 UTC; unix"
       }
     },
     "cachem": {
@@ -715,9 +711,9 @@
         "Packaged": "2021-08-19 21:07:46 UTC; barret",
         "Author": "Winston Chang [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-19 21:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:56:10 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:06:29 UTC; unix"
       }
     },
     "callr": {
@@ -750,7 +746,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-02 16:40:11 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:04:38 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-01 18:57:43 UTC; unix"
       }
     },
     "cellranger": {
@@ -779,10 +775,9 @@
         "Packaged": "2016-07-26 06:50:00 UTC; jenny",
         "Author": "Jennifer Bryan [cre, aut],\n  Hadley Wickham [ctb]",
         "Maintainer": "Jennifer Bryan <jenny@stat.ubc.ca>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2016-07-27 03:17:48",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-12-02 18:29:05 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:41:50 UTC; unix"
       }
     },
     "class": {
@@ -841,9 +836,9 @@
         "Packaged": "2022-09-28 10:29:45 UTC; rsb",
         "Author": "Roger Bivand [aut, cre] (<https://orcid.org/0000-0003-2392-6140>),\n  Bill Denney [ctb] (<https://orcid.org/0000-0002-5759-428X>),\n  Richard Dunlap [ctb],\n  Diego Hernangómez [ctb] (<https://orcid.org/0000-0001-8457-4658>),\n  Hisaji Ono [ctb],\n  Josiah Parry [ctb] (<https://orcid.org/0000-0001-9910-865X>),\n  Matthieu Stigler [ctb] (<https://orcid.org/0000-0002-6802-4290>)",
         "Maintainer": "Roger Bivand <Roger.Bivand@nhh.no>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-09-29 08:10:15 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:56:19 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:43:20 UTC; unix"
       }
     },
     "cli": {
@@ -856,7 +851,7 @@
       "description": {
         "Package": "cli",
         "Title": "Helpers for Developing Command Line Interfaces",
-        "Version": "3.4.1",
+        "Version": "3.5.0",
         "Authors@R": "c(\n    person(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")),\n    person(\"Hadley\", \"Wickham\", role = \"ctb\"),\n    person(\"Kirill\", \"Müller\", role = \"ctb\"),\n    person(\"RStudio\", role = c(\"cph\", \"fnd\"))\n  )",
         "Description": "A suite of tools to build attractive command line interfaces\n    ('CLIs'), from semantic elements: headings, lists, alerts, paragraphs,\n    etc. Supports custom themes via a 'CSS'-like language. It also\n    contains a number of lower level 'CLI' elements: rules, boxes, trees,\n    and 'Unicode' symbols with 'ASCII' alternatives. It support ANSI\n    colors and text styles as well.",
         "License": "MIT + file LICENSE",
@@ -864,18 +859,18 @@
         "BugReports": "https://github.com/r-lib/cli/issues",
         "Depends": "R (>= 3.4)",
         "Imports": "utils",
-        "Suggests": "callr, covr, digest, glue (>= 1.6.0), grDevices, htmltools,\nhtmlwidgets, knitr, methods, mockery, processx, ps (>=\n1.3.4.9000), rlang (>= 1.0.2.9003), rmarkdown, rprojroot,\nrstudioapi, testthat, tibble, whoami, withr",
-        "Config/Needs/website": "r-lib/asciicast, bench, brio, cpp11, decor, desc,\nfansi, sessioninfo, tidyverse/tidytemplate, usethis, vctrs",
+        "Suggests": "callr, covr, crayon, digest, glue (>= 1.6.0), grDevices,\nhtmltools, htmlwidgets, knitr, methods, mockery, processx, ps\n(>= 1.3.4.9000), rlang (>= 1.0.2.9003), rmarkdown, rprojroot,\nrstudioapi, testthat, tibble, whoami, withr",
+        "Config/Needs/website": "r-lib/asciicast, bench, brio, cpp11, decor, desc,\nfansi, prettyunits, sessioninfo, tidyverse/tidytemplate,\nusethis, vctrs",
         "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.1.9000",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-09-22 18:05:14 UTC; gaborcsardi",
+        "Packaged": "2022-12-20 11:47:57 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Hadley Wickham [ctb],\n  Kirill Müller [ctb],\n  RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-09-23 11:20:05 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:57:16 UTC; unix"
+        "Date/Publication": "2022-12-20 13:30:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:32:31 UTC; unix"
       }
     },
     "clipr": {
@@ -906,9 +901,9 @@
         "Packaged": "2022-02-19 02:20:21 UTC; mlincoln",
         "Author": "Matthew Lincoln [aut, cre] (<https://orcid.org/0000-0002-4387-3384>),\n  Louis Maddox [ctb],\n  Steve Simpson [ctb],\n  Jennifer Bryan [ctb]",
         "Maintainer": "Matthew Lincoln <matthew.d.lincoln@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-02-22 00:58:45 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:10:43 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-03-01 16:54:02 UTC; unix"
       }
     },
     "colorspace": {
@@ -940,7 +935,7 @@
         "Maintainer": "Achim Zeileis <Achim.Zeileis@R-project.org>",
         "Repository": "CRAN",
         "Date/Publication": "2022-02-21 09:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:02:32 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-05-25 13:32:50 UTC; unix"
       }
     },
     "commonmark": {
@@ -970,7 +965,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-14 12:42:33 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:53:29 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:55:17 UTC; unix"
       }
     },
     "cpp11": {
@@ -1003,7 +998,7 @@
         "Maintainer": "Romain François <romain@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-12 08:43:54 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:05:41 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-01 18:58:30 UTC; unix"
       }
     },
     "crayon": {
@@ -1031,9 +1026,9 @@
         "Packaged": "2022-09-29 06:24:10 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Brodie Gaslam [ctb]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-09-29 16:20:24 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:53:08 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-10-05 14:13:52 UTC; unix"
       }
     },
     "crosstalk": {
@@ -1061,9 +1056,9 @@
         "Packaged": "2021-11-04 15:35:47 UTC; cpsievert",
         "Author": "Joe Cheng [aut],\n  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  RStudio [cph],\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/www/shared/jquery-AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Brian Reavis [ctb, cph] (selectize.js library),\n  Kristopher Michael Kowal [ctb, cph] (es5-shim library),\n  es5-shim contributors [ctb, cph] (es5-shim library),\n  Denis Ineshin [ctb, cph] (ion.rangeSlider library),\n  Sami Samhuri [ctb, cph] (Javascript strftime library)",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2021-11-04 16:30:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:47:27 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 17:22:11 UTC; unix"
       }
     },
     "curl": {
@@ -1096,7 +1091,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-06 21:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:22 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:58:15 UTC; unix"
       }
     },
     "data.table": {
@@ -1125,9 +1120,10 @@
         "Packaged": "2022-11-16 05:53:37 UTC; mdowle",
         "Author": "Matt Dowle [aut, cre],\n  Arun Srinivasan [aut],\n  Jan Gorecki [ctb],\n  Michael Chirico [ctb],\n  Pasha Stetsenko [ctb],\n  Tom Short [ctb],\n  Steve Lianoglou [ctb],\n  Eduard Antonyan [ctb],\n  Markus Bonsch [ctb],\n  Hugh Parsonage [ctb],\n  Scott Ritchie [ctb],\n  Kun Ren [ctb],\n  Xianying Tan [ctb],\n  Rick Saporta [ctb],\n  Otto Seiskari [ctb],\n  Xianghui Dong [ctb],\n  Michel Lang [ctb],\n  Watal Iwasaki [ctb],\n  Seth Wenchel [ctb],\n  Karl Broman [ctb],\n  Tobias Schmidt [ctb],\n  David Arenburg [ctb],\n  Ethan Smith [ctb],\n  Francois Cocquemas [ctb],\n  Matthieu Gomez [ctb],\n  Philippe Chataignon [ctb],\n  Nello Blaser [ctb],\n  Dmitry Selivanov [ctb],\n  Andrey Riabushenko [ctb],\n  Cheng Lee [ctb],\n  Declan Groves [ctb],\n  Daniel Possenriede [ctb],\n  Felipe Parages [ctb],\n  Denes Toth [ctb],\n  Mus Yaramaz-David [ctb],\n  Ayappan Perumal [ctb],\n  James Sams [ctb],\n  Martin Morgan [ctb],\n  Michael Quinn [ctb],\n  @javrucebo [ctb],\n  @marc-outins [ctb],\n  Roy Storey [ctb],\n  Manish Saraswat [ctb],\n  Morgan Jacob [ctb],\n  Michael Schubmehl [ctb],\n  Davis Vaughan [ctb],\n  Toby Hocking [ctb],\n  Leonardo Silvestri [ctb],\n  Tyson Barrett [ctb],\n  Jim Hester [ctb],\n  Anthony Damico [ctb],\n  Sebastian Freundt [ctb],\n  David Simons [ctb],\n  Elliott Sales de Andrade [ctb],\n  Cole Miller [ctb],\n  Jens Peder Meldgaard [ctb],\n  Vaclav Tlapak [ctb],\n  Kevin Ushey [ctb],\n  Dirk Eddelbuettel [ctb],\n  Ben Schwen [ctb]",
         "Maintainer": "Matt Dowle <mattjdowle@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-16 21:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:03:23 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:51:26 UTC; unix"
       }
     },
     "datimutils": {
@@ -1165,10 +1161,10 @@
         "GithubRef": "master",
         "GithubSHA1": "3346faec3d1c0a6d180a1b60cab4176c2b27fa95",
         "NeedsCompilation": "no",
-        "Packaged": "2022-12-05 22:26:38 UTC; sdupre",
+        "Packaged": "2023-01-03 19:59:49 UTC; flopez",
         "Author": "Scott Jackson [aut, cre],\n  Jason Pickering [aut],\n  Sam Garman [aut],\n  Jordan Bales [aut],\n  Fausto Lopez [aut],\n  Chris Nemarich [ctb]",
         "Maintainer": "Scott Jackson <sjackson@baosystems.com>",
-        "Built": "R 4.1.1; ; 2022-12-05 22:26:39 UTC; unix"
+        "Built": "R 4.1.1; ; 2023-01-03 19:59:50 UTC; unix"
       }
     },
     "dbplyr": {
@@ -1202,9 +1198,9 @@
         "Packaged": "2022-06-27 14:43:06 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  Maximilian Girlich [aut],\n  Edgar Ruiz [aut],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-06-27 15:20:07 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:12 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:51:15 UTC; unix"
       }
     },
     "deldir": {
@@ -1232,7 +1228,7 @@
         "Packaged": "2021-10-22 21:42:27 UTC; rolf",
         "Repository": "CRAN",
         "Date/Publication": "2021-10-23 04:50:03 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 13:09:07 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 20:23:11 UTC; unix"
       }
     },
     "digest": {
@@ -1259,9 +1255,10 @@
         "VignetteBuilder": "simplermarkdown",
         "NeedsCompilation": "yes",
         "Packaged": "2022-12-10 18:30:14 UTC; edd",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-11 07:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-19 15:57:32 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:30:17 UTC; unix"
       }
     },
     "dplyr": {
@@ -1294,9 +1291,9 @@
         "Packaged": "2022-08-31 18:31:04 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>),\n  Romain François [aut] (<https://orcid.org/0000-0002-2444-4226>),\n  Lionel Henry [aut],\n  Kirill Müller [aut] (<https://orcid.org/0000-0002-1416-3412>),\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-09-01 09:20:06 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:26:16 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-09-06 16:35:51 UTC; unix"
       }
     },
     "dtplyr": {
@@ -1327,9 +1324,9 @@
         "Packaged": "2022-08-20 12:54:11 UTC; hadleywickham",
         "Author": "Hadley Wickham [cre, aut],\n  Maximilian Girlich [aut],\n  Mark Fairbanks [aut],\n  Ryan Dickerson [aut],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-20 13:20:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:43 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:51:47 UTC; unix"
       }
     },
     "e1071": {
@@ -1353,9 +1350,10 @@
         "Packaged": "2022-10-23 08:51:14 UTC; meyer",
         "Author": "David Meyer [aut, cre],\n  Evgenia Dimitriadou [aut, cph],\n  Kurt Hornik [aut],\n  Andreas Weingessel [aut],\n  Friedrich Leisch [aut],\n  Chih-Chung Chang [ctb, cph] (libsvm C++-code),\n  Chih-Chen Lin [ctb, cph] (libsvm C++-code)",
         "Maintainer": "David Meyer <David.Meyer@R-project.org>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-10-24 11:30:25 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:56:13 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:43:14 UTC; unix"
       }
     },
     "ellipsis": {
@@ -1383,9 +1381,9 @@
         "Packaged": "2021-04-29 12:06:44 UTC; lionel",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-04-29 12:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:56:12 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:06:31 UTC; unix"
       }
     },
     "evaluate": {
@@ -1399,7 +1397,7 @@
         "Package": "evaluate",
         "Type": "Package",
         "Title": "Parsing and Evaluation Tools that Provide More Details than the\nDefault",
-        "Version": "0.18",
+        "Version": "0.19",
         "Authors@R": "c(\n    person(\"Hadley\", \"Wickham\", role = \"aut\"),\n    person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")),\n    person(\"Michael\", \"Lawrence\", role = \"ctb\"),\n    person(\"Thomas\", \"Kluyver\", role = \"ctb\"),\n    person(\"Jeroen\", \"Ooms\", role = \"ctb\"),\n    person(\"Barret\", \"Schloerke\", role = \"ctb\"),\n    person(\"Adam\", \"Ryczkowski\", role = \"ctb\"),\n    person(\"Hiroaki\", \"Yutani\", role = \"ctb\"),\n    person(\"Michel\", \"Lang\", role = \"ctb\"),\n    person(\"Karolis\", \"Koncevičius\", role = \"ctb\")\n    )",
         "Description": "Parsing and evaluation tools that make it easy to recreate the\n    command line behaviour of R.",
         "License": "MIT + file LICENSE",
@@ -1408,15 +1406,15 @@
         "Depends": "R (>= 3.0.2)",
         "Imports": "methods",
         "Suggests": "covr, ggplot2, lattice, testthat",
-        "RoxygenNote": "7.2.1",
+        "RoxygenNote": "7.2.2",
         "Encoding": "UTF-8",
         "NeedsCompilation": "no",
-        "Packaged": "2022-11-07 04:37:14 UTC; yihui",
+        "Packaged": "2022-12-13 14:41:41 UTC; yihui",
         "Author": "Hadley Wickham [aut],\n  Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Michael Lawrence [ctb],\n  Thomas Kluyver [ctb],\n  Jeroen Ooms [ctb],\n  Barret Schloerke [ctb],\n  Adam Ryczkowski [ctb],\n  Hiroaki Yutani [ctb],\n  Michel Lang [ctb],\n  Karolis Koncevičius [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-11-07 08:50:05 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:04:48 UTC; unix"
+        "Date/Publication": "2022-12-13 15:20:05 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:33:59 UTC; unix"
       }
     },
     "exactextractr": {
@@ -1449,7 +1447,7 @@
         "Maintainer": "Daniel Baston <dbaston@isciences.com>",
         "Repository": "CRAN",
         "Date/Publication": "2022-11-16 22:50:07 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-01-23 16:56:47 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-02-15 16:32:44 UTC; unix"
       }
     },
     "fansi": {
@@ -1481,7 +1479,7 @@
         "Maintainer": "Brodie Gaslam <brodie.gaslam@yahoo.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-03-24 07:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:04:50 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-03-28 15:03:55 UTC; unix"
       }
     },
     "farver": {
@@ -1512,7 +1510,7 @@
         "Author": "Thomas Lin Pedersen [cre, aut]\n    (<https://orcid.org/0000-0002-5147-4711>),\n  Berendea Nicolae [aut] (Author of the ColorSpace C++ library),\n  Romain François [aut] (<https://orcid.org/0000-0002-2444-4226>)",
         "Repository": "CRAN",
         "Date/Publication": "2022-07-06 13:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:02:07 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-09-06 16:35:12 UTC; unix"
       }
     },
     "fastmap": {
@@ -1539,9 +1537,9 @@
         "Packaged": "2021-01-25 20:28:54 UTC; winston",
         "Author": "Winston Chang [aut, cre],\n  RStudio [cph, fnd],\n  Tessil [cph] (hopscotch_map library)",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-01-25 21:00:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:53:23 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:03:35 UTC; unix"
       }
     },
     "filelock": {
@@ -1567,9 +1565,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "yes",
         "Packaged": "2018-10-05 10:03:40 UTC; gaborcsardi",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2018-10-05 10:30:12 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:26:11 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-01-03 19:59:40 UTC; unix"
       }
     },
     "fontawesome": {
@@ -1602,7 +1600,7 @@
         "Maintainer": "Richard Iannone <rich@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-25 12:35:07 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:52:39 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-01 18:55:15 UTC; unix"
       }
     },
     "forcats": {
@@ -1634,9 +1632,9 @@
         "Packaged": "2022-08-19 19:05:11 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-19 22:00:03 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:47 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:51:52 UTC; unix"
       }
     },
     "formatR": {
@@ -1667,7 +1665,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "CRAN",
         "Date/Publication": "2022-12-22 06:50:02 UTC",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:17 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 17:59:02 UTC; unix"
       }
     },
     "fs": {
@@ -1700,9 +1698,9 @@
         "Packaged": "2021-12-08 16:14:56 UTC; gaborcsardi",
         "Author": "Jim Hester [aut],\n  Hadley Wickham [aut],\n  Gábor Csárdi [aut, cre],\n  libuv project contributors [cph] (libuv library),\n  Joyent, Inc. and other Node contributors [cph] (libuv library),\n  RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-12-08 23:00:08 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:53:43 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:04:03 UTC; unix"
       }
     },
     "futile.logger": {
@@ -1733,7 +1731,7 @@
         "Packaged": "2016-07-10 13:44:30 UTC; brian",
         "Repository": "CRAN",
         "Date/Publication": "2016-07-10 16:57:47",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:22 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:10:35 UTC; unix"
       }
     },
     "futile.options": {
@@ -1759,7 +1757,7 @@
         "Packaged": "2018-04-20 16:08:58 UTC; brian",
         "Repository": "CRAN",
         "Date/Publication": "2018-04-20 22:04:12 UTC",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:20 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:10:33 UTC; unix"
       }
     },
     "gargle": {
@@ -1791,9 +1789,9 @@
         "Packaged": "2022-09-08 02:31:22 UTC; jenny",
         "Author": "Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>),\n  Craig Citro [aut],\n  Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\n  Google Inc [cph],\n  RStudio [cph, fnd]",
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-09-08 03:02:54 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:49 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:51:55 UTC; unix"
       }
     },
     "generics": {
@@ -1823,9 +1821,9 @@
         "Packaged": "2022-07-05 14:52:13 UTC; davis",
         "Author": "Hadley Wickham [aut, cre],\n  Max Kuhn [aut],\n  Davis Vaughan [aut],\n  RStudio [cph]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-07-05 19:40:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-05 22:26:09 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-06 16:35:41 UTC; unix"
       }
     },
     "ggplot2": {
@@ -1859,9 +1857,9 @@
         "Packaged": "2022-10-31 13:29:43 UTC; thomas",
         "Author": "Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\n  Winston Chang [aut] (<https://orcid.org/0000-0002-1576-2126>),\n  Lionel Henry [aut],\n  Thomas Lin Pedersen [aut, cre]\n    (<https://orcid.org/0000-0002-5147-4711>),\n  Kohske Takahashi [aut],\n  Claus Wilke [aut] (<https://orcid.org/0000-0002-7470-9261>),\n  Kara Woo [aut] (<https://orcid.org/0000-0002-5125-4188>),\n  Hiroaki Yutani [aut] (<https://orcid.org/0000-0002-3385-7233>),\n  Dewey Dunnington [aut] (<https://orcid.org/0000-0002-9415-4582>),\n  RStudio [cph, fnd]",
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-04 15:20:09 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:47 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:42:53 UTC; unix"
       }
     },
     "glue": {
@@ -1893,9 +1891,9 @@
         "Packaged": "2022-02-23 22:50:40 UTC; jenny",
         "Author": "Jim Hester [aut] (<https://orcid.org/0000-0002-2739-7082>),\n  Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>),\n  RStudio [cph, fnd]",
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-02-24 07:50:20 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:53:40 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-03-01 16:53:30 UTC; unix"
       }
     },
     "googledrive": {
@@ -1929,7 +1927,7 @@
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
         "Repository": "CRAN",
         "Date/Publication": "2021-07-08 09:10:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:03:58 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:33:53 UTC; unix"
       }
     },
     "googlesheets4": {
@@ -1961,9 +1959,9 @@
         "Packaged": "2022-08-13 19:49:54 UTC; jenny",
         "Author": "Jennifer Bryan [cre, aut] (<https://orcid.org/0000-0002-6983-2759>),\n  RStudio [cph, fnd]",
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-13 20:10:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:04:03 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:52:00 UTC; unix"
       }
     },
     "gridExtra": {
@@ -1989,9 +1987,10 @@
         "Packaged": "2017-09-08 22:52:09 UTC; baptiste",
         "Author": "Baptiste Auguie [aut, cre],\n  Anton Antonov [ctb]",
         "Maintainer": "Baptiste Auguie <baptiste.auguie@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2017-09-09 14:12:08 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:55:55 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; ; 2022-06-07 12:56:02 UTC; unix"
       }
     },
     "gtable": {
@@ -2023,7 +2022,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "CRAN",
         "Date/Publication": "2022-09-01 02:40:12 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:01:38 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-06 16:36:00 UTC; unix"
       }
     },
     "haven": {
@@ -2056,9 +2055,9 @@
         "Packaged": "2022-08-22 18:39:56 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  Evan Miller [aut, cph] (Author of included ReadStat code),\n  Danny Smith [aut],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-22 19:10:04 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:04:08 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:52:35 UTC; unix"
       }
     },
     "highr": {
@@ -2072,25 +2071,25 @@
         "Package": "highr",
         "Type": "Package",
         "Title": "Syntax Highlighting for R Source Code",
-        "Version": "0.9",
+        "Version": "0.10",
         "Authors@R": "c(\n    person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")),\n    person(\"Yixuan\", \"Qiu\", role = \"aut\"),\n    person(\"Christopher\", \"Gandrud\", role = \"ctb\"),\n    person(\"Qiang\", \"Li\", role = \"ctb\")\n    )",
         "Description": "Provides syntax highlighting for R source code. Currently it\n    supports LaTeX and HTML output. Source code of other languages is supported\n    via Andre Simon's highlight package (<http://www.andre-simon.de>).",
-        "Depends": "R (>= 3.2.3)",
+        "Depends": "R (>= 3.3.0)",
         "Imports": "xfun (>= 0.18)",
         "Suggests": "knitr, markdown, testit",
         "License": "GPL",
         "URL": "https://github.com/yihui/highr",
         "BugReports": "https://github.com/yihui/highr/issues",
         "VignetteBuilder": "knitr",
-        "RoxygenNote": "7.1.1",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
         "NeedsCompilation": "no",
-        "Packaged": "2021-04-16 21:12:10 UTC; yihui",
+        "Packaged": "2022-12-22 06:43:07 UTC; yihui",
         "Author": "Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Yixuan Qiu [aut],\n  Christopher Gandrud [ctb],\n  Qiang Li [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
-        "Date/Publication": "2021-04-16 21:50:05 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-12-01 19:07:42 UTC; unix"
+        "Date/Publication": "2022-12-22 07:00:02 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:04 UTC; unix"
       }
     },
     "hms": {
@@ -2122,9 +2121,9 @@
         "Packaged": "2022-08-18 23:21:16 UTC; kirill",
         "Author": "Kirill Müller [aut, cre] (<https://orcid.org/0000-0002-1416-3412>),\n  R Consortium [fnd],\n  RStudio [fnd]",
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-08-19 09:30:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:29:07 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-21 14:24:49 UTC; unix"
       }
     },
     "htmltools": {
@@ -2156,9 +2155,9 @@
         "Packaged": "2022-12-07 17:55:41 UTC; cpsievert",
         "Author": "Joe Cheng [aut],\n  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Barret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),\n  Winston Chang [aut] (<https://orcid.org/0000-0002-1576-2126>),\n  Yihui Xie [aut],\n  Jeff Allen [aut],\n  RStudio [cph]",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-07 20:50:06 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-19 15:59:32 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:30:23 UTC; unix"
       }
     },
     "htmlwidgets": {
@@ -2172,25 +2171,25 @@
         "Package": "htmlwidgets",
         "Type": "Package",
         "Title": "HTML Widgets for R",
-        "Version": "1.5.4",
+        "Version": "1.6.0",
         "Authors@R": "c(\n    person(\"Ramnath\", \"Vaidyanathan\", role = c(\"aut\", \"cph\")),\n    person(\"Yihui\", \"Xie\", role = c(\"aut\")),\n    person(\"JJ\", \"Allaire\", role = c(\"aut\")),\n    person(\"Joe\", \"Cheng\", role = c(\"aut\"), email = \"joe@rstudio.com\"),\n    person(\"Carson\", \"Sievert\", role = c(\"aut\", \"cre\"), email = \"carson@rstudio.com\", comment = c(ORCID = \"0000-0002-4958-2844\")),\n    person(\"Kenton\", \"Russell\", role = c(\"aut\", \"cph\")),\n    person(\"Ellis\", \"Hughes\", role = c(\"ctb\")),\n    person(family = \"RStudio\", role = \"cph\")\n    )",
         "Description": "A framework for creating HTML widgets that render in various\n    contexts including the R console, 'R Markdown' documents, and 'Shiny'\n    web applications.",
         "License": "MIT + file LICENSE",
         "VignetteBuilder": "knitr",
-        "Imports": "grDevices, htmltools (>= 0.3), jsonlite (>= 0.9.16), yaml",
-        "Suggests": "knitr (>= 1.8), rmarkdown, testthat",
+        "Imports": "grDevices, htmltools (>= 0.5.4), jsonlite (>= 0.9.16), yaml,\nknitr (>= 1.8), rmarkdown",
+        "Suggests": "testthat",
         "Enhances": "shiny (>= 1.1)",
         "URL": "https://github.com/ramnathv/htmlwidgets",
         "BugReports": "https://github.com/ramnathv/htmlwidgets/issues",
-        "RoxygenNote": "7.1.1",
+        "RoxygenNote": "7.2.1",
+        "Encoding": "UTF-8",
         "NeedsCompilation": "no",
-        "Packaged": "2021-09-08 13:21:35 UTC; cpsievert",
+        "Packaged": "2022-12-14 00:17:21 UTC; cpsievert",
         "Author": "Ramnath Vaidyanathan [aut, cph],\n  Yihui Xie [aut],\n  JJ Allaire [aut],\n  Joe Cheng [aut],\n  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Kenton Russell [aut, cph],\n  Ellis Hughes [ctb],\n  RStudio [cph]",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
         "Repository": "RSPM",
-        "Date/Publication": "2021-09-08 14:00:02 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-12-01 19:09:33 UTC; unix"
+        "Date/Publication": "2022-12-15 13:10:17 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:13 UTC; unix"
       }
     },
     "httpuv": {
@@ -2222,9 +2221,9 @@
         "Packaged": "2022-12-13 20:41:06 UTC; winston",
         "Author": "Joe Cheng [aut],\n  Winston Chang [aut, cre],\n  RStudio, PBC [cph],\n  Hector Corrada Bravo [ctb],\n  Jeroen Ooms [ctb],\n  Andrzej Krzemienski [cph] (optional.hpp)",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-14 17:20:05 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-19 15:57:38 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:30:27 UTC; unix"
       }
     },
     "httr": {
@@ -2254,9 +2253,9 @@
         "Packaged": "2022-08-16 11:25:45 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-08-17 13:00:04 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:05:34 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-08-17 14:51:50 UTC; unix"
       }
     },
     "ids": {
@@ -2285,7 +2284,7 @@
         "Maintainer": "Rich FitzJohn <rich.fitzjohn@gmail.com>",
         "Repository": "CRAN",
         "Date/Publication": "2017-05-31 08:49:59 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:04:02 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:33:57 UTC; unix"
       }
     },
     "isoband": {
@@ -2298,26 +2297,27 @@
       "description": {
         "Package": "isoband",
         "Title": "Generate Isolines and Isobands from Regularly Spaced Elevation\nGrids",
-        "Version": "0.2.6",
-        "Authors@R": "\n    c(person(given = \"Claus O.\",\n             family = \"Wilke\",\n             role = c(\"aut\", \"cre\"),\n             email = \"wilke@austin.utexas.edu\",\n             comment = c(ORCID = \"0000-0002-7470-9261\")),\n      person(given = \"Thomas Lin\",\n             family = \"Pedersen\",\n             role = \"aut\",\n             email = \"thomasp85@gmail.com\",\n             comment = c(ORCID = \"0000-0002-5147-4711\")),\n      person(given = \"testthat and Catch authors\",\n             role = \"ctb\",\n             comment = \"testthat C++ testing code\"))",
-        "Description": "A fast C++ implementation to generate contour lines (isolines) and\n  contour polygons (isobands) from regularly spaced grids containing elevation data.",
-        "URL": "https://wilkelab.org/isoband/",
-        "BugReports": "https://github.com/wilkelab/isoband/issues",
+        "Version": "0.2.7",
+        "Authors@R": "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0003-4757-117X\")),\n    person(\"Claus O.\", \"Wilke\", , \"wilke@austin.utexas.edu\", role = \"aut\",\n           comment = c(\"Original author\", ORCID = \"0000-0002-7470-9261\")),\n    person(\"Thomas Lin\", \"Pedersen\", , \"thomasp85@gmail.com\", role = \"aut\",\n           comment = c(ORCID = \"0000-0002-5147-4711\"))\n  )",
+        "Description": "A fast C++ implementation to generate contour lines\n    (isolines) and contour polygons (isobands) from regularly spaced grids\n    containing elevation data.",
         "License": "MIT + file LICENSE",
-        "Encoding": "UTF-8",
+        "URL": "https://isoband.r-lib.org",
+        "BugReports": "https://github.com/r-lib/isoband/issues",
         "Imports": "grid, utils",
-        "RoxygenNote": "7.2.1",
-        "Config/testthat/edition": "3",
         "Suggests": "covr, ggplot2, knitr, magick, microbenchmark, rmarkdown, sf,\ntestthat, xml2",
-        "SystemRequirements": "C++11",
         "VignetteBuilder": "knitr",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "SystemRequirements": "C++11",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-10-06 10:33:32 UTC; clauswilke",
-        "Author": "Claus O. Wilke [aut, cre] (<https://orcid.org/0000-0002-7470-9261>),\n  Thomas Lin Pedersen [aut] (<https://orcid.org/0000-0002-5147-4711>),\n  testthat and Catch authors [ctb] (testthat C++ testing code)",
-        "Maintainer": "Claus O. Wilke <wilke@austin.utexas.edu>",
-        "Repository": "CRAN",
-        "Date/Publication": "2022-10-06 20:30:10 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:01:40 UTC; unix"
+        "Packaged": "2022-12-19 20:10:02 UTC; hadleywickham",
+        "Author": "Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>),\n  Claus O. Wilke [aut] (Original author,\n    <https://orcid.org/0000-0002-7470-9261>),\n  Thomas Lin Pedersen [aut] (<https://orcid.org/0000-0002-5147-4711>)",
+        "Maintainer": "Hadley Wickham <hadley@posit.co>",
+        "Repository": "RSPM",
+        "Date/Publication": "2022-12-20 10:00:13 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:42:47 UTC; unix"
       }
     },
     "jquerylib": {
@@ -2343,9 +2343,9 @@
         "Packaged": "2021-04-26 16:40:21 UTC; cpsievert",
         "Author": "Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Joe Cheng [aut],\n  RStudio [cph],\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/lib/jquery-AUTHORS.txt)",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-04-26 17:10:02 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:28:49 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:06:25 UTC; unix"
       }
     },
     "jsonlite": {
@@ -2373,9 +2373,9 @@
         "NeedsCompilation": "yes",
         "Packaged": "2022-12-05 23:21:23 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  Duncan Temple Lang [ctb],\n  Lloyd Hilaiel [cph] (author of bundled libyajl)",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-06 08:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-06 20:19:49 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:32:21 UTC; unix"
       }
     },
     "keyring": {
@@ -2404,9 +2404,9 @@
         "Packaged": "2022-10-27 09:28:38 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Alec Wong [ctb],\n  RStudio [cph]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-10-27 15:15:16 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:26:25 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-01-03 19:59:44 UTC; unix"
       }
     },
     "knitr": {
@@ -2440,7 +2440,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-18 12:00:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:08:51 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-01 18:59:54 UTC; unix"
       }
     },
     "labeling": {
@@ -2466,7 +2466,7 @@
         "Packaged": "2020-10-18 12:56:46 UTC; nuno",
         "Repository": "CRAN",
         "Date/Publication": "2020-10-20 07:00:09 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:30 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:32:48 UTC; unix"
       }
     },
     "lambda.r": {
@@ -2494,7 +2494,7 @@
         "Packaged": "2019-09-15 08:08:15 UTC; brian",
         "Repository": "CRAN",
         "Date/Publication": "2019-09-18 14:30:02 UTC",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:18 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:10:31 UTC; unix"
       }
     },
     "later": {
@@ -2525,9 +2525,9 @@
         "Packaged": "2021-08-18 14:03:28 UTC; barret",
         "Author": "Winston Chang [aut, cre],\n  Joe Cheng [aut],\n  RStudio [cph],\n  Marcus Geelnard [ctb, cph] (TinyCThread library,\n    https://tinycthread.github.io/),\n  Evan Nemerson [ctb, cph] (TinyCThread library,\n    https://tinycthread.github.io/)",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-18 16:30:06 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:52:48 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:00:54 UTC; unix"
       }
     },
     "lattice": {
@@ -2586,9 +2586,10 @@
         "Packaged": "2019-03-15 14:18:01 UTC; lionel",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2019-03-15 17:50:07 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:47:25 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-03-28 15:05:17 UTC; unix"
       }
     },
     "leaflet": {
@@ -2618,9 +2619,9 @@
         "Packaged": "2022-03-23 03:08:42 UTC; jcheng",
         "Author": "Joe Cheng [aut, cre],\n  Bhaskar Karambelkar [aut],\n  Yihui Xie [aut],\n  Hadley Wickham [ctb],\n  Kenton Russell [ctb],\n  Kent Johnson [ctb],\n  Barret Schloerke [ctb],\n  jQuery Foundation and contributors [ctb, cph] (jQuery library),\n  Vladimir Agafonkin [ctb, cph] (Leaflet library),\n  CloudMade [cph] (Leaflet library),\n  Leaflet contributors [ctb] (Leaflet library),\n  Brandon Copeland [ctb, cph] (leaflet-measure plugin),\n  Joerg Dietrich [ctb, cph] (Leaflet.Terminator plugin),\n  Benjamin Becquet [ctb, cph] (Leaflet.MagnifyingGlass plugin),\n  Norkart AS [ctb, cph] (Leaflet.MiniMap plugin),\n  L. Voogdt [ctb, cph] (Leaflet.awesome-markers plugin),\n  Daniel Montague [ctb, cph] (Leaflet.EasyButton plugin),\n  Kartena AB [ctb, cph] (Proj4Leaflet plugin),\n  Robert Kajic [ctb, cph] (leaflet-locationfilter plugin),\n  Mapbox [ctb, cph] (leaflet-omnivore plugin),\n  Michael Bostock [ctb, cph] (topojson),\n  RStudio [cph]",
         "Maintainer": "Joe Cheng <joe@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-03-23 23:40:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:56:03 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-06-07 12:58:14 UTC; unix"
       }
     },
     "leaflet.extras": {
@@ -2650,9 +2651,9 @@
         "Packaged": "2018-04-21 16:06:46 UTC; barret",
         "Author": "Bhaskar Karambelkar [aut, cre],\n  Barret Schloerke [aut],\n  Bangyou Zheng [ctb] (Leaflet-search and Leaflet-GPS plugin integration),\n  Robin Cura [ctb] (Fixes for Draw Options),\n  Markus Voge [ctb] (Enhancements for Draw Options),\n  Markus Dumke [ctb] (Bounce Marker addition),\n  Mapbox [ctb, cph] (leaflet-omnivore, csv2geojson, and togeojson\n    libraries),\n  Henry Thasler [ctb, cph] (Leaflet.Geodesic library),\n  Dennis Wilhelm [ctb, cph] (Leaflet.StyleEditor library),\n  Kirollos Risk [ctb, cph] (fuse.js library),\n  Tim Wisniewski [ctb, cph] (leaflet-choropleth library),\n  Leaflet [ctb, cph] (leaflet-draw library),\n  Alexander Milevski [ctb, cph] (leaflet-draw-drag library),\n  John Firebaugh [ctb, cph] (leaflet-fullscreen library),\n  Stefano Cudini [ctb, cph] (leaflet-gps library),\n  Johannes Rudolph [ctb, cph] (leaflet-hash library),\n  Per Liedman [ctb, cph] (leaflet-measure-path library),\n  Pavel Shramov [ctb, cph] (leaflet-plugins library),\n  Filip Zavadil [ctb, cph] (leaflet-pulse-icon library),\n  Stefano Cudini [ctb, cph] (leaflet-search library),\n  CliffCloud [ctb, cph] (leaflet-sleep library),\n  Ursudio [ctb, cph] (leaflet-webgl-heatmap library),\n  Maxime Hadjinlian [ctb, cph] (leaflet.BounceMarker library),\n  Vladimir Agafonkin [ctb, cph] (leaflet.heat library),\n  Iván Sánchez Ortega [ctb, cph] (leaflet.tilelayer.pouchdbcached\n    library),\n  Dale Harvey [ctb, cph] (pouchdb-browser library),\n  Mike Bostock [ctb, cph] (topojson library)",
         "Maintainer": "Bhaskar Karambelkar <bhaskarvk@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2018-04-21 21:20:53 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:56:07 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:43:08 UTC; unix"
       }
     },
     "leaflet.providers": {
@@ -2683,9 +2684,9 @@
         "Packaged": "2019-11-08 22:12:22 UTC; barret",
         "Author": "Leslie Huang [aut],\n  Barret Schloerke [ctb, cre] (<https://orcid.org/0000-0001-9986-114X>),\n  Leaflet Providers contributors [ctb, cph] (Leaflet Providers plugin),\n  RStudio [cph, fnd]",
         "Maintainer": "Barret Schloerke <barret@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2019-11-09 23:40:09 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:56:01 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-06-07 12:58:12 UTC; unix"
       }
     },
     "lifecycle": {
@@ -2718,7 +2719,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-07 09:50:02 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:56:15 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-01 18:55:03 UTC; unix"
       }
     },
     "lubridate": {
@@ -2754,9 +2755,9 @@
         "NeedsCompilation": "yes",
         "Packaged": "2022-11-05 22:53:20 UTC; vspinu",
         "Author": "Vitalie Spinu [aut, cre],\n  Garrett Grolemund [aut],\n  Hadley Wickham [aut],\n  Davis Vaughan [ctb],\n  Ian Lyttle [ctb],\n  Imanuel Costigan [ctb],\n  Jason Law [ctb],\n  Doug Mitarotonda [ctb],\n  Joseph Larmarange [ctb],\n  Jonathan Boiser [ctb],\n  Chel Hee Lee [ctb]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-06 07:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:04:47 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:53:45 UTC; unix"
       }
     },
     "magrittr": {
@@ -2787,9 +2788,9 @@
         "Packaged": "2022-03-29 09:34:37 UTC; lionel",
         "Author": "Stefan Milton Bache [aut, cph] (Original author and creator of\n    magrittr),\n  Hadley Wickham [aut],\n  Lionel Henry [cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-03-30 07:30:09 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:28:40 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-04-12 13:30:42 UTC; unix"
       }
     },
     "markdown": {
@@ -2819,9 +2820,9 @@
         "Packaged": "2022-11-15 06:07:44 UTC; yihui",
         "Author": "JJ Allaire [aut],\n  Jeffrey Horner [aut],\n  Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Henrik Bengtsson [ctb],\n  Jim Hester [ctb],\n  Yixuan Qiu [ctb],\n  Kohske Takahashi [ctb],\n  Adam November [ctb],\n  Nacho Caballero [ctb],\n  Jeroen Ooms [ctb],\n  Thomas Leeper [ctb],\n  Joe Cheng [ctb],\n  Andrzej Oles [ctb],\n  RStudio [cph]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-16 12:10:42 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:47:34 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:19 UTC; unix"
       }
     },
     "memoise": {
@@ -2848,9 +2849,9 @@
         "Packaged": "2021-11-24 21:24:50 UTC; jhester",
         "Author": "Hadley Wickham [aut],\n  Jim Hester [aut],\n  Winston Chang [aut, cre],\n  Kirill Müller [aut],\n  Daniel Cook [aut],\n  Mark Edmondson [ctb]",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-11-26 16:11:10 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:56:04 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:20:54 UTC; unix"
       }
     },
     "mgcv": {
@@ -2905,9 +2906,9 @@
         "Packaged": "2021-09-28 02:06:04 UTC; yihui",
         "Author": "Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Jeffrey Horner [ctb],\n  Beilei Bian [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-09-28 05:00:05 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:52:34 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:03:20 UTC; unix"
       }
     },
     "modelr": {
@@ -2938,9 +2939,9 @@
         "Packaged": "2022-11-11 16:14:48 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-11 19:20:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:04:53 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:53:52 UTC; unix"
       }
     },
     "munsell": {
@@ -2967,7 +2968,7 @@
         "Packaged": "2018-06-11 23:15:15 UTC; wickhamc",
         "Repository": "CRAN",
         "Date/Publication": "2018-06-12 04:29:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:37 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:32:56 UTC; unix"
       }
     },
     "nlme": {
@@ -3016,7 +3017,7 @@
         "Package": "openssl",
         "Type": "Package",
         "Title": "Toolkit for Encryption, Signatures and Certificates Based on\nOpenSSL",
-        "Version": "2.0.4",
+        "Version": "2.0.5",
         "Authors@R": "c(person(\"Jeroen\", \"Ooms\", role = c(\"aut\", \"cre\"), email = \"jeroen@berkeley.edu\",\n    comment = c(ORCID = \"0000-0002-4035-0289\")),\n    person(\"Oliver\", \"Keyes\", role = \"ctb\"))",
         "Description": "Bindings to OpenSSL libssl and libcrypto, plus custom SSH key parsers.\n    Supports RSA, DSA and EC curves P-256, P-384, P-521, and curve25519. Cryptographic\n    signatures can either be created and verified manually or via x509 certificates. \n    AES can be used in cbc, ctr or gcm mode for symmetric encryption; RSA for asymmetric\n    (public key) encryption or EC for Diffie Hellman. High-level envelope functions \n    combine RSA and AES for encrypting arbitrary sized data. Other utilities include key\n    generators, hash functions (md5, sha1, sha256, etc), base64 encoder, a secure random\n    number generator, and 'bignum' math methods for manually performing crypto \n    calculations on large multibyte integers.",
         "License": "MIT + file LICENSE",
@@ -3029,12 +3030,12 @@
         "RoxygenNote": "7.2.1",
         "Encoding": "UTF-8",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-10-17 08:56:04 UTC; jeroen",
+        "Packaged": "2022-12-05 23:28:02 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  Oliver Keyes [ctb]",
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-10-17 09:30:05 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:29 UTC; unix"
+        "Date/Publication": "2022-12-06 01:10:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-14 17:43:26 UTC; unix"
       }
     },
     "paws": {
@@ -3061,9 +3062,9 @@
         "Packaged": "2021-09-02 23:50:19 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-09-03 04:50:11 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:33:57 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:41:45 UTC; unix"
       }
     },
     "paws.analytics": {
@@ -3091,9 +3092,9 @@
         "Packaged": "2021-08-22 19:23:43 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:11:20 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:29:41 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:37:17 UTC; unix"
       }
     },
     "paws.application.integration": {
@@ -3123,7 +3124,7 @@
         "Maintainer": "Dyfan Jones <dyfan.r.jones@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-02 15:30:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:30:04 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-07 16:05:51 UTC; unix"
       }
     },
     "paws.common": {
@@ -3152,9 +3153,9 @@
         "Packaged": "2022-12-06 16:14:52 UTC; dyfanjones",
         "Author": "David Kretch [aut],\n  Adam Banker [aut],\n  Dyfan Jones [cre],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "Dyfan Jones <dyfan.r.jones@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-06 17:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-06 20:19:31 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:55:50 UTC; unix"
       }
     },
     "paws.compute": {
@@ -3184,7 +3185,7 @@
         "Maintainer": "Dyfan Jones <dyfan.r.jones@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-25 08:30:14 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:30:12 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-07 16:05:59 UTC; unix"
       }
     },
     "paws.cost.management": {
@@ -3212,9 +3213,9 @@
         "Packaged": "2021-08-22 21:52:25 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:11:00 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:30:48 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:38:27 UTC; unix"
       }
     },
     "paws.customer.engagement": {
@@ -3242,9 +3243,9 @@
         "Packaged": "2021-08-22 22:06:45 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:54 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:30:53 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:38:32 UTC; unix"
       }
     },
     "paws.database": {
@@ -3272,9 +3273,9 @@
         "Packaged": "2021-08-22 22:20:28 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:46 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:31:08 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:38:48 UTC; unix"
       }
     },
     "paws.developer.tools": {
@@ -3302,9 +3303,9 @@
         "Packaged": "2021-08-22 22:30:38 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-24 19:30:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:31:35 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:39:15 UTC; unix"
       }
     },
     "paws.end.user.computing": {
@@ -3332,9 +3333,9 @@
         "Packaged": "2021-08-22 22:38:27 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-24 19:30:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:31:46 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:39:28 UTC; unix"
       }
     },
     "paws.machine.learning": {
@@ -3362,9 +3363,9 @@
         "Packaged": "2021-08-22 22:51:01 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:38 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:31:53 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:39:35 UTC; unix"
       }
     },
     "paws.management": {
@@ -3392,9 +3393,9 @@
         "Packaged": "2021-08-22 23:05:50 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:27 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:32:15 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:39:58 UTC; unix"
       }
     },
     "paws.networking": {
@@ -3422,9 +3423,9 @@
         "Packaged": "2021-08-22 23:26:04 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:18 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:32:45 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:40:29 UTC; unix"
       }
     },
     "paws.security.identity": {
@@ -3452,9 +3453,9 @@
         "Packaged": "2021-08-22 23:45:53 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-23 07:10:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:33:11 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:40:56 UTC; unix"
       }
     },
     "paws.storage": {
@@ -3482,9 +3483,9 @@
         "Packaged": "2021-08-22 18:53:27 UTC; david.kretch",
         "Author": "David Kretch [aut, cre],\n  Adam Banker [aut],\n  Amazon.com, Inc. [cph]",
         "Maintainer": "David Kretch <david.kretch@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-08-22 19:30:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:33:44 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:41:30 UTC; unix"
       }
     },
     "pillar": {
@@ -3518,9 +3519,9 @@
         "Packaged": "2022-08-18 16:02:46 UTC; kirill",
         "Author": "Kirill Müller [aut, cre] (<https://orcid.org/0000-0002-1416-3412>),\n  Hadley Wickham [aut],\n  RStudio [cph]",
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-08-19 08:40:07 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:09:08 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-06 16:35:43 UTC; unix"
       }
     },
     "pkgconfig": {
@@ -3546,9 +3547,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "no",
         "Packaged": "2019-09-22 08:42:40 UTC; gaborcsardi",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2019-09-22 09:20:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:09:12 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:23:41 UTC; unix"
       }
     },
     "png": {
@@ -3571,9 +3572,10 @@
         "URL": "http://www.rforge.net/png/",
         "NeedsCompilation": "yes",
         "Packaged": "2022-11-29 09:42:31 UTC; rforge",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-29 11:12:53 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:47:36 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:34:21 UTC; unix"
       }
     },
     "prettyunits": {
@@ -3599,9 +3601,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "no",
         "Packaged": "2020-01-24 02:16:46 UTC; gaborcsardi",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2020-01-24 06:50:07 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:04:42 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:20:56 UTC; unix"
       }
     },
     "processx": {
@@ -3633,7 +3635,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-26 11:12:39 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:04:33 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:57:39 UTC; unix"
       }
     },
     "progress": {
@@ -3660,9 +3662,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "no",
         "Packaged": "2019-05-15 20:28:47 UTC; gaborcsardi",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2019-05-16 21:30:03 UTC",
-        "Built": "R 4.1.1; ; 2022-12-02 18:29:09 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-03-01 16:53:45 UTC; unix"
       }
     },
     "promises": {
@@ -3694,9 +3696,9 @@
         "Packaged": "2021-02-11 18:18:47 UTC; barret",
         "Author": "Joe Cheng [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Joe Cheng <joe@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-02-11 19:00:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:29:43 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:01:15 UTC; unix"
       }
     },
     "proxy": {
@@ -3722,9 +3724,10 @@
         "Packaged": "2022-06-08 21:36:02 UTC; meyer",
         "Author": "David Meyer [aut, cre],\n  Christian Buchta [aut]",
         "Maintainer": "David Meyer <David.Meyer@R-project.org>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-06-09 06:15:32 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:56:11 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:43:11 UTC; unix"
       }
     },
     "ps": {
@@ -3757,7 +3760,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-26 17:32:36 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:04:29 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:57:35 UTC; unix"
       }
     },
     "purrr": {
@@ -3770,25 +3773,28 @@
       "description": {
         "Package": "purrr",
         "Title": "Functional Programming Tools",
-        "Version": "0.3.5",
-        "Authors@R": "\n    c(person(given = \"Lionel\",\n             family = \"Henry\",\n             role = c(\"aut\", \"cre\"),\n             email = \"lionel@rstudio.com\"),\n      person(given = \"Hadley\",\n             family = \"Wickham\",\n             role = \"aut\",\n             email = \"hadley@rstudio.com\"),\n      person(given = \"RStudio\",\n             role = c(\"cph\", \"fnd\")))",
-        "Description": "A complete and consistent functional programming\n    toolkit for R.",
-        "License": "GPL-3 | file LICENSE",
+        "Version": "1.0.0",
+        "Authors@R": "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = \"aut\",\n           comment = c(ORCID = \"0000-0003-4757-117X\")),\n    person(\"Lionel\", \"Henry\", , \"lionel@rstudio.com\", role = c(\"aut\", \"cre\")),\n    person(\"RStudio\", role = c(\"cph\", \"fnd\"))\n  )",
+        "Description": "A complete and consistent functional programming toolkit for\n    R.",
+        "License": "MIT + file LICENSE",
         "URL": "https://purrr.tidyverse.org/, https://github.com/tidyverse/purrr",
         "BugReports": "https://github.com/tidyverse/purrr/issues",
-        "Depends": "R (>= 3.2)",
-        "Imports": "magrittr (>= 1.5), rlang (>= 0.3.1)",
-        "Suggests": "covr, crayon, dplyr (>= 0.7.8), httr, knitr, rmarkdown,\ntestthat, tibble, tidyselect, vctrs",
+        "Depends": "R (>= 3.2.3)",
+        "Imports": "cli (>= 3.4.0), lifecycle (>= 1.0.3), magrittr (>= 1.5.0),\nrlang (>= 0.4.10), vctrs (>= 0.5.0)",
+        "Suggests": "covr, dplyr (>= 0.7.8), httr, knitr, lubridate, rmarkdown,\ntestthat (>= 3.0.0), tibble, tidyselect",
+        "LinkingTo": "cli",
         "VignetteBuilder": "knitr",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1",
+        "RoxygenNote": "7.2.3",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-09-28 12:56:52 UTC; lionel",
-        "Author": "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  RStudio [cph, fnd]",
+        "Packaged": "2022-12-20 13:30:38 UTC; hadleywickham",
+        "Author": "Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\n  Lionel Henry [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-10-06 10:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:38 UTC; unix"
+        "Date/Publication": "2022-12-20 15:10:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:51:03 UTC; unix"
       }
     },
     "rappdirs": {
@@ -3818,9 +3824,9 @@
         "Packaged": "2021-01-28 22:29:57 UTC; hadley",
         "Author": "Hadley Wickham [trl, cre, cph],\n  RStudio [cph],\n  Sridhar Ratnakumar [aut],\n  Trent Mick [aut],\n  ActiveState [cph] (R/appdir.r, R/cache.r, R/data.r, R/log.r translated\n    from appdirs),\n  Eddy Petrisor [ctb],\n  Trevor Davis [trl, aut],\n  Gabor Csardi [ctb],\n  Gregory Jefferis [ctb]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-01-31 05:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:54:15 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:04:35 UTC; unix"
       }
     },
     "raster": {
@@ -3850,9 +3856,10 @@
         "Packaged": "2022-11-28 05:20:48 UTC; rhijm",
         "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),\n  Jacob van Etten [ctb],\n  Michael Sumner [ctb],\n  Joe Cheng [ctb],\n  Dan Baston [ctb],\n  Andrew Bevan [ctb],\n  Roger Bivand [ctb],\n  Lorenzo Busetto [ctb],\n  Mort Canty [ctb],\n  Ben Fasoli [ctb],\n  David Forrest [ctb],\n  Aniruddha Ghosh [ctb],\n  Duncan Golicher [ctb],\n  Josh Gray [ctb],\n  Jonathan A. Greenberg [ctb],\n  Paul Hiemstra [ctb],\n  Kassel Hingee [ctb],\n  Alex Ilich [ctb],\n  Institute for Mathematics Applied Geosciences [cph],\n  Charles Karney [ctb],\n  Matteo Mattiuzzi [ctb],\n  Steven Mosher [ctb],\n  Babak Naimi [ctb],\n  Jakub Nowosad [ctb],\n  Edzer Pebesma [ctb],\n  Oscar Perpinan Lamigueiro [ctb],\n  Etienne B. Racine [ctb],\n  Barry Rowlingson [ctb],\n  Ashton Shortridge [ctb],\n  Bill Venables [ctb],\n  Rafael Wueest [ctb]",
         "Maintainer": "Robert J. Hijmans <r.hijmans@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-28 15:20:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:53:58 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:40:48 UTC; unix"
       }
     },
     "readr": {
@@ -3889,7 +3896,7 @@
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-01 13:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:37:54 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 16:16:29 UTC; unix"
       }
     },
     "readxl": {
@@ -3923,9 +3930,9 @@
         "Packaged": "2022-08-17 14:30:18 UTC; jenny",
         "Author": "Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\n  Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>),\n  RStudio [cph, fnd] (Copyright holder of all R code and all C/C++ code\n    without explicit copyright attribution),\n  Marcin Kalicinski [ctb, cph] (Author of included RapidXML code),\n  Komarov Valery [ctb, cph] (Author of included libxls code),\n  Christophe Leitienne [ctb, cph] (Author of included libxls code),\n  Bob Colbert [ctb, cph] (Author of included libxls code),\n  David Hoerl [ctb, cph] (Author of included libxls code),\n  Evan Miller [ctb, cph] (Author of included libxls code)",
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-08-17 15:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:29:11 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-09-21 14:24:52 UTC; unix"
       }
     },
     "rematch": {
@@ -3951,9 +3958,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "no",
         "Packaged": "2016-04-20 19:54:37 UTC; gaborcsardi",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2016-04-21 08:20:46",
-        "Built": "R 4.1.1; ; 2022-12-02 18:29:04 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:41:49 UTC; unix"
       }
     },
     "rematch2": {
@@ -3981,9 +3988,9 @@
         "Packaged": "2020-04-30 10:31:13 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Matthew Lincoln [ctb]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2020-05-01 06:50:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:10:09 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:23:46 UTC; unix"
       }
     },
     "reprex": {
@@ -4016,9 +4023,9 @@
         "Packaged": "2022-08-17 05:15:00 UTC; jenny",
         "Author": "Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>),\n  Jim Hester [aut] (<https://orcid.org/0000-0002-2739-7082>),\n  David Robinson [aut],\n  Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\n  Christophe Dervieux [aut] (<https://orcid.org/0000-0003-4474-2498>),\n  RStudio [cph, fnd]",
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-17 07:40:05 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:04:57 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:54:00 UTC; unix"
       }
     },
     "rlang": {
@@ -4052,9 +4059,9 @@
         "Packaged": "2022-09-23 16:12:48 UTC; lionel",
         "Author": "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  mikefc [cph] (Hash implementation based on Mike's xxhashlite),\n  Yann Collet [cph] (Author of the embedded xxHash library),\n  RStudio [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-09-24 05:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:53:11 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-10-05 14:13:36 UTC; unix"
       }
     },
     "rmarkdown": {
@@ -4068,7 +4075,7 @@
         "Type": "Package",
         "Package": "rmarkdown",
         "Title": "Dynamic Documents for R",
-        "Version": "2.18",
+        "Version": "2.19",
         "Authors@R": "c(\n    person(\"JJ\", \"Allaire\", , \"jj@rstudio.com\", role = \"aut\"),\n    person(\"Yihui\", \"Xie\", , \"xie@yihui.name\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-0645-5666\")),\n    person(\"Jonathan\", \"McPherson\", , \"jonathan@rstudio.com\", role = \"aut\"),\n    person(\"Javier\", \"Luraschi\", , \"javier@rstudio.com\", role = \"aut\"),\n    person(\"Kevin\", \"Ushey\", , \"kevin@rstudio.com\", role = \"aut\"),\n    person(\"Aron\", \"Atkins\", , \"aron@rstudio.com\", role = \"aut\"),\n    person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = \"aut\"),\n    person(\"Joe\", \"Cheng\", , \"joe@rstudio.com\", role = \"aut\"),\n    person(\"Winston\", \"Chang\", , \"winston@rstudio.com\", role = \"aut\"),\n    person(\"Richard\", \"Iannone\", , \"rich@rstudio.com\", role = \"aut\", comment = c(ORCID = \"0000-0003-3925-190X\")),\n    person(\"Andrew\", \"Dunning\", role = \"ctb\", comment = c(ORCID = \"0000-0003-0464-5036\")),\n    person(\"Atsushi\", \"Yasumoto\", role = c(\"ctb\", \"cph\"), comment = c(ORCID = \"0000-0002-8335-495X\", cph = \"Number sections Lua filter\")),\n    person(\"Barret\", \"Schloerke\", role = \"ctb\"),\n    person(\"Carson\", \"Sievert\", role = \"ctb\", comment = c(ORCID = \"0000-0002-4958-2844\")), \n    person(\"Christophe\", \"Dervieux\", role = \"ctb\"),\n    person(\"Devon\", \"Ryan\", , \"dpryan79@gmail.com\", role = \"ctb\", comment = c(ORCID = \"0000-0002-8549-0971\")),\n    person(\"Frederik\", \"Aust\", , \"frederik.aust@uni-koeln.de\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4900-788X\")),\n    person(\"Jeff\", \"Allen\", , \"jeff@rstudio.com\", role = \"ctb\"), \n    person(\"JooYoung\", \"Seo\", role = \"ctb\", comment = c(ORCID = \"0000-0002-4064-6012\")),\n    person(\"Malcolm\", \"Barrett\", role = \"ctb\"),\n    person(\"Rob\", \"Hyndman\", , \"Rob.Hyndman@monash.edu\", role = \"ctb\"),\n    person(\"Romain\", \"Lesur\", role = \"ctb\"),\n    person(\"Roy\", \"Storey\", role = \"ctb\"),\n    person(\"Ruben\", \"Arslan\", , \"ruben.arslan@uni-goettingen.de\", role = \"ctb\"),\n    person(\"Sergio\", \"Oller\", role = \"ctb\"),\n    person(, \"RStudio, PBC\", role = \"cph\"),\n    person(, \"jQuery UI contributors\", role = c(\"ctb\", \"cph\"), comment = \"jQuery UI library; authors listed in inst/rmd/h/jqueryui-AUTHORS.txt\"),\n    person(\"Mark\", \"Otto\", role = \"ctb\", comment = \"Bootstrap library\"),\n    person(\"Jacob\", \"Thornton\", role = \"ctb\", comment = \"Bootstrap library\"),\n    person(, \"Bootstrap contributors\", role = \"ctb\", comment = \"Bootstrap library\"),\n    person(, \"Twitter, Inc\", role = \"cph\", comment = \"Bootstrap library\"),\n    person(\"Alexander\", \"Farkas\", role = c(\"ctb\", \"cph\"), comment = \"html5shiv library\"),\n    person(\"Scott\", \"Jehl\", role = c(\"ctb\", \"cph\"), comment = \"Respond.js library\"),\n    person(\"Ivan\", \"Sagalaev\", role = c(\"ctb\", \"cph\"), comment = \"highlight.js library\"),\n    person(\"Greg\", \"Franko\", role = c(\"ctb\", \"cph\"), comment = \"tocify library\"),\n    person(\"John\", \"MacFarlane\", role = c(\"ctb\", \"cph\"), comment = \"Pandoc templates\"),\n    person(, \"Google, Inc.\", role = c(\"ctb\", \"cph\"), comment = \"ioslides library\"),\n    person(\"Dave\", \"Raggett\", role = \"ctb\", comment = \"slidy library\"),\n    person(, \"W3C\", role = \"cph\", comment = \"slidy library\"),\n    person(\"Dave\", \"Gandy\", role = c(\"ctb\", \"cph\"), comment = \"Font-Awesome\"),\n    person(\"Ben\", \"Sperry\", role = \"ctb\", comment = \"Ionicons\"),\n    person(, \"Drifty\", role = \"cph\", comment = \"Ionicons\"),\n    person(\"Aidan\", \"Lister\", role = c(\"ctb\", \"cph\"), comment = \"jQuery StickyTabs\"),\n    person(\"Benct Philip\", \"Jonsson\", role = c(\"ctb\", \"cph\"), comment = \"pagebreak Lua filter\"),\n    person(\"Albert\", \"Krewinkel\", role = c(\"ctb\", \"cph\"), comment = \"pagebreak Lua filter\")\n  )",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Description": "Convert R Markdown documents into a variety of formats.",
@@ -4081,14 +4088,14 @@
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "rstudio/quillt, pkgdown",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1",
+        "RoxygenNote": "7.2.2",
         "SystemRequirements": "pandoc (>= 1.14) - http://pandoc.org",
         "NeedsCompilation": "no",
-        "Packaged": "2022-11-08 14:08:42 UTC; yihui",
+        "Packaged": "2022-12-13 15:24:45 UTC; yihui",
         "Author": "JJ Allaire [aut],\n  Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Jonathan McPherson [aut],\n  Javier Luraschi [aut],\n  Kevin Ushey [aut],\n  Aron Atkins [aut],\n  Hadley Wickham [aut],\n  Joe Cheng [aut],\n  Winston Chang [aut],\n  Richard Iannone [aut] (<https://orcid.org/0000-0003-3925-190X>),\n  Andrew Dunning [ctb] (<https://orcid.org/0000-0003-0464-5036>),\n  Atsushi Yasumoto [ctb, cph] (<https://orcid.org/0000-0002-8335-495X>,\n    Number sections Lua filter),\n  Barret Schloerke [ctb],\n  Carson Sievert [ctb] (<https://orcid.org/0000-0002-4958-2844>),\n  Christophe Dervieux [ctb],\n  Devon Ryan [ctb] (<https://orcid.org/0000-0002-8549-0971>),\n  Frederik Aust [ctb] (<https://orcid.org/0000-0003-4900-788X>),\n  Jeff Allen [ctb],\n  JooYoung Seo [ctb] (<https://orcid.org/0000-0002-4064-6012>),\n  Malcolm Barrett [ctb],\n  Rob Hyndman [ctb],\n  Romain Lesur [ctb],\n  Roy Storey [ctb],\n  Ruben Arslan [ctb],\n  Sergio Oller [ctb],\n  RStudio, PBC [cph],\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/rmd/h/jqueryui-AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Alexander Farkas [ctb, cph] (html5shiv library),\n  Scott Jehl [ctb, cph] (Respond.js library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  Greg Franko [ctb, cph] (tocify library),\n  John MacFarlane [ctb, cph] (Pandoc templates),\n  Google, Inc. [ctb, cph] (ioslides library),\n  Dave Raggett [ctb] (slidy library),\n  W3C [cph] (slidy library),\n  Dave Gandy [ctb, cph] (Font-Awesome),\n  Ben Sperry [ctb] (Ionicons),\n  Drifty [cph] (Ionicons),\n  Aidan Lister [ctb, cph] (jQuery StickyTabs),\n  Benct Philip Jonsson [ctb, cph] (pagebreak Lua filter),\n  Albert Krewinkel [ctb, cph] (pagebreak Lua filter)",
         "Repository": "RSPM",
-        "Date/Publication": "2022-11-09 10:30:05 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:08:59 UTC; unix"
+        "Date/Publication": "2022-12-15 13:10:11 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:08 UTC; unix"
       }
     },
     "rstudioapi": {
@@ -4115,9 +4122,9 @@
         "NeedsCompilation": "no",
         "Packaged": "2022-08-22 18:55:08 UTC; kevin",
         "Author": "Kevin Ushey [aut, cre],\n  JJ Allaire [aut],\n  Hadley Wickham [aut],\n  Gary Ritchie [aut],\n  RStudio [cph]",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-08-22 22:00:03 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:10:46 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-08 14:33:30 UTC; unix"
       }
     },
     "rvest": {
@@ -4149,9 +4156,9 @@
         "Packaged": "2022-08-19 15:20:38 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-08-19 22:30:08 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:05:05 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:54:04 UTC; unix"
       }
     },
     "s2": {
@@ -4183,9 +4190,9 @@
         "Packaged": "2022-11-17 14:04:04 UTC; edzer",
         "Author": "Dewey Dunnington [aut] (<https://orcid.org/0000-0002-9415-4582>),\n  Edzer Pebesma [aut, cre] (<https://orcid.org/0000-0001-8049-7069>),\n  Ege Rubak [aut],\n  Jeroen Ooms [ctb] (configure script),\n  Google, Inc. [cph] (Original s2geometry.io source code)",
         "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-17 19:30:09 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:56:34 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:43:40 UTC; unix"
       }
     },
     "sass": {
@@ -4218,7 +4225,7 @@
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-24 08:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:23:10 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:55:27 UTC; unix"
       }
     },
     "scales": {
@@ -4251,7 +4258,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "CRAN",
         "Date/Publication": "2022-08-20 00:10:11 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:42 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-06 16:35:37 UTC; unix"
       }
     },
     "selectr": {
@@ -4281,7 +4288,7 @@
         "Maintainer": "Simon Potter <simon@sjp.co.nz>",
         "Repository": "CRAN",
         "Date/Publication": "2019-11-20 07:30:03 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:04:59 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-05-25 13:35:22 UTC; unix"
       }
     },
     "sf": {
@@ -4313,9 +4320,9 @@
         "Packaged": "2022-11-08 08:12:50 UTC; edzer",
         "Author": "Edzer Pebesma [aut, cre] (<https://orcid.org/0000-0001-8049-7069>),\n  Roger Bivand [ctb] (<https://orcid.org/0000-0003-2392-6140>),\n  Etienne Racine [ctb],\n  Michael Sumner [ctb],\n  Ian Cook [ctb],\n  Tim Keitt [ctb],\n  Robin Lovelace [ctb],\n  Hadley Wickham [ctb],\n  Jeroen Ooms [ctb] (<https://orcid.org/0000-0002-4035-0289>),\n  Kirill Müller [ctb],\n  Thomas Lin Pedersen [ctb],\n  Dan Baston [ctb],\n  Dewey Dunnington [ctb] (<https://orcid.org/0000-0002-9415-4582>)",
         "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-08 14:20:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 13:02:05 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:49:14 UTC; unix"
       }
     },
     "shiny": {
@@ -4348,9 +4355,9 @@
         "Packaged": "2022-12-13 20:45:56 UTC; winston",
         "Author": "Winston Chang [aut, cre] (<https://orcid.org/0000-0002-1576-2126>),\n  Joe Cheng [aut],\n  JJ Allaire [aut],\n  Carson Sievert [aut] (<https://orcid.org/0000-0002-4958-2844>),\n  Barret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),\n  Yihui Xie [aut],\n  Jeff Allen [aut],\n  Jonathan McPherson [aut],\n  Alan Dipert [aut],\n  Barbara Borges [aut],\n  RStudio [cph],\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/www/shared/jquery-AUTHORS.txt),\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/www/shared/jqueryui/AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Prem Nawaz Khan [ctb] (Bootstrap accessibility plugin),\n  Victor Tsaran [ctb] (Bootstrap accessibility plugin),\n  Dennis Lembree [ctb] (Bootstrap accessibility plugin),\n  Srinivasu Chakravarthula [ctb] (Bootstrap accessibility plugin),\n  Cathy O'Connor [ctb] (Bootstrap accessibility plugin),\n  PayPal, Inc [cph] (Bootstrap accessibility plugin),\n  Stefan Petre [ctb, cph] (Bootstrap-datepicker library),\n  Andrew Rowls [ctb, cph] (Bootstrap-datepicker library),\n  Brian Reavis [ctb, cph] (selectize.js library),\n  Salmen Bejaoui [ctb, cph] (selectize-plugin-a11y library),\n  Denis Ineshin [ctb, cph] (ion.rangeSlider library),\n  Sami Samhuri [ctb, cph] (Javascript strftime library),\n  SpryMedia Limited [ctb, cph] (DataTables library),\n  John Fraser [ctb, cph] (showdown.js library),\n  John Gruber [ctb, cph] (showdown.js library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  R Core Team [ctb, cph] (tar implementation from R)",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-15 13:10:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-19 15:59:40 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:32:41 UTC; unix"
       }
     },
     "shinyWidgets": {
@@ -4381,7 +4388,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "CRAN",
         "Date/Publication": "2022-11-17 18:40:02 UTC",
-        "Built": "R 4.1.1; ; 2023-01-03 21:35:56 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 18:35:29 UTC; unix"
       }
     },
     "shinyjs": {
@@ -4412,7 +4419,7 @@
         "Maintainer": "Dean Attali <daattali@gmail.com>",
         "Repository": "CRAN",
         "Date/Publication": "2021-12-23 10:10:02 UTC",
-        "Built": "R 4.1.1; ; 2023-01-01 22:47:30 UTC; unix"
+        "Built": "R 4.1.1; ; 2023-01-03 19:19:38 UTC; unix"
       }
     },
     "sodium": {
@@ -4439,10 +4446,9 @@
         "RoxygenNote": "7.1.2",
         "NeedsCompilation": "yes",
         "Packaged": "2022-06-11 08:16:07 UTC; jeroen",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-06-11 21:40:02 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:26:12 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2023-01-03 19:59:42 UTC; unix"
       }
     },
     "sourcetools": {
@@ -4469,9 +4475,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "yes",
         "Packaged": "2018-04-25 03:19:22 UTC; kevin",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2018-04-25 03:38:09 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-11-22 22:52:44 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:03:44 UTC; unix"
       }
     },
     "sp": {
@@ -4499,9 +4505,10 @@
         "Packaged": "2022-11-04 07:30:00 UTC; edzer",
         "Author": "Edzer Pebesma [aut, cre],\n  Roger Bivand [aut],\n  Barry Rowlingson [ctb],\n  Virgilio Gomez-Rubio [ctb],\n  Robert Hijmans [ctb],\n  Michael Sumner [ctb],\n  Don MacQueen [ctb],\n  Jim Lemon [ctb],\n  Finn Lindgren [ctb],\n  Josh O'Brien [ctb],\n  Joseph O'Rourke [ctb]",
         "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-07 09:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:53:49 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:40:39 UTC; unix"
       }
     },
     "spData": {
@@ -4533,7 +4540,7 @@
         "Maintainer": "Jakub Nowosad <nowosad.jakub@gmail.com>",
         "Repository": "CRAN",
         "Date/Publication": "2022-11-15 19:30:06 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 13:09:04 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 20:23:24 UTC; unix"
       }
     },
     "spdep": {
@@ -4565,7 +4572,7 @@
         "Maintainer": "Roger Bivand <Roger.Bivand@nhh.no>",
         "Repository": "CRAN",
         "Date/Publication": "2022-10-01 15:30:03 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 13:09:12 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 20:23:33 UTC; unix"
       }
     },
     "stringi": {
@@ -4595,9 +4602,9 @@
         "Encoding": "UTF-8",
         "NeedsCompilation": "yes",
         "Packaged": "2022-07-11 01:59:34 UTC; gagolews",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-07-11 08:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:07:50 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-08-22 16:14:13 UTC; unix"
       }
     },
     "stringr": {
@@ -4610,26 +4617,28 @@
       "description": {
         "Package": "stringr",
         "Title": "Simple, Consistent Wrappers for Common String Operations",
-        "Version": "1.4.1",
+        "Version": "1.5.0",
         "Authors@R": "\n    c(person(given = \"Hadley\",\n             family = \"Wickham\",\n             role = c(\"aut\", \"cre\", \"cph\"),\n             email = \"hadley@rstudio.com\"),\n      person(given = \"RStudio\",\n             role = c(\"cph\", \"fnd\")))",
-        "Description": "A consistent, simple and easy to use set of\n    wrappers around the fantastic 'stringi' package. All function and\n    argument names (and positions) are consistent, all functions deal with\n    \"NA\"'s and zero length vectors in the same way, and the output from\n    one function is easy to feed into the input of another.",
-        "License": "GPL-2 | file LICENSE",
+        "Description": "A consistent, simple and easy to use set of wrappers around\n    the fantastic 'stringi' package. All function and argument names (and\n    positions) are consistent, all functions deal with \"NA\"'s and zero\n    length vectors in the same way, and the output from one function is\n    easy to feed into the input of another.",
+        "License": "MIT + file LICENSE",
         "URL": "https://stringr.tidyverse.org,\nhttps://github.com/tidyverse/stringr",
         "BugReports": "https://github.com/tidyverse/stringr/issues",
-        "Depends": "R (>= 3.1)",
-        "Imports": "glue (>= 1.2.0), magrittr, stringi (>= 1.1.7)",
-        "Suggests": "covr, htmltools, htmlwidgets, knitr, rmarkdown, testthat",
+        "Depends": "R (>= 3.3)",
+        "Imports": "cli, glue (>= 1.6.1), lifecycle (>= 1.0.3), magrittr, rlang\n(>= 1.0.0), stringi (>= 1.5.3), vctrs",
+        "Suggests": "covr, htmltools, htmlwidgets, knitr, rmarkdown, testthat (>=\n3.0.0)",
         "VignetteBuilder": "knitr",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
         "LazyData": "true",
         "RoxygenNote": "7.2.1",
         "NeedsCompilation": "no",
-        "Packaged": "2022-08-20 14:07:06 UTC; hadleywickham",
+        "Packaged": "2022-12-01 20:53:42 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre, cph],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-08-20 22:10:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:08:49 UTC; unix"
+        "Date/Publication": "2022-12-02 10:20:02 UTC",
+        "Built": "R 4.1.1; ; 2022-12-07 16:03:33 UTC; unix"
       }
     },
     "sys": {
@@ -4659,7 +4668,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-18 12:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:25 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:58:19 UTC; unix"
       }
     },
     "terra": {
@@ -4692,9 +4701,9 @@
         "NeedsCompilation": "yes",
         "Packaged": "2022-12-01 14:50:23 UTC; rhijm",
         "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),\n  Roger Bivand [ctb] (<https://orcid.org/0000-0003-2392-6140>),\n  Edzer Pebesma [ctb] (<https://orcid.org/0000-0001-8049-7069>),\n  Michael D. Sumner [ctb]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-12-02 10:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:47:42 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:34:27 UTC; unix"
       }
     },
     "tibble": {
@@ -4729,9 +4738,9 @@
         "Packaged": "2022-07-21 19:32:59 UTC; kirill",
         "Author": "Kirill Müller [aut, cre],\n  Hadley Wickham [aut],\n  Romain Francois [ctb],\n  Jennifer Bryan [ctb],\n  RStudio [cph, fnd]",
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-07-22 06:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:09:13 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-09-06 16:35:47 UTC; unix"
       }
     },
     "tidyr": {
@@ -4765,9 +4774,9 @@
         "Packaged": "2022-08-31 18:49:06 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  Maximilian Girlich [aut],\n  RStudio [cph]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-09-08 07:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-05 22:26:30 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-09-09 14:53:08 UTC; unix"
       }
     },
     "tidyselect": {
@@ -4801,7 +4810,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-10 19:00:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-05 22:26:06 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-07 16:03:53 UTC; unix"
       }
     },
     "tidyverse": {
@@ -4831,9 +4840,9 @@
         "Packaged": "2022-07-06 18:53:11 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-07-18 08:50:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:05:07 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-12-30 15:54:08 UTC; unix"
       }
     },
     "timechange": {
@@ -4862,9 +4871,9 @@
         "Packaged": "2022-11-03 15:35:39 UTC; vspinu",
         "Author": "Vitalie Spinu [aut, cre],\n  Google Inc. [ctb, cph]",
         "Maintainer": "Vitalie Spinu <spinuvit@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-11-04 15:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:04:26 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:53:24 UTC; unix"
       }
     },
     "tinytex": {
@@ -4878,7 +4887,7 @@
         "Package": "tinytex",
         "Type": "Package",
         "Title": "Helper Functions to Install and Maintain TeX Live, and Compile\nLaTeX Documents",
-        "Version": "0.42",
+        "Version": "0.43",
         "Authors@R": "c(\n  person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\", \"cph\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")),\n  person(family = \"RStudio, PBC\", role = \"cph\"),\n  person(\"Christophe\", \"Dervieux\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4474-2498\")),\n  person(\"Devon\", \"Ryan\", role = \"ctb\", email = \"dpryan79@gmail.com\", comment = c(ORCID = \"0000-0002-8549-0971\")),\n  person(\"Ethan\", \"Heinzen\", role = \"ctb\"),\n  person(\"Fernando\", \"Cagua\", role = \"ctb\"),\n  person()\n  )",
         "Description": "Helper functions to install and maintain the 'LaTeX' distribution\n  named 'TinyTeX' (<https://yihui.org/tinytex/>), a lightweight, cross-platform,\n  portable, and easy-to-maintain version of 'TeX Live'. This package also\n  contains helper functions to compile 'LaTeX' documents, and install missing\n  'LaTeX' packages automatically.",
         "Imports": "xfun (>= 0.29)",
@@ -4887,14 +4896,14 @@
         "URL": "https://github.com/rstudio/tinytex",
         "BugReports": "https://github.com/rstudio/tinytex/issues",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1",
+        "RoxygenNote": "7.2.2",
         "NeedsCompilation": "no",
-        "Packaged": "2022-09-26 21:33:36 UTC; yihui",
+        "Packaged": "2022-12-13 06:30:05 UTC; yihui",
         "Author": "Yihui Xie [aut, cre, cph] (<https://orcid.org/0000-0003-0645-5666>),\n  RStudio, PBC [cph],\n  Christophe Dervieux [ctb] (<https://orcid.org/0000-0003-4474-2498>),\n  Devon Ryan [ctb] (<https://orcid.org/0000-0002-8549-0971>),\n  Ethan Heinzen [ctb],\n  Fernando Cagua [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-09-27 07:20:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-01 19:08:57 UTC; unix"
+        "Date/Publication": "2022-12-13 07:10:02 UTC",
+        "Built": "R 4.1.1; ; 2022-12-30 15:34:05 UTC; unix"
       }
     },
     "tzdb": {
@@ -4926,9 +4935,9 @@
         "Packaged": "2022-03-28 13:59:28 UTC; davis",
         "Author": "Davis Vaughan [aut, cre],\n  Howard Hinnant [cph] (Author of the included date library),\n  RStudio [cph, fnd]",
         "Maintainer": "Davis Vaughan <davis@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2022-03-28 15:00:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:36:21 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-05-25 13:34:03 UTC; unix"
       }
     },
     "units": {
@@ -4940,7 +4949,7 @@
       "GithubSha1": null,
       "description": {
         "Package": "units",
-        "Version": "0.8-0",
+        "Version": "0.8-1",
         "Title": "Measurement Units for R Vectors",
         "Authors@R": "c(person(\"Edzer\", \"Pebesma\", role = c(\"aut\", \"cre\"), email = \"edzer.pebesma@uni-muenster.de\", comment = c(ORCID = \"0000-0001-8049-7069\")),\n    person(\"Thomas\", \"Mailund\", role = \"aut\", email = \"mailund@birc.au.dk\"),\n    person(\"Tomasz\", \"Kalinowski\", role = \"aut\"),\n    person(\"James\", \"Hiebert\", role = \"ctb\"),\n    person(\"Iñaki\", \"Ucar\", role = \"aut\", email = \"iucar@fedoraproject.org\", comment = c(ORCID = \"0000-0001-6403-5550\")),\n    person(\"Thomas Lin\", \"Pedersen\", role = \"ctb\")\n    )",
         "Depends": "R (>= 3.0.2)",
@@ -4951,18 +4960,18 @@
         "Description": "Support for measurement units in R vectors, matrices\n    and arrays: automatic propagation, conversion, derivation\n    and simplification of units; raising errors in case of unit\n    incompatibility. Compatible with the POSIXct, Date and difftime \n    classes. Uses the UNIDATA udunits library and unit database for \n    unit compatibility checking and conversion.\n    Documentation about 'units' is provided in the paper by Pebesma, Mailund &\n    Hiebert (2016, <doi:10.32614/RJ-2016-061>), included in this package as a\n    vignette; see 'citation(\"units\")' for details.",
         "SystemRequirements": "udunits-2",
         "License": "GPL-2",
-        "URL": "https://github.com/r-quantities/units/",
-        "BugReports": "https://github.com/r-quantities/units/issues/",
-        "RoxygenNote": "7.1.2",
+        "URL": "https://github.com/r-quantities/units",
+        "BugReports": "https://github.com/r-quantities/units/issues",
+        "RoxygenNote": "7.2.2",
         "Encoding": "UTF-8",
         "Config/testthat/edition": "3",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-02-04 16:14:06 UTC; edzer",
+        "Packaged": "2022-12-04 20:03:11 UTC; edzer",
         "Author": "Edzer Pebesma [aut, cre] (<https://orcid.org/0000-0001-8049-7069>),\n  Thomas Mailund [aut],\n  Tomasz Kalinowski [aut],\n  James Hiebert [ctb],\n  Iñaki Ucar [aut] (<https://orcid.org/0000-0001-6403-5550>),\n  Thomas Lin Pedersen [ctb]",
         "Maintainer": "Edzer Pebesma <edzer.pebesma@uni-muenster.de>",
-        "Repository": "CRAN",
-        "Date/Publication": "2022-02-05 00:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 13:01:50 UTC; unix"
+        "Repository": "RSPM",
+        "Date/Publication": "2022-12-10 15:10:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:48:59 UTC; unix"
       }
     },
     "utf8": {
@@ -4990,9 +4999,9 @@
         "Packaged": "2021-07-24 08:19:25 UTC; kirill",
         "Author": "Patrick O. Perry [aut, cph],\n  Kirill Müller [cre],\n  Unicode, Inc. [cph, dtc] (Unicode Character Database)",
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-07-24 15:00:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:09:04 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:23:19 UTC; unix"
       }
     },
     "uuid": {
@@ -5017,7 +5026,7 @@
         "Packaged": "2022-04-19 04:03:46 UTC; rforge",
         "Repository": "CRAN",
         "Date/Publication": "2022-04-19 06:11:27 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 19:03:55 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-05-25 13:33:50 UTC; unix"
       }
     },
     "vctrs": {
@@ -5052,7 +5061,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-16 08:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:04:55 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:57:51 UTC; unix"
       }
     },
     "viridis": {
@@ -5083,9 +5092,9 @@
         "NeedsCompilation": "no",
         "Packaged": "2021-10-13 12:03:30 UTC; simon",
         "Author": "Simon Garnier [aut, cre],\n  Noam Ross [ctb, cph],\n  Bob Rudis [ctb, cph],\n  Marco Sciaini [ctb, cph],\n  Antônio Pedro Camargo [ctb, cph],\n  Cédric Scherer [ctb, cph]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2021-10-13 20:50:02 UTC",
-        "Built": "R 4.1.1; ; 2022-12-08 12:55:57 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-06-07 12:56:04 UTC; unix"
       }
     },
     "viridisLite": {
@@ -5115,7 +5124,7 @@
         "Author": "Simon Garnier [aut, cre],\n  Noam Ross [ctb, cph],\n  Bob Rudis [ctb, cph],\n  Marco Sciaini [ctb, cph],\n  Antônio Pedro Camargo [ctb, cph],\n  Cédric Scherer [ctb, cph]",
         "Repository": "CRAN",
         "Date/Publication": "2022-08-22 14:20:03 UTC",
-        "Built": "R 4.1.1; ; 2022-12-07 19:02:41 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-09-06 16:35:35 UTC; unix"
       }
     },
     "vroom": {
@@ -5153,7 +5162,7 @@
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-30 14:50:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-02 18:36:34 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-07 16:15:10 UTC; unix"
       }
     },
     "withr": {
@@ -5187,7 +5196,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-03-03 21:50:02 UTC",
-        "Built": "R 4.1.1; ; 2022-11-22 22:53:27 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-03-28 15:04:17 UTC; unix"
       }
     },
     "wk": {
@@ -5200,10 +5209,10 @@
       "description": {
         "Package": "wk",
         "Title": "Lightweight Well-Known Geometry Parsing",
-        "Version": "0.7.0",
+        "Version": "0.7.1",
         "Authors@R": "\n    c(\n      person(given = \"Dewey\",\n             family = \"Dunnington\",\n             role = c(\"aut\", \"cre\"),\n             email = \"dewey@fishandwhistle.net\",\n             comment = c(ORCID = \"0000-0002-9415-4582\")),\n       person(given = \"Edzer\",\n              family = \"Pebesma\",\n              role = c(\"aut\"),\n              email = \"edzer.pebesma@uni-muenster.de\",\n              comment = c(ORCID = \"0000-0001-8049-7069\"))\n    )",
         "Maintainer": "Dewey Dunnington <dewey@fishandwhistle.net>",
-        "Description": "Provides a minimal R and C++ API for parsing\n  well-known binary and well-known text representation of\n  geometries to and from R-native formats. \n  Well-known binary is compact\n  and fast to parse; well-known text is human-readable\n  and is useful for writing tests. These formats are only\n  useful in R if the information they contain can be \n  accessed in R, for which high-performance functions \n  are provided here.",
+        "Description": "Provides a minimal R and C++ API for parsing\n  well-known binary and well-known text representation of\n  geometries to and from R-native formats. \n  Well-known binary is compact\n  and fast to parse; well-known text is human-readable\n  and is useful for writing tests. These formats are\n  useful in R only if the information they contain can be \n  accessed in R, for which high-performance functions \n  are provided here.",
         "License": "MIT + file LICENSE",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.1",
@@ -5215,11 +5224,11 @@
         "Depends": "R (>= 2.10)",
         "LazyData": "true",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-10-13 02:53:56 UTC; deweydunnington",
+        "Packaged": "2022-12-09 16:47:20 UTC; deweydunnington",
         "Author": "Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),\n  Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)",
-        "Repository": "CRAN",
-        "Date/Publication": "2022-10-13 03:30:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-08 12:56:21 UTC; unix"
+        "Repository": "RSPM",
+        "Date/Publication": "2022-12-09 19:20:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:43:27 UTC; unix"
       }
     },
     "writexl": {
@@ -5247,9 +5256,9 @@
         "Packaged": "2022-10-18 09:29:48 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  John McNamara [cph] (Author of libxlsxwriter (see AUTHORS and COPYRIGHT\n    files for details))",
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2022-10-18 10:10:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-23 12:17:48 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:54:14 UTC; unix"
       }
     },
     "xfun": {
@@ -5263,7 +5272,7 @@
         "Package": "xfun",
         "Type": "Package",
         "Title": "Supporting Functions for Packages Maintained by 'Yihui Xie'",
-        "Version": "0.35",
+        "Version": "0.36",
         "Authors@R": "c(\n  person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\", \"cph\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")),\n  person(\"Wush\", \"Wu\", role = \"ctb\"),\n  person(\"Daijiang\", \"Li\", role = \"ctb\"),\n  person(\"Xianying\", \"Tan\", role = \"ctb\"),\n  person(\"Salim\", \"Brüggemann\", role = \"ctb\", email = \"salim-b@pm.me\", comment = c(ORCID = \"0000-0002-5329-5987\")),\n  person(\"Christophe\", \"Dervieux\", role = \"ctb\"),\n  person()\n  )",
         "Description": "Miscellaneous functions commonly used in other packages maintained by 'Yihui Xie'.",
         "Imports": "stats, tools",
@@ -5272,15 +5281,15 @@
         "URL": "https://github.com/yihui/xfun",
         "BugReports": "https://github.com/yihui/xfun/issues",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1",
+        "RoxygenNote": "7.2.3",
         "VignetteBuilder": "knitr",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-11-16 18:00:46 UTC; yihui",
+        "Packaged": "2022-12-21 15:05:22 UTC; yihui",
         "Author": "Yihui Xie [aut, cre, cph] (<https://orcid.org/0000-0003-0645-5666>),\n  Wush Wu [ctb],\n  Daijiang Li [ctb],\n  Xianying Tan [ctb],\n  Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),\n  Christophe Dervieux [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
-        "Date/Publication": "2022-11-16 19:20:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:07:39 UTC; unix"
+        "Date/Publication": "2022-12-21 15:40:02 UTC",
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-30 15:34:01 UTC; unix"
       }
     },
     "xml2": {
@@ -5311,9 +5320,9 @@
         "Packaged": "2021-11-29 17:55:43 UTC; jhester",
         "Author": "Hadley Wickham [aut, cre],\n  Jim Hester [aut],\n  Jeroen Ooms [aut],\n  RStudio [cph],\n  R Foundation [ctb] (Copy of R-project homepage cached as example)",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "Date/Publication": "2021-11-30 14:40:02 UTC",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:09:19 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-02-02 18:22:43 UTC; unix"
       }
     },
     "xtable": {
@@ -5337,13 +5346,12 @@
         "URL": "http://xtable.r-forge.r-project.org/",
         "Depends": "R (>= 2.10.0)",
         "License": "GPL (>= 2)",
-        "Repository": "RSPM",
+        "Repository": "CRAN",
         "NeedsCompilation": "no",
         "Packaged": "2019-04-21 10:56:51 UTC; dsco036",
         "Author": "David B. Dahl [aut],\n  David Scott [aut, cre],\n  Charles Roosen [aut],\n  Arni Magnusson [aut],\n  Jonathan Swinton [aut],\n  Ajay Shah [ctb],\n  Arne Henningsen [ctb],\n  Benno Puetz [ctb],\n  Bernhard Pfaff [ctb],\n  Claudio Agostinelli [ctb],\n  Claudius Loehnert [ctb],\n  David Mitchell [ctb],\n  David Whiting [ctb],\n  Fernando da Rosa [ctb],\n  Guido Gay [ctb],\n  Guido Schulz [ctb],\n  Ian Fellows [ctb],\n  Jeff Laake [ctb],\n  John Walker [ctb],\n  Jun Yan [ctb],\n  Liviu Andronic [ctb],\n  Markus Loecher [ctb],\n  Martin Gubri [ctb],\n  Matthieu Stigler [ctb],\n  Robert Castelo [ctb],\n  Seth Falcon [ctb],\n  Stefan Edwards [ctb],\n  Sven Garbade [ctb],\n  Uwe Ligges [ctb]",
         "Date/Publication": "2019-04-21 12:20:03 UTC",
-        "Encoding": "UTF-8",
-        "Built": "R 4.1.1; ; 2022-11-22 22:52:36 UTC; unix"
+        "Built": "R 4.1.1; ; 2022-02-02 18:03:26 UTC; unix"
       }
     },
     "yaml": {
@@ -5371,19 +5379,19 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-10-18 08:30:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 19:05:14 UTC; unix"
+        "Built": "R 4.1.1; x86_64-pc-linux-gnu; 2022-12-01 18:58:10 UTC; unix"
       }
     }
   },
   "files": {
     ".Rprofile": {
-      "checksum": "5daa36b5e14d1ae9b41a187024e7834d"
+      "checksum": "abd40cd13e7f0dc56a2d46f85cd91351"
     },
     "app.R": {
-      "checksum": "87086b2652cbb732cb2dd834fa783693"
+      "checksum": "1b4b57685eeb091464e5b81cb96168bc"
     },
     "data_load.R": {
-      "checksum": "be42bdca988e824a1c31f06a22e1290a"
+      "checksum": "78727681172ef8113108d825419de528"
     },
     "data/BotswanaADM1.RDS": {
       "checksum": "f317cef178b1cb0b60eaf43b65ab215a"
@@ -5995,7 +6003,7 @@
       "checksum": "8216b147e014678f3b9475989d80c170"
     },
     "preprocessing/manual_data_update.R": {
-      "checksum": "941ef47f5debf6425a74c6cd4fc90238"
+      "checksum": "04c878f89110b2541523309f836f1855"
     },
     "preprocessing/s3_read.R": {
       "checksum": "dc70ac0e554ec64023fd63173b05b579"
