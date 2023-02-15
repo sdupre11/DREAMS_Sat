@@ -592,7 +592,7 @@ rm(my_data_qs_check)
 
 print("writing to system dreams...")
 s3write_using(my_data, FUN = write.csv,
-              bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+              bucket = Sys.getenv("WRITE_S3"),
               object = "system_dreams_saturation/AGYW_PREVbyCountry.csv"
 )
 
@@ -602,7 +602,7 @@ s3write_using(my_data, FUN = write.csv,
 
 # print("reading dreams data...")
 # read_testing <- s3read_using(FUN = read.csv,
-#              bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+#              bucket = Sys.getenv("WRITE_S3"),
 #              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
 #   as.data.frame()
 
