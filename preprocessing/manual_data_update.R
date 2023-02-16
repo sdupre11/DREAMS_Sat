@@ -7,8 +7,8 @@ library(jsonlite)
 
 #Set the profile and region here
 Sys.setenv(SECRET_NAME = Sys.getenv("SECRET_NAME"),
-           AWS_DEFAULT_REGION = "us-east-1",
-           AWS_REGION = "us-east-1")
+           AWS_DEFAULT_REGION = Sys.getenv("REGION"),
+           AWS_REGION = Sys.getenv("REGION"))
 
 svc <- secretsmanager()
 
@@ -23,8 +23,8 @@ see <- fromJSON(see$SecretString)
 Sys.setenv(AWS_ACCESS_KEY_ID = see$aws_access_key,
            AWS_SECRET_ACCESS_KEY = see$aws_secret_access_key,
            #AWS_PROFILE = Sys.getenv("AWS_PROFILE"),
-           AWS_DEFAULT_REGION = "us-east-1",
-           AWS_REGION = "us-east-1")
+           AWS_DEFAULT_REGION = Sys.getenv("REGION"),
+           AWS_REGION = Sys.getenv("REGION"))
 
 #Delete the secret info as its now an env variable
 rm(see)
