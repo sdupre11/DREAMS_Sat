@@ -299,9 +299,9 @@ server <- function(input, output, session) {
                  strong("Import Previous Work?"),
                  br(),
                  br(),
-                 p("Please either import saved parameters and data or proceed to step 1 of 9 by clicking the blue 'Next' button below"),
+                 p("Please either import saved parameters and data or proceed to step 1 of 9 below"),
                  br(),
-                 p("DREAMS Sat is pre-loaded with default values for each country. To update figures after making any changes in these slides, please click the `Accept parameters andderive/re-derive COP statistics' button below."),
+                 p("DREAMS Sat is pre-loaded with default values for each country. To update figures after making any changes in these slides, please click the `Accept parameters and derive/re-derive COP statistics' button below."),
                  br(),
                  br(),
                  fileInput("importTokenParams",
@@ -356,7 +356,7 @@ server <- function(input, output, session) {
                    column(8,
                           leafletOutput("map_main")))
                ),
-               h3("Step 2 of 9: Upload Custom Population   OPTIONAL STEP"),
+               h3("Step 2 of 9 (DENOMINATOR): Upload Custom Population   OPTIONAL STEP"),
                h4("Overwrite default population figures for your country."),
                wellPanel(
                  strong("Use default values or upload custom values."),
@@ -385,7 +385,7 @@ server <- function(input, output, session) {
                               "Reset: use default values",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
-               h3("Step 3 of 9: Set Prevalence"),
+               h3("Step 3 of 9 (DENOMINATOR): Set Prevalence"),
                h4("This is used to derive HIV-negative population for each cohort."),
                wellPanel(
                  strong("Prevalence default: national figures based on most-recent PHIA or UNAIDS AIDSinfo data"),
@@ -414,7 +414,7 @@ server <- function(input, output, session) {
                               "Reset: use default values",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
-               h3("Step 4 of 9: Set Vulnerability"),
+               h3("Step 4 of 9 (DENOMINATOR): Set Vulnerability"),
                h4("This is used to derive the number of DREAMS-eligible HIV-negative girls from the population counts and prevalence numbers previously entered."),
                wellPanel(
                  strong("Vulnerability default: 80%"),
@@ -443,7 +443,7 @@ server <- function(input, output, session) {
                               "Reset: use default values",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
-               h3("Step 5 of 9: Set Population Structure"),
+               h3("Step 5 of 9 (NUMERATOR): Set Population Structure"),
                h4("This step addresses the aging-in/aging-out challenge, wherein AGYW_PREV accounting does allow for telling which people from a previous year cohort AGYW_PREV number are still in that age cohort."),
                h4("To address this, we apply a proxy population structure to each year's DREAMS cohort. Option 1 is to say default '20% of 10-14 girls were 10, 20% were 11, etc'. Option 2 is to say that your DREAMS population structure matches the national population structure. Option 3 is to apply your own custom population structure based on your expert contextual knowledge about your DREAMS graduating cohorts."),
                wellPanel(
@@ -498,7 +498,7 @@ server <- function(input, output, session) {
                             DT::dataTableOutput("customStructureTable")
                           )))
                ),
-               h3("Step 6 of 9: Set Double Count Modifier"),
+               h3("Step 6 of 9 (NUMERATOR): Set Double Count Modifier"),
                h4("This addresses duplication, where a person may complete primary programming while 12 in 2020 and then secondary while 13 in 2021. Without being addressed, she would appear as two counts in AGYW_PREV."),
                wellPanel(
                  strong("Double count modifier default: 15%"),
@@ -526,7 +526,7 @@ server <- function(input, output, session) {
                               "Reset: use default modifier",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
-               h3("Step 7 of 9: Set Mobility Modifier"),
+               h3("Step 7 of 9 (NUMERATOR): Set Mobility Modifier"),
                h4("This is used to address mobility of girls in and out of the DREAMS district. This includes: 1) girls leaving the district who have completed programming and so are no longer in the numerator or denominator; 2) girls being enrolled in DREAMS programming who are not resident in the district and so not included in the denominator."),
                wellPanel(
                  strong("Mobility modifier default: 0% modifier"),
@@ -554,7 +554,7 @@ server <- function(input, output, session) {
                               "Reset: use default modifier",
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
-               h3("Step 8 of 9: Set Enrollment Modifier"),
+               h3("Step 8 of 9 (NUMERATOR): Set Enrollment Modifier"),
                h4("This addresses mismatches in enrollment criteria from vulnerability criteria, e.g., food insecurity may allow for enrollment, but would not have qualified that same person for 'vulnerability' in the denominator."),
                wellPanel(
                  strong("Enrollment modifier default: 5%"),
@@ -602,6 +602,8 @@ server <- function(input, output, session) {
                ),
                h3("Review Your Results"))),
       wellPanel(
+        # actionButton("printTest",
+        #              "Test"),
         h4("2022 Figures"),
         br(),
         br(),
@@ -678,9 +680,13 @@ server <- function(input, output, session) {
   # Setup reactiveValues objects ----
   params <- reactiveValues(
     country = "Botswana",
-    
-    popStructureType = "Default"#,
-    # catchmentsSelected = ""
+    population = "Default",
+    prevalence = "Default",
+    vulnerability = "Default",
+    popStructureType = "Default",
+    doubleCount = "Default",
+    mobility = "Default",
+    enrollment = "Default"
   )
   
   reactiveButtons <- reactiveValues(
@@ -993,6 +999,84 @@ server <- function(input, output, session) {
                        "structure",
                        selected = importedTokenParams()$popStructure[1])
     
+     ## Population
+    if(params$population == "Default") {
+      runjs('document.getElementById("resetToDefaultPopulation").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomPopulation").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultPopulation").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomPopulation").style.backgroundColor = "#FFC15B";')
+    } else if (params$population == "Custom") {
+      runjs('document.getElementById("confirmCustomPopulation").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultPopulation").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomPopulation").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultPopulation").style.backgroundColor = "#FFC15B";')
+    }
+    
+    ## Prevalence
+    if(params$prevalence == "Default") {
+      runjs('document.getElementById("resetToDefaultPrevalence").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomPrevalence").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultPrevalence").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomPrevalence").style.backgroundColor = "#FFC15B";')
+    } else if (params$prevalence == "Custom") {
+      runjs('document.getElementById("confirmCustomPrevalence").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultPrevalence").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomPrevalence").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultPrevalence").style.backgroundColor = "#FFC15B";')
+    }
+    
+    ## Vulnerability
+    if(params$vulnerability == "Default") {
+      runjs('document.getElementById("resetToDefaultVulnerability").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomVulnerability").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultVulnerability").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomVulnerability").style.backgroundColor = "#FFC15B";')
+    } else if (params$vulnerability == "Custom") {
+      runjs('document.getElementById("confirmCustomVulnerability").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultVulnerability").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomVulnerability").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultVulnerability").style.backgroundColor = "#FFC15B";')
+    }
+    
+    ## Double Count
+    if(params$doubleCount == "Default") {
+      runjs('document.getElementById("resetToDefaultDoubleCount").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomDoubleCount").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultDoubleCount").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomDoubleCount").style.backgroundColor = "#FFC15B";')
+    } else if (params$doubleCount == "Custom") {
+      runjs('document.getElementById("confirmCustomDoubleCount").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultDoubleCount").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomDoubleCount").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultDoubleCount").style.backgroundColor = "#FFC15B";')
+    }
+    
+    ## Mobility
+    if(params$mobility == "Default") {
+      runjs('document.getElementById("resetToDefaultMobility").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomMobility").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultMobility").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomMobility").style.backgroundColor = "#FFC15B";')
+    } else if (params$mobility == "Custom") {
+      runjs('document.getElementById("confirmCustomMobility").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultMobility").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomMobility").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultMobility").style.backgroundColor = "#FFC15B";')
+    }
+    
+    ## Enrollment
+    if(params$enrollment == "Default") {
+      runjs('document.getElementById("resetToDefaultEnrollment").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("confirmCustomEnrollment").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("resetToDefaultEnrollment").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("confirmCustomEnrollment").style.backgroundColor = "#FFC15B";')
+    } else if (params$enrollment == "Custom") {
+      runjs('document.getElementById("confirmCustomEnrollment").style.borderColor = "#1C110A";')
+      runjs('document.getElementById("resetToDefaultEnrollment").style.borderColor = "#FFFFFF";')
+      runjs('document.getElementById("confirmCustomEnrollment").style.backgroundColor = "#FFBA49";')
+      runjs('document.getElementById("resetToDefaultEnrollment").style.backgroundColor = "#FFC15B";')
+    }
+    
   })
   
   observeEvent(input$country, {
@@ -1018,12 +1102,8 @@ server <- function(input, output, session) {
   observeEvent(input$country, {
     req(input$country)
     
-    
     data_stats_2022$data <- defaultStats2022 %>%
       dplyr::filter(Country == input$country)
-    
-    # workingDataPost$data <- defaultData %>%
-    #   dplyr::filter(country == input$country)
     
   })
   
@@ -1041,10 +1121,51 @@ server <- function(input, output, session) {
   
   
   # Render text elements ----
+  # Country
   output$importedCountry <- renderText(
     if (!is.null(importedTokenParams())) 
       importedTokenParams()$country[1]) 
   
+  # Population
+  observeEvent(input$confirmCustomPopulation, {
+    print(params$population)
+    params$population <- "Custom"
+    print(params$population)
+  })
+  
+  observeEvent(input$resetToDefaultPopulation, {
+    print(params$population)
+    params$population <- "Default"
+    print(params$population)
+  })
+  
+  # Prevalence
+  observeEvent(input$confirmCustomPrevalence, {
+    print(params$prevalence)
+    params$prevalence <- "Custom"
+    print(params$prevalence)
+  })
+  
+  observeEvent(input$resetToDefaultPrevalence, {
+    print(params$prevalence)
+    params$prevalence <- "Default"
+    print(params$prevalence)
+  })
+  
+  # Vulnerability
+  observeEvent(input$confirmCustomVulnerability, {
+    print(params$vulnerability)
+    params$vulnerability <- "Custom"
+    print(params$vulnerability)
+  })
+  
+  observeEvent(input$resetToDefaultVulnerability, {
+    print(params$vulnerability)
+    params$vulnerability <- "Default"
+    print(params$vulnerability)
+  })
+  
+  # Population Structure
   observeEvent(input$structure, {
     
     if (input$structure == "Default"){
@@ -1057,15 +1178,54 @@ server <- function(input, output, session) {
     
   })
   
-  popStructureChoice <- reactive(
-    
-    params$popStructureType
-    
-  )
+  #Double Count
+  observeEvent(input$confirmCustomDoubleCount, {
+    print(params$doubleCount)
+    params$doubleCount <- "Custom"
+    print(params$doubleCount)
+  })
+  
+  observeEvent(input$resetToDefaultDoubleCount, {
+    print(params$doubleCount)
+    params$doubleCount <- "Default"
+    print(params$doubleCount)
+  })
+  
+  #Mobility
+  observeEvent(input$confirmCustomMobility, {
+    print(params$mobility)
+    params$mobility <- "Custom"
+    print(params$mobility)
+  })
+  
+  observeEvent(input$resetToDefaultMobility, {
+    print(params$mobility)
+    params$mobility <- "Default"
+    print(params$mobility)
+  })
+  
+  # Enrollment
+  observeEvent(input$confirmCustomEnrollment, {
+    print(params$enrollment)
+    params$enrollment <- "Custom"
+    print(params$enrollment)
+  })
+  
+  observeEvent(input$resetToDefaultEnrollment, {
+    print(params$enrollment)
+    params$enrollment <- "Default"
+    print(params$enrollment)
+  })
   
   countryChoice <- reactive(
     
     params$country
+    
+  )
+  
+  popStructureChoice <- reactive(
+    
+    params$popStructureType
     
   )
   
@@ -1111,244 +1271,321 @@ server <- function(input, output, session) {
   
   observeEvent(input$confirmCustomPopulation, {
     req(customPopulation())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
-                             customPopulation(),
-                             by = c("country" = "Country", 
-                                    "AREA_NAME" = "District", 
-                                    "ageasentered" = "AgeCohort"))
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "Pop_2018_Custom",
+        "Pop_2019_Custom",
+        "Pop_2020_Custom",
+        "Pop_2021_Custom",
+        "Pop_2022_Custom",
+        "Pop_2023_Custom"
+      )))
     
-    defaultData$Pop_2018 <- defaultData$Pop_2018_Custom
-    defaultData$Pop_2019 <- defaultData$Pop_2019_Custom
-    defaultData$Pop_2020 <- defaultData$Pop_2020_Custom
-    defaultData$Pop_2021 <- defaultData$Pop_2021_Custom
-    defaultData$Pop_2022 <- defaultData$Pop_2022_Custom
-    defaultData$Pop_2023 <- defaultData$Pop_2023_Custom
+    workingDataPost$data <- left_join(workingDataPost$data,
+                                      customPopulation(),
+                                      by = c("country" = "Country", 
+                                             "AREA_NAME" = "District", 
+                                             "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Custom
+    workingDataPost$data$Pop_2019 <- workingDataPost$data$Pop_2019_Custom
+    workingDataPost$data$Pop_2020 <- workingDataPost$data$Pop_2020_Custom
+    workingDataPost$data$Pop_2021 <- workingDataPost$data$Pop_2021_Custom
+    workingDataPost$data$Pop_2022 <- workingDataPost$data$Pop_2022_Custom
+    workingDataPost$data$Pop_2023 <- workingDataPost$data$Pop_2023_Custom
+    
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$resetToDefaultPopulation, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData$Pop_2018 <- defaultData$Pop_2018_Default
-    defaultData$Pop_2019 <- defaultData$Pop_2019_Default
-    defaultData$Pop_2020 <- defaultData$Pop_2020_Default
-    defaultData$Pop_2021 <- defaultData$Pop_2021_Default
-    defaultData$Pop_2022 <- defaultData$Pop_2022_Default
-    defaultData$Pop_2023 <- defaultData$Pop_2023_Default
+    workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Default
+    workingDataPost$data$Pop_2019 <- workingDataPost$data$Pop_2019_Default
+    workingDataPost$data$Pop_2020 <- workingDataPost$data$Pop_2020_Default
+    workingDataPost$data$Pop_2021 <- workingDataPost$data$Pop_2021_Default
+    workingDataPost$data$Pop_2022 <- workingDataPost$data$Pop_2022_Default
+    workingDataPost$data$Pop_2023 <- workingDataPost$data$Pop_2023_Default
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$confirmCustomPrevalence, {
     req(customPrevalence())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "Prevalence_2018_Custom",
+        "Prevalence_2019_Custom",
+        "Prevalence_2020_Custom",
+        "Prevalence_2021_Custom",
+        "Prevalence_2022_Custom",
+        "Prevalence_2023_Custom"
+      )))
+    
+    workingDataPost$data <- left_join(workingDataPost$data,
                              customPrevalence(),
                              by = c("country" = "Country", 
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    defaultData$Prev_2018 <- defaultData$Prevalence_2018_Custom
-    defaultData$Prev_2019 <- defaultData$Prevalence_2019_Custom
-    defaultData$Prev_2020 <- defaultData$Prevalence_2020_Custom
-    defaultData$Prev_2021 <- defaultData$Prevalence_2021_Custom
-    defaultData$Prev_2022 <- defaultData$Prevalence_2022_Custom
-    defaultData$Prev_2023 <- defaultData$Prevalence_2023_Custom
+    workingDataPost$data$Prev_2018 <- workingDataPost$data$Prevalence_2018_Custom
+    workingDataPost$data$Prev_2019 <- workingDataPost$data$Prevalence_2019_Custom
+    workingDataPost$data$Prev_2020 <- workingDataPost$data$Prevalence_2020_Custom
+    workingDataPost$data$Prev_2021 <- workingDataPost$data$Prevalence_2021_Custom
+    workingDataPost$data$Prev_2022 <- workingDataPost$data$Prevalence_2022_Custom
+    workingDataPost$data$Prev_2023 <- workingDataPost$data$Prevalence_2023_Custom
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$resetToDefaultPrevalence, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       countrySpecificPrev()
-    # 
-    # defaultData$Prev_2018 <- 2
-    # defaultData$Prev_2019 <- 2
-    # defaultData$Prev_2020 <- 2
-    # defaultData$Prev_2021 <- 2
-    # defaultData$Prev_2022 <- 2
-    # defaultData$Prev_2023 <- 2
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$confirmCustomVulnerability, {
     req(customVulnerability())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "Vulnerable_2018_Custom",
+        "Vulnerable_2019_Custom",
+        "Vulnerable_2020_Custom",
+        "Vulnerable_2021_Custom",
+        "Vulnerable_2022_Custom",
+        "Vulnerable_2023_Custom"
+      )))
+    
+    workingDataPost$data <- left_join(workingDataPost$data,
                              customVulnerability(),
                              by = c("country" = "Country", 
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    defaultData$Vuln_2018 <- defaultData$Vulnerable_2018_Custom
-    defaultData$Vuln_2019 <- defaultData$Vulnerable_2019_Custom
-    defaultData$Vuln_2020 <- defaultData$Vulnerable_2020_Custom
-    defaultData$Vuln_2021 <- defaultData$Vulnerable_2021_Custom
-    defaultData$Vuln_2022 <- defaultData$Vulnerable_2022_Custom
-    defaultData$Vuln_2023 <- defaultData$Vulnerable_2023_Custom
+    workingDataPost$data$Vuln_2018 <- workingDataPost$data$Vulnerable_2018_Custom
+    workingDataPost$data$Vuln_2019 <- workingDataPost$data$Vulnerable_2019_Custom
+    workingDataPost$data$Vuln_2020 <- workingDataPost$data$Vulnerable_2020_Custom
+    workingDataPost$data$Vuln_2021 <- workingDataPost$data$Vulnerable_2021_Custom
+    workingDataPost$data$Vuln_2022 <- workingDataPost$data$Vulnerable_2022_Custom
+    workingDataPost$data$Vuln_2023 <- workingDataPost$data$Vulnerable_2023_Custom
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$resetToDefaultVulnerability, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData$Vuln_2018 <- 80
-    defaultData$Vuln_2019 <- 80
-    defaultData$Vuln_2020 <- 80
-    defaultData$Vuln_2021 <- 80
-    defaultData$Vuln_2022 <- 80
-    defaultData$Vuln_2023 <- 80
+    workingDataPost$data$Vuln_2018 <- 80
+    workingDataPost$data$Vuln_2019 <- 80
+    workingDataPost$data$Vuln_2020 <- 80
+    workingDataPost$data$Vuln_2021 <- 80
+    workingDataPost$data$Vuln_2022 <- 80
+    workingDataPost$data$Vuln_2023 <- 80
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$confirmCustomEnrollment, {
     req(customEnrollment())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "Enrollment_2018_Custom",
+        "Enrollment_2019_Custom",
+        "Enrollment_2020_Custom",
+        "Enrollment_2021_Custom",
+        "Enrollment_2022_Custom",
+        "Enrollment_2023_Custom"
+      )))
+    
+    workingDataPost$data <- left_join(workingDataPost$data,
                              customEnrollment(),
                              by = c("country" = "Country", 
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    defaultData$Enrollment_2018 <- defaultData$Enrollment_2018_Custom
-    defaultData$Enrollment_2019 <- defaultData$Enrollment_2019_Custom
-    defaultData$Enrollment_2020 <- defaultData$Enrollment_2020_Custom
-    defaultData$Enrollment_2021 <- defaultData$Enrollment_2021_Custom
-    defaultData$Enrollment_2022 <- defaultData$Enrollment_2022_Custom
+    workingDataPost$data$Enrollment_2018 <- workingDataPost$data$Enrollment_2018_Custom
+    workingDataPost$data$Enrollment_2019 <- workingDataPost$data$Enrollment_2019_Custom
+    workingDataPost$data$Enrollment_2020 <- workingDataPost$data$Enrollment_2020_Custom
+    workingDataPost$data$Enrollment_2021 <- workingDataPost$data$Enrollment_2021_Custom
+    workingDataPost$data$Enrollment_2022 <- workingDataPost$data$Enrollment_2022_Custom
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     # }
   })
   
   observeEvent(input$resetToDefaultEnrollment, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData$Enrollment_2018 <- 5
-    defaultData$Enrollment_2019 <- 5
-    defaultData$Enrollment_2020 <- 5
-    defaultData$Enrollment_2021 <- 5
-    defaultData$Enrollment_2022 <- 5
+    workingDataPost$data$Enrollment_2018 <- 5
+    workingDataPost$data$Enrollment_2019 <- 5
+    workingDataPost$data$Enrollment_2020 <- 5
+    workingDataPost$data$Enrollment_2021 <- 5
+    workingDataPost$data$Enrollment_2022 <- 5
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$confirmCustomMobility, {
     req(customMobility())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "Mobility_2018_Custom",
+        "Mobility_2019_Custom",
+        "Mobility_2020_Custom",
+        "Mobility_2021_Custom",
+        "Mobility_2022_Custom",
+        "Mobility_2023_Custom"
+      )))
+    
+    workingDataPost$data <- left_join(workingDataPost$data,
                              customMobility(),
                              by = c("country" = "Country", 
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    defaultData$Mobility_2018 <- defaultData$Mobility_2018_Custom
-    defaultData$Mobility_2019 <- defaultData$Mobility_2019_Custom
-    defaultData$Mobility_2020 <- defaultData$Mobility_2020_Custom
-    defaultData$Mobility_2021 <- defaultData$Mobility_2021_Custom
-    defaultData$Mobility_2022 <- defaultData$Mobility_2022_Custom
+    workingDataPost$data$Mobility_2018 <- workingDataPost$data$Mobility_2018_Custom
+    workingDataPost$data$Mobility_2019 <- workingDataPost$data$Mobility_2019_Custom
+    workingDataPost$data$Mobility_2020 <- workingDataPost$data$Mobility_2020_Custom
+    workingDataPost$data$Mobility_2021 <- workingDataPost$data$Mobility_2021_Custom
+    workingDataPost$data$Mobility_2022 <- workingDataPost$data$Mobility_2022_Custom
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     # }
   })
   
   observeEvent(input$resetToDefaultMobility, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData$Mobility_2018 <- 0
-    defaultData$Mobility_2019 <- 0
-    defaultData$Mobility_2020 <- 0
-    defaultData$Mobility_2021 <- 0
-    defaultData$Mobility_2022 <- 0
+    workingDataPost$data$Mobility_2018 <- 0
+    workingDataPost$data$Mobility_2019 <- 0
+    workingDataPost$data$Mobility_2020 <- 0
+    workingDataPost$data$Mobility_2021 <- 0
+    workingDataPost$data$Mobility_2022 <- 0
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$confirmCustomDoubleCount, {
     req(customDoubleCount())
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData <- left_join(defaultData,
+    workingDataPost$data <- workingDataPost$data %>%
+      dplyr::select_if(!(names(.) %in% c(
+        "PSDC_2018_Custom",
+        "PSDC_2019_Custom",
+        "PSDC_2020_Custom",
+        "PSDC_2021_Custom",
+        "PSDC_2022_Custom",
+        "PSDC_2023_Custom"
+      )))
+    
+    workingDataPost$data <- left_join(workingDataPost$data,
                              customDoubleCount(),
                              by = c("country" = "Country", 
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    defaultData$PSDC_2018 <- defaultData$PSDC_2018_Custom
-    defaultData$PSDC_2019 <- defaultData$PSDC_2019_Custom
-    defaultData$PSDC_2020 <- defaultData$PSDC_2020_Custom
-    defaultData$PSDC_2021 <- defaultData$PSDC_2021_Custom
-    defaultData$PSDC_2022 <- defaultData$PSDC_2022_Custom
+    workingDataPost$data$PSDC_2018 <- workingDataPost$data$PSDC_2018_Custom
+    workingDataPost$data$PSDC_2019 <- workingDataPost$data$PSDC_2019_Custom
+    workingDataPost$data$PSDC_2020 <- workingDataPost$data$PSDC_2020_Custom
+    workingDataPost$data$PSDC_2021 <- workingDataPost$data$PSDC_2021_Custom
+    workingDataPost$data$PSDC_2022 <- workingDataPost$data$PSDC_2022_Custom
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   observeEvent(input$resetToDefaultDoubleCount, {
-    req(defaultData)
+    req(workingDataPost$data)
     
-    defaultData$PSDC_2018 <- 15
-    defaultData$PSDC_2019 <- 15
-    defaultData$PSDC_2020 <- 15
-    defaultData$PSDC_2021 <- 15
-    defaultData$PSDC_2022 <- 15
+    workingDataPost$data$PSDC_2018 <- 15
+    workingDataPost$data$PSDC_2019 <- 15
+    workingDataPost$data$PSDC_2020 <- 15
+    workingDataPost$data$PSDC_2021 <- 15
+    workingDataPost$data$PSDC_2022 <- 15
     
-    workingDataPost$data <- defaultData %>%
+    workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
@@ -1422,12 +1659,35 @@ server <- function(input, output, session) {
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
       group_by(ageasentered, country, AREA_NAME, PopStructure) %>%
-      slice_head(n = 1)
+      slice_head(n = 1) %>%
+      ungroup() %>% 
+      as.data.frame()
     
   })
   
   # Render table elements ----
   # 
+  
+  ###DELETE ME
+  
+  observeEvent(input$printTest, {
+    
+    print(class(workingDataPost$data))  
+    print(str(workingDataPost$data))
+    print(workingDataPost$data)
+    
+    
+  })
+  
+  output$testingTable <- DT::renderDataTable({
+    req(workingDataPost$data)
+    
+    datatable(workingDataPost$data,
+              options = list(scrollx = TRUE)
+    )
+  })
+  ###
+  
   output$customPopulationTable <- DT::renderDataTable({
     req(customPopulation())
     
@@ -1956,8 +2216,32 @@ server <- function(input, output, session) {
     params$country
   })
   
+  exportPopulationListener <- reactive({
+    params$population
+  })
+  
+  exportPrevalenceListener <- reactive({
+    params$prevalence
+  })
+  
+  exportVulnerabilityListener <- reactive({
+    params$vulnerability
+  })
+  
   exportPopStructureListener <- reactive({
     params$popStructureType
+  })
+  
+  exportDoubleCountListener <- reactive({
+    params$doubleCount
+  })
+  
+  exportMobilityListener <- reactive({
+    params$mobility
+  })
+  
+  exportEnrollmentListener <- reactive({
+    params$enrollment
   })
   
   output$exportTokenParameters <- downloadHandler(
@@ -1970,8 +2254,13 @@ server <- function(input, output, session) {
       
       params_df <- data.frame(
         country = exportCountryListener(),
-        popStructureType = exportPopStructureListener()#,
-        # catchmentsSelected = exportCatchmentsListener()
+        population = exportPopulationListener(),
+        prevalence = exportPrevalenceListener(),
+        vulnerability = exportVulnerabilityListener(),
+        popStructureType = exportPopStructureListener(),
+        doubleCount = exportDoubleCountListener(),
+        mobility = exportMobilityListener(),
+        enrollment = exportEnrollmentListener()
       )
       
       save(params_df, file = file)
@@ -2032,9 +2321,6 @@ server <- function(input, output, session) {
     contentType = NULL
   )
   
-  
-  
-  
   ## Import ----
   ### Parameters ----
   importedTokenParams <- eventReactive(input$importTokenParams, {
@@ -2049,12 +2335,18 @@ server <- function(input, output, session) {
     return(a)
     }
     
-    
   })
   
   observeEvent(importedTokenParams(), {
+    ## Update params reactiveValues object from imported token settings
     params$country <- importedTokenParams()$country[1]
+    params$population <- importedTokenParams()$population[1]
+    params$prevalence <- importedTokenParams()$prevalence[1]
+    params$vulnerability <- importedTokenParams()$vulnerability[1]
     params$popStructureType <- importedTokenParams()$popStructureType[1]
+    params$doubleCount <- importedTokenParams()$doubleCount[1]
+    params$mobility <- importedTokenParams()$mobility[1]
+    params$enrollment <- importedTokenParams()$enrollment[1]
     
   })
   
@@ -2376,35 +2668,154 @@ server <- function(input, output, session) {
     contentType = NULL
   )
   
+  ## Show active choice ----
+  ### Population ----
+  observeEvent(input$confirmCustomPopulation, {
+    runjs('document.getElementById("confirmCustomPopulation").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultPopulation").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomPopulation").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultPopulation").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultPopulation, {
+    runjs('document.getElementById("resetToDefaultPopulation").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomPopulation").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultPopulation").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomPopulation").style.backgroundColor = "#FFC15B";')
+  })
+  
+  ### Prevalence ----
+  observeEvent(input$confirmCustomPrevalence, {
+    runjs('document.getElementById("confirmCustomPrevalence").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultPrevalence").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomPrevalence").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultPrevalence").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultPrevalence, {
+    runjs('document.getElementById("resetToDefaultPrevalence").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomPrevalence").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultPrevalence").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomPrevalence").style.backgroundColor = "#FFC15B";')
+  })
+  
+  ### Vulnerability ----
+  observeEvent(input$confirmCustomVulnerability, {
+    runjs('document.getElementById("confirmCustomVulnerability").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultVulnerability").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomVulnerability").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultVulnerability").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultVulnerability, {
+    runjs('document.getElementById("resetToDefaultVulnerability").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomVulnerability").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultVulnerability").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomVulnerability").style.backgroundColor = "#FFC15B";')
+  })
+  
+  ### Double Count ----
+  observeEvent(input$confirmCustomDoubleCount, {
+    runjs('document.getElementById("confirmCustomDoubleCount").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultDoubleCount").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomDoubleCount").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultDoubleCount").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultDoubleCount, {
+    runjs('document.getElementById("resetToDefaultDoubleCount").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomDoubleCount").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultDoubleCount").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomDoubleCount").style.backgroundColor = "#FFC15B";')
+  })
+  
+  ### Mobility ----
+  observeEvent(input$confirmCustomMobility, {
+    runjs('document.getElementById("confirmCustomMobility").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultMobility").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomMobility").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultMobility").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultMobility, {
+    runjs('document.getElementById("resetToDefaultMobility").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomMobility").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultMobility").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomMobility").style.backgroundColor = "#FFC15B";')
+  })
+  
+  ### Enrollment ----
+  observeEvent(input$confirmCustomEnrollment, {
+    runjs('document.getElementById("confirmCustomEnrollment").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("resetToDefaultEnrollment").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("confirmCustomEnrollment").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("resetToDefaultEnrollment").style.backgroundColor = "#FFC15B";')
+  })
+  
+  observeEvent(input$resetToDefaultEnrollment, {
+    runjs('document.getElementById("resetToDefaultEnrollment").style.borderColor = "#1C110A";')
+    runjs('document.getElementById("confirmCustomEnrollment").style.borderColor = "#FFFFFF";')
+    runjs('document.getElementById("resetToDefaultEnrollment").style.backgroundColor = "#FFBA49";')
+    runjs('document.getElementById("confirmCustomEnrollment").style.backgroundColor = "#FFC15B";')
+  })
+  
+  
   ## Uploads ----
   ### Population ----
+  #Working on figuring out a solution for passing full custom data functionality (e.g., tables and such) through save tokens. In progress for version 2.0.
   customPopulation <- reactive({
-    req(input$completedTemplateUploadPopulation)
+    req(
+      shiny::isTruthy(input$completedTemplateUploadPopulation) #|| shiny::isTruthy(input$confirmCustomPopulation)
+      )
     
-    file <- input$completedTemplateUploadPopulation
-    ext <- tools::file_ext(file$datapath)
+    if(shiny::isTruthy(input$completedTemplateUploadPopulation)) {
+      
+      file <- input$completedTemplateUploadPopulation
+      ext <- tools::file_ext(file$datapath)
+      
+      a <- readxl::read_xlsx(file$datapath) 
+      
+      required_columns <- c("Pop_2018",
+                            "Pop_2019", 
+                            "Pop_2020",
+                            "Pop_2021",
+                            "Pop_2022",
+                            "Pop_2023")
+      
+      column_names <- colnames(a)
+      
+      shiny::validate(need(ext == "xlsx", ""),
+                      need(all(required_columns %in% column_names), ""))
+      
+      b <- a %>%
+        rename(Pop_2018_Custom = Pop_2018,
+               Pop_2019_Custom = Pop_2019,
+               Pop_2020_Custom = Pop_2020,
+               Pop_2021_Custom = Pop_2021,
+               Pop_2022_Custom = Pop_2022,
+               Pop_2023_Custom = Pop_2023)
     
-    a <- readxl::read_xlsx(file$datapath) 
     
-    required_columns <- c("Pop_2018",
-                          "Pop_2019", 
-                          "Pop_2020",
-                          "Pop_2021",
-                          "Pop_2022",
-                          "Pop_2023")
-    
-    column_names <- colnames(a)
-    
-    shiny::validate(need(ext == "xlsx", ""),
-                    need(all(required_columns %in% column_names), ""))
-    
-    b <- a %>%
-      rename(Pop_2018_Custom = Pop_2018,
-             Pop_2019_Custom = Pop_2019,
-             Pop_2020_Custom = Pop_2020,
-             Pop_2021_Custom = Pop_2021,
-             Pop_2022_Custom = Pop_2022,
-             Pop_2023_Custom = Pop_2023)
+    } else {
+      
+      # b <- workingDataPost$data %>%
+      #   dplyr::select(
+      #     -c(ageasentered,
+      #        country,
+      #        AREA_NAME,
+      #        Pop_2018_Custom,
+      #        Pop_2019_Custom,
+      #        Pop_2020_Custom,
+      #        Pop_2021_Custom,
+      #        Pop_2022_Custom,
+      #        Pop_2023_Custom
+      #        )
+      #   ) %>%
+      #   rename(Country = Country,
+      #          District = AREA_NAME,
+      #          AgeCohort = ageasentered)
+      # 
+    }
     
     return(b)
   })
