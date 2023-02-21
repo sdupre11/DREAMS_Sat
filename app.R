@@ -2269,7 +2269,7 @@ server <- function(input, output, session) {
       # write a file to a directory ----
       target_directory <- "exportTokenParameters/" # change to your directory
       s3write_using(params_df, FUN = write.csv,
-                    bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+                    bucket = Sys.getenv("WRITE_S3"),
                     object = paste0(
                       "system_dreams_saturation/",
                       target_directory,
@@ -2306,7 +2306,7 @@ server <- function(input, output, session) {
       # write a file to a directory ----
       target_directory <- "exportTokenData/" # change to your directory
       s3write_using(workingDataExport, FUN = write.csv,
-                    bucket = Sys.getenv("TEST_BUCKET_WRITE"),
+                    bucket = Sys.getenv("WRITE_S3"),
                     object = paste0(
                       "system_dreams_saturation/",
                       target_directory,
