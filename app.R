@@ -14,6 +14,7 @@ library(paws)
 library(jsonlite)
 library(shinyWidgets)
 library(datimutils)
+library(pdaprules)
 
 # source("functions.R")
 # source("data_load.R")
@@ -97,7 +98,8 @@ server <- function(input, output, session) {
   user_input  <-  reactiveValues(authenticated = FALSE,
                                  status = "",
                                  d2_session = NULL,
-                                 memo_authorized = FALSE)
+                                 memo_authorized = FALSE,
+                                 uuid = NULL)
   
   #UI that will display when redirected to OAuth login agent
   output$ui_redirect <- renderUI({
@@ -247,6 +249,25 @@ server <- function(input, output, session) {
         ),
         name = "usgpartners"
       )
+      
+      # capture login event
+      send_event_to_s3(
+        app_name = Sys.getenv("SECRET_ID"), 
+        event_type = "LOGIN", 
+        user_input = user_input, 
+        log_bucket = Sys.getenv("LOG_BUCKET")
+        )
+      
+      # app loads data from external file
+      # so every login includes a read event
+      # from the workspace bucket
+      send_event_to_s3(
+        app_name = Sys.getenv("SECRET_ID"), 
+        event_type = "S3_READ", 
+        user_input = user_input, 
+        log_bucket = Sys.getenv("LOG_BUCKET")
+      )
+      
     }
     
   })
@@ -264,6 +285,15 @@ server <- function(input, output, session) {
     user_input$d2_session  <-  NULL
     d2_default_session <- NULL
     gc()
+    
+    # capture logout event
+    send_event_to_s3(
+      app_name = Sys.getenv("SECRET_ID"), 
+      event_type = "LOGOUT", 
+      user_input = user_input, 
+      log_bucket = Sys.getenv("LOG_BUCKET")
+    )
+    
     session$reload()
   })
   
