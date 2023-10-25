@@ -497,6 +497,18 @@
       "Hash": "5aac3cd0a3ccb1a738941796b28c26fe",
       "Requirements": []
     },
+    "exactextractr": {
+      "Package": "exactextractr",
+      "Version": "0.10.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3db813596387e90573ad092d5e3fde37",
+      "Requirements": [
+        "Rcpp",
+        "raster",
+        "sf"
+      ]
+    },
     "fansi": {
       "Package": "fansi",
       "Version": "1.0.3",
@@ -1450,7 +1462,7 @@
       "Package": "renv",
       "Version": "0.15.4",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "c1078316e1d4f70275fc1ea60c0bc431",
       "Requirements": []
     },
