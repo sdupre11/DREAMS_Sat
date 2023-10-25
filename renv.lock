@@ -1254,6 +1254,19 @@
         "paws.common"
       ]
     },
+    "pdaprules": {
+      "Package": "pdaprules",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "pdaprules",
+      "RemoteUsername": "pepfar-datim",
+      "RemoteRef": "main",
+      "RemoteSha": "d25755e579d1e497880671beb5922f06de2acfd3",
+      "Hash": "81cf29735817edd4231b74f3aa31cbd1",
+      "Requirements": []
+    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.8.1",
