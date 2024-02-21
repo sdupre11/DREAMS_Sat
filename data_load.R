@@ -738,10 +738,24 @@ default5YearTemplate <- left_join(default5YearTemplate,
                    "AREA_NAME",
                    "ageasentered"))
 
-rm(defaultData_trimmed)
 
+DefaultSubnatPrev  <- dataParametersImportandMutate("www/defaultTemplate_5year.xlsx") %>%
+  dplyr::select(c(Country,
+           District,
+           ageasentered,
+           Prevalence_2024
+           )) %>%
+  rename(SubNatPrevalence = Prevalence_2024,
+         AREA_NAME = District,
+         country = Country)
+
+print(DefaultSubnatPrev)
+
+rm(defaultData_trimmed)
 rm(countryData)
 rm(countryDataJoined)
 rm(AGYW_PREV)
+
+
 
 

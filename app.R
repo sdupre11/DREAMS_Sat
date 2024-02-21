@@ -692,6 +692,10 @@ server <- function(input, output, session) {
     data = NULL
   )
   
+  workingSubNatPrev <- reactiveValues(
+    data = NULL
+  )
+  
   data_stats_2023 <- reactiveValues(
     data = defaultStats2023
   )
@@ -1128,6 +1132,14 @@ server <- function(input, output, session) {
   observeEvent(input$country, {
     req(input$country)
     
+    workingSubNatPrev$data <- DefaultSubnatPrev %>%
+      dplyr::filter(country == input$country)
+    
+  })
+  
+  observeEvent(input$country, {
+    req(input$country)
+    
     data_stats_2023$data <- defaultStats2023 %>%
       dplyr::filter(Country == input$country)
     
@@ -1394,8 +1406,8 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultPrevalence, {
     req(workingDataPost$data)
     
-    workingDataPost$data <- workingDataPost$data %>%
-      countrySpecificPrev()
+    workingDataPost$data <- countrySpecificPrev(workingDataPost$data,
+                                                workingSubNatPrev$data)
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1910,8 +1922,8 @@ server <- function(input, output, session) {
       dplyr::filter(Country == input$country) %>%
       summarize(`Est. Female Population (FY24)` = mean(`Pop_2024`),
                 `H.C. Est. # of Vulnerable AGYW (FY24)` = mean(`Total DREAMS eligible AGYW 2024`),
-                `DREAMS Sat App Percent Coverage - Saturation (%, FY24)` = mean(`Percent coverage (saturation) 2024`),
-                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY24)` = mean(`Remaining unserved AGYW 2024`)) %>%
+                `DREAMS Sat App Percent Coverage - Saturation (%, FY25)` = mean(`Percent coverage (saturation) 2024`),
+                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY25)` = mean(`Remaining unserved AGYW 2024`)) %>%
       ungroup()
     
     datatable(a %>%
