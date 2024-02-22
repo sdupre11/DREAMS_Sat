@@ -326,9 +326,6 @@ server <- function(input, output, session) {
                ),
                h3("Step 1 of 9: Select Your Country"),
                h4("Once selected, the application will pull population data by 5-year age cohort for each individual year for each subnational unit from the U.S. Census Bureau PEPFAR estimates."),
-               h4("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
-               h4("WorldPop gridded estimates are used for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda as U.S. Census Bureau estimates are on-hold pending updated national data."),
-               h4("WorldPop data is only available through 2020, so 2020 totals have been extended to 2021 through 2024. For this reason, population numbers for these five countries should be replaced by internal national data as available in Step 2."),
                wellPanel(
                  selectInput("country",
                              "Country",
@@ -350,16 +347,20 @@ server <- function(input, output, session) {
                                          "Zimbabwe")
                  ),
                  fluidRow(
-                   column(4,
-                          strong("Note: country selection is meant as a first step and sets/reverts choices to default values. Avoid changing country selection without saving progress to avoid losing work.")),
-                   column(8,
-                          leafletOutput("map_main")))
+                   column(12,
+                          strong("Note: country selection is meant as a first step and sets/reverts choices to default values. Avoid changing country selection without saving progress to avoid losing work."))#,
+                   # column(8,
+                   #        leafletOutput("map_main"))
+                   )
                ),
                h3("Step 2 of 9 (DENOMINATOR): Upload Custom Population   OPTIONAL STEP"),
                h4("Overwrite default population figures for your country."),
                wellPanel(
-                 strong("Use default values or upload custom values."),
-                 p("highly recommended for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda for 2021-2024 especially."),
+                 strong("Use default values or upload custom values"),
+                 p("Highly recommended for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda for 2021-2024 especially."),
+                 p("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
+                 p("WorldPop gridded estimates are used for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda as U.S. Census Bureau estimates are on-hold pending updated national data."),
+                 p("WorldPop data is only available through 2020, so 2020 totals have been extended to 2021 through 2024. For this reason, population numbers for these five countries should be replaced by internal national data as available in Step 2."),
                  br(),
                  br(),
                  strong("Population figures"),
@@ -367,7 +368,6 @@ server <- function(input, output, session) {
                  p("Download blank population\nworksheet"),
                  downloadButton("blankTemplateDownloadPopulation",
                                 "Download blank template"),
-                 br(),
                  br(),
                  strong("Step 2b"),
                  p("Open worksheet in Excel, fill out 'Population_20XX' columns and save"),
@@ -385,7 +385,7 @@ server <- function(input, output, session) {
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
                h3("Step 3 of 9 (DENOMINATOR): Set Prevalence"),
-               h4("This is used to derive HIV-negative population for each cohort."),
+               h4("This is used to derive HIV-negative population for each cohort"),
                wellPanel(
                  strong("Prevalence default: national figures based on most-recent PHIA or UNAIDS AIDSinfo data"),
                  br(),
@@ -704,26 +704,26 @@ server <- function(input, output, session) {
     data = defaultStatsCOP
   )
   
-  onLoadDREAMS <- botADM2.sf %>%
-    dplyr::filter(DREAMSDistrict == "Yes")
+  # onLoadDREAMS <- botADM2.sf %>%
+  #   dplyr::filter(DREAMSDistrict == "Yes")
+  # 
+  # onLoadNotDREAMS <- botADM2.sf %>%
+  #   dplyr::filter(DREAMSDistrict == "No")
+  # 
+  # spatial <- reactiveValues(
+  #   sf1 = botADM2.sf,
+  #   sf1_DREAMS = onLoadDREAMS,
+  #   sf1_notDREAMS = onLoadNotDREAMS,
+  #   zoom = 5
+  # )
   
-  onLoadNotDREAMS <- botADM2.sf %>%
-    dplyr::filter(DREAMSDistrict == "No")
-  
+
   spatial <- reactiveValues(
     sf1 = botADM2.sf,
-    sf1_DREAMS = onLoadDREAMS,
-    sf1_notDREAMS = onLoadNotDREAMS,
-    zoom = 5
+    sf1_DREAMS = NULL,
+    sf1_notDREAMS = NULL,
+    zoom = NULL
   )
-  
-# 
-#   spatial <- reactiveValues(
-#     sf1 = botADM2.sf,
-#     sf1_DREAMS = NULL,
-#     sf1_notDREAMS = NULL,
-#     zoom = NULL
-#   )
   
   ### MOVE THIS
   
@@ -2144,78 +2144,78 @@ server <- function(input, output, session) {
   
   # Render map elements ----
   ## Main map ----
-  output$map_main <- leaflet::renderLeaflet({
-    a <- leaflet() %>%
-      setMapWidgetStyle(list(background = "white"))
-    # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
-  })
+  # output$map_main <- leaflet::renderLeaflet({
+  #   a <- leaflet() %>%
+  #     setMapWidgetStyle(list(background = "white"))
+  #   # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
+  # })
   
-  observeEvent(input$country, {
-    req(spatial$sf1_notDREAMS)
-    req(spatial$sf1_DREAMS)
-    
-    popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
-                           spatial$sf1_DREAMS$AREA_NAME)
-    
-    popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>",
-                              spatial$sf1_notDREAMS$AREA_NAME)
-    
-    if (input$country=="Eswatini") { #Jan 25, 2024 - Best I can tell, this Eswatini v. Not dichotomy is no longer relevant, simplify once everything working
-      leafletProxy("map_main"
-      ) %>%
-        clearShapes() %>%
-        clearControls() %>%
-        addPolygons(data = spatial$sf1_notDREAMS,
-                    color = "black",
-                    fillColor = "white",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_NonDREAMS) %>%
-        addPolygons(data = spatial$sf1_DREAMS,
-                    color = "black",
-                    fillColor = "#FF6663",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_DREAMS,
-                    highlightOptions = highlightOptions(color = "white",
-                                                        weight = 2,
-                                                        bringToFront = TRUE)) %>%
-        setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
-                lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
-                zoom = spatial$zoom) %>%
-        setMapWidgetStyle(list(background = "white"))
-    } else {
-      leafletProxy("map_main"
-      ) %>%
-        clearShapes() %>%
-        clearControls() %>%
-        addPolygons(data = spatial$sf1_notDREAMS,
-                    color = "black",
-                    fillColor = "white",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_NonDREAMS) %>%
-        addPolygons(data = spatial$sf1_DREAMS,
-                    color = "black",
-                    fillColor = "#FF6663",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_DREAMS,
-                    highlightOptions = highlightOptions(color = "white",
-                                                        weight = 2,
-                                                        bringToFront = TRUE)) %>%
-        setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
-                lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
-                zoom = spatial$zoom) %>%
-        setMapWidgetStyle(list(background = "white"))
-      
-    }
-  })
-  
+  # observeEvent(input$country, {
+  #   req(spatial$sf1_notDREAMS)
+  #   req(spatial$sf1_DREAMS)
+  # 
+  #   popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
+  #                          spatial$sf1_DREAMS$AREA_NAME)
+  # 
+  #   popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>",
+  #                             spatial$sf1_notDREAMS$AREA_NAME)
+  # 
+  #   if (input$country=="Eswatini") { #Jan 25, 2024 - Best I can tell, this Eswatini v. Not dichotomy is no longer relevant, simplify once everything working
+  #     leafletProxy("map_main"
+  #     ) %>%
+  #       clearShapes() %>%
+  #       clearControls() %>%
+  #       addPolygons(data = spatial$sf1_notDREAMS,
+  #                   color = "black",
+  #                   fillColor = "white",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_NonDREAMS) %>%
+  #       addPolygons(data = spatial$sf1_DREAMS,
+  #                   color = "black",
+  #                   fillColor = "#FF6663",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_DREAMS,
+  #                   highlightOptions = highlightOptions(color = "white",
+  #                                                       weight = 2,
+  #                                                       bringToFront = TRUE)) %>%
+  #       setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
+  #               lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
+  #               zoom = spatial$zoom) %>%
+  #       setMapWidgetStyle(list(background = "white"))
+  #   } else {
+  #     leafletProxy("map_main"
+  #     ) %>%
+  #       clearShapes() %>%
+  #       clearControls() %>%
+  #       addPolygons(data = spatial$sf1_notDREAMS,
+  #                   color = "black",
+  #                   fillColor = "white",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_NonDREAMS) %>%
+  #       addPolygons(data = spatial$sf1_DREAMS,
+  #                   color = "black",
+  #                   fillColor = "#FF6663",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_DREAMS,
+  #                   highlightOptions = highlightOptions(color = "white",
+  #                                                       weight = 2,
+  #                                                       bringToFront = TRUE)) %>%
+  #       setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
+  #               lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
+  #               zoom = spatial$zoom) %>%
+  #       setMapWidgetStyle(list(background = "white"))
+  # 
+  #   }
+  # })
+
   ## Saturation map ----
   saturation_bins <- c(0, 25.0, 50.0, 75.0, 100.0, Inf)
   

@@ -749,8 +749,6 @@ DefaultSubnatPrev  <- dataParametersImportandMutate("www/defaultTemplate_5year.x
          AREA_NAME = District,
          country = Country)
 
-print(DefaultSubnatPrev)
-
 rm(defaultData_trimmed)
 rm(countryData)
 rm(countryDataJoined)
