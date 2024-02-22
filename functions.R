@@ -1058,8 +1058,8 @@ countrySpecificPrev <- function(x, y) {
   
   b <- y
   
-  print("DefaultSubnatPrevTabFiltered")
-  print(b)
+  # print("DefaultSubnatPrevTabFiltered")
+  # print(b)
 
   c <- left_join(a,
                  b,
@@ -1074,8 +1074,8 @@ countrySpecificPrev <- function(x, y) {
            AREA_NAME = AREA_NAME.x,
            ageasentered = ageasentered.x)
   
-  print("joined")
-  print(c)
+  # print("joined")
+  # print(c)
   
   c$Prev_2018 <- c$SubNatPrevalence
   c$Prev_2019 <- c$SubNatPrevalence
@@ -1085,99 +1085,16 @@ countrySpecificPrev <- function(x, y) {
   c$Prev_2023 <- c$SubNatPrevalence
   c$Prev_2024 <- c$SubNatPrevalence
   
-  print("Prev Replaced")
-  print(c)
+  # print("Prev Replaced")
+  # print(c)
   
   d <- c %>%
     dplyr::select(-c("SubNatPrevalence"))
   
-  print("Final?")
-  print(d)
+  # print("Final?")
+  # print(d)
   
   return(d)
-  
-  # b <- a %>%
-  #   mutate(
-  #     Internal_Prev = case_when(
-  #       (country == "Botswana" & ageasentered == "10-14") ~ 0.6,
-  #       (country == "Botswana" & ageasentered == "15-19") ~ 2.7,
-  #       (country == "Botswana" & ageasentered == "20-24") ~ 6.7,
-  #       (country == "Botswana" & ageasentered == "25-29") ~ 15.8,
-  #       (country == "Cote d'Ivoire" & ageasentered == "10-14") ~ 0.2,
-  #       (country == "Cote d'Ivoire" & ageasentered == "15-19") ~ 0.6,
-  #       (country == "Cote d'Ivoire" & ageasentered == "20-24") ~ 1.3,
-  #       (country == "Cote d'Ivoire" & ageasentered == "25-29") ~ 3.2,
-  #       (country == "Eswatini" & ageasentered == "10-14") ~ 3.4,
-  #       (country == "Eswatini" & ageasentered == "15-19") ~ 7.2,
-  #       (country == "Eswatini" & ageasentered == "20-24") ~ 20.9,
-  #       (country == "Eswatini" & ageasentered == "25-29") ~ 37.5,
-  #       (country == "Haiti" & ageasentered == "10-14") ~ 0.2,
-  #       (country == "Haiti" & ageasentered == "15-19") ~ 0.3,
-  #       (country == "Haiti" & ageasentered == "20-24") ~ 1.5,
-  #       (country == "Haiti" & ageasentered == "25-29") ~ 3.0,
-  #       (country == "Kenya" & ageasentered == "10-14") ~ 0.8,
-  #       (country == "Kenya" & ageasentered == "15-19") ~ 1.2,
-  #       (country == "Kenya" & ageasentered == "20-24") ~ 3.4,
-  #       (country == "Kenya" & ageasentered == "25-29") ~ 6.0,
-  #       (country == "Lesotho" & ageasentered == "10-14") ~ 2.0,
-  #       (country == "Lesotho" & ageasentered == "15-19") ~ 3.9,
-  #       (country == "Lesotho" & ageasentered == "20-24") ~ 13.0,
-  #       (country == "Lesotho" & ageasentered == "25-29") ~ 27.5,
-  #       (country == "Mozambique" & ageasentered == "10-14") ~ 2.3,
-  #       (country == "Mozambique" & ageasentered == "15-19") ~ 11.5,
-  #       (country == "Mozambique" & ageasentered == "20-24") ~ 11.5,
-  #       (country == "Mozambique" & ageasentered == "25-29") ~ 11.5,
-  #       (country == "Malawi" & ageasentered == "10-14") ~ 0.7,
-  #       (country == "Malawi" & ageasentered == "15-19") ~ 1.4,
-  #       (country == "Malawi" & ageasentered == "20-24") ~ 1.3,
-  #       (country == "Malawi" & ageasentered == "25-29") ~ 3.2,
-  #       (country == "Namibia" & ageasentered == "10-14") ~ 1.6,
-  #       (country == "Namibia" & ageasentered == "15-19") ~ 4.7,
-  #       (country == "Namibia" & ageasentered == "20-24") ~ 6.0,
-  #       (country == "Namibia" & ageasentered == "25-29") ~ 9.2,
-  #       (country == "Rwanda" & ageasentered == "10-14") ~ 0.5,
-  #       (country == "Rwanda" & ageasentered == "15-19") ~ 0.8,
-  #       (country == "Rwanda" & ageasentered == "20-24") ~ 1.8,
-  #       (country == "Rwanda" & ageasentered == "25-29") ~ 3.4,
-  #       (country == "South Africa" & ageasentered == "10-14") ~ 3.8,
-  #       (country == "South Africa" & ageasentered == "15-19") ~ 19.1,
-  #       (country == "South Africa" & ageasentered == "20-24") ~ 19.1,
-  #       (country == "South Africa" & ageasentered == "25-29") ~ 19.1,
-  #       (country == "South Sudan" & ageasentered == "10-14") ~ 0.5,
-  #       (country == "South Sudan" & ageasentered == "15-19") ~ 2.3,
-  #       (country == "South Sudan" & ageasentered == "20-24") ~ 2.3,
-  #       (country == "South Sudan" & ageasentered == "25-29") ~ 2.3,
-  #       (country == "Tanzania" & ageasentered == "10-14") ~ 0.3,
-  #       (country == "Tanzania" & ageasentered == "15-19") ~ 1.0,
-  #       (country == "Tanzania" & ageasentered == "20-24") ~ 3.4,
-  #       (country == "Tanzania" & ageasentered == "25-29") ~ 5.6,
-  #       (country == "Uganda" & ageasentered == "10-14") ~ 0.9,
-  #       (country == "Uganda" & ageasentered == "15-19") ~ 1.7,
-  #       (country == "Uganda" & ageasentered == "20-24") ~ 4.2,
-  #       (country == "Uganda" & ageasentered == "25-29") ~ 7.5,
-  #       (country == "Zambia" & ageasentered == "10-14") ~ 1.0,
-  #       (country == "Zambia" & ageasentered == "15-19") ~ 3.3,
-  #       (country == "Zambia" & ageasentered == "20-24") ~ 8.3,
-  #       (country == "Zambia" & ageasentered == "25-29") ~ 13.6,
-  #       (country == "Zimbabwe" & ageasentered == "10-14") ~ 1.9,
-  #       (country == "Zimbabwe" & ageasentered == "15-19") ~ 3.8,
-  #       (country == "Zimbabwe" & ageasentered == "20-24") ~ 6.4,
-  #       (country == "Zimbabwe" & ageasentered == "25-29") ~ 10.6,
-  #     )
-  #   )
-  # 
-  # b$Prev_2018 <- b$Internal_Prev
-  # b$Prev_2019 <- b$Internal_Prev
-  # b$Prev_2020 <- b$Internal_Prev
-  # b$Prev_2021 <- b$Internal_Prev
-  # b$Prev_2022 <- b$Internal_Prev
-  # b$Prev_2023 <- b$Internal_Prev
-  # b$Prev_2024 <- b$Internal_Prev
-  
-  # c <- b %>%
-  #   dplyr::select(-c("Internal_Prev"))
-  # 
-  # return(c)
   
 }
 
