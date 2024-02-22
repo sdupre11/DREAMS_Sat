@@ -704,12 +704,26 @@ server <- function(input, output, session) {
     data = defaultStatsCOP
   )
   
+  onLoadDREAMS <- botADM2.sf %>%
+    dplyr::filter(DREAMSDistrict == "Yes")
+  
+  onLoadNotDREAMS <- botADM2.sf %>%
+    dplyr::filter(DREAMSDistrict == "No")
+  
   spatial <- reactiveValues(
     sf1 = botADM2.sf,
-    sf1_DREAMS = NULL,
-    sf1_notDREAMS = NULL,
-    zoom = NULL
+    sf1_DREAMS = onLoadDREAMS,
+    sf1_notDREAMS = onLoadNotDREAMS,
+    zoom = 5
   )
+  
+# 
+#   spatial <- reactiveValues(
+#     sf1 = botADM2.sf,
+#     sf1_DREAMS = NULL,
+#     sf1_notDREAMS = NULL,
+#     zoom = NULL
+#   )
   
   ### MOVE THIS
   
@@ -2137,6 +2151,8 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$country, {
+    req(spatial$sf1_notDREAMS)
+    req(spatial$sf1_DREAMS)
     
     popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
                            spatial$sf1_DREAMS$AREA_NAME)
@@ -2207,6 +2223,8 @@ server <- function(input, output, session) {
   
   output$map_saturation <- leaflet::renderLeaflet({
     req(data_stats_2023$data)
+    req(spatial$sf1_notDREAMS)
+    req(spatial$sf1_DREAMS)
     
     internal_df <- data_stats_2023$data %>%
       dplyr::filter(Cohort == input$saturationCohort)
@@ -2254,6 +2272,8 @@ server <- function(input, output, session) {
   
   observeEvent(input$saturationCohort, {
     #req(data_stats_2022$data)
+    req(spatial$sf1_notDREAMS)
+    req(spatial$sf1_DREAMS)
     
     internal_df <- data_stats_2023$data %>%
       #dplyr::filter(Cohort == "10-14")
