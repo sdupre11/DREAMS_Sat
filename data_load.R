@@ -406,9 +406,8 @@ countryData <- readRDS("data/countryData.RDS") %>%
 
 AGYW_PREV <- s3read_using(FUN = read.csv,
              bucket = Sys.getenv("WRITE_S3"),
-             object = "system_dreams_saturation/AGYW_PREVbyCountry_test.csv") %>%
-  as.data.frame() %>%
-  dplyr::select(-c("X.1"))
+             object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
+  as.data.frame()
 
 countryDataJoined <- left_join(countryData,
                                AGYW_PREV,
@@ -526,6 +525,7 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "SHINYANGA DISTRICT COUNCIL" & country == "Tanzania") ~ "Shinyanga DC",
       (JOIN_NAME == "SHINYANGA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Shinyanga MC",
       (JOIN_NAME == "TEMEKE MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Temeke MC",
+      (JOIN_NAME == "TUNDUMA TOWN COUNCIL" & country == "Tanzania") ~ "Tunduma TC",
       (JOIN_NAME == "USHETU DISTRICT COUNCIL" & country == "Tanzania") ~ "Ushetu DC",
       (JOIN_NAME == "BUKOMANSIMBI" & country == "Uganda") ~ "Bukomansimbi District",
       (JOIN_NAME == "GOMBA" & country == "Uganda") ~ "Gomba District",

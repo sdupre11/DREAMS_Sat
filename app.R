@@ -475,13 +475,14 @@ server <- function(input, output, session) {
                           fluidRow(
                             selectInput("popStructureYear",
                                         "Select a year:",
-                                        selected = 2022,
+                                        selected = 2024,
                                         choices = c(2018,
                                                     2019,
                                                     2020,
                                                     2021,
                                                     2022,
-                                                    2023))
+                                                    2023,
+                                                    2024))
                           ),
                           fluidRow(
                             column(6,
@@ -630,17 +631,17 @@ server <- function(input, output, session) {
         downloadButton("blankTemplateDownloadCOP24Export",
                        "Download COP 24 Export",
                        style="color: #fff; background-color: #20A39E; border-color: #1C110A")),
-      wellPanel(
-        h4("2023 Figure Numerator Calculation"),
-        selectInput("numeratorsDistrict",
-                    "Select a district:",
-                    selected = "",
-                    choices = ""
-        ),
-        p("Note: if this table is empty, please click the 'Accept parameters...' button in Step 9 to load numerator table"),
-        br(),
-        br(),
-        DT::dataTableOutput("table_numerator")),
+      # wellPanel(
+      #   h4("2023 Figure Numerator Calculation"),
+      #   selectInput("numeratorsDistrict",
+      #               "Select a district:",
+      #               selected = "",
+      #               choices = ""
+      #   ),
+      #   p("Note: if this table is empty, please click the 'Accept parameters...' button in Step 9 to load numerator table"),
+      #   br(),
+      #   br(),
+      #   DT::dataTableOutput("table_numerator")),
       
       br(),
       br(),
@@ -1333,7 +1334,7 @@ server <- function(input, output, session) {
         "Pop_2021_Custom",
         "Pop_2022_Custom",
         "Pop_2023_Custom",
-        "Pop_2024_CUstom"
+        "Pop_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1368,7 +1369,7 @@ server <- function(input, output, session) {
     workingDataPost$data$Pop_2021 <- workingDataPost$data$Pop_2021_Default
     workingDataPost$data$Pop_2022 <- workingDataPost$data$Pop_2022_Default
     workingDataPost$data$Pop_2023 <- workingDataPost$data$Pop_2023_Default
-    workingDataPost$data$Pop_2024 <- workingDataPost$data$Pop_2024_Custom
+    workingDataPost$data$Pop_2024 <- workingDataPost$data$Pop_2024_Default
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1769,18 +1770,18 @@ server <- function(input, output, session) {
     
     print(class(workingDataPost$data))  
     print(str(workingDataPost$data))
-    print(workingDataPost$data)
+    View(workingDataPost$data)
     
     
   })
   
-  output$testingTable <- DT::renderDataTable({
-    req(workingDataPost$data)
-    
-    datatable(workingDataPost$data,
-              options = list(scrollx = TRUE)
-    )
-  })
+  # output$testingTable <- DT::renderDataTable({
+  #   req(workingDataPost$data)
+  #   
+  #   datatable(workingDataPost$data,
+  #             options = list(scrollx = TRUE)
+  #   )
+  # })
   ###
   
   output$customPopulationTable <- DT::renderDataTable({
@@ -1979,8 +1980,9 @@ server <- function(input, output, session) {
                        "VulnerableNonPLHIV_2023",
                        "VulnerableNonPLHIV_2024"))
     
+
     a <- a[, col_order]
-    
+
     b <- a %>%
       group_by(Cohort) %>%
       summarize(`AGYW_PREV total` = mean(`AGYW_PREV total`),
@@ -1991,7 +1993,7 @@ server <- function(input, output, session) {
       )
     
     datatable(
-      b,
+      a,
       rownames = FALSE,
       caption = "*Primary/Secondary"
     )

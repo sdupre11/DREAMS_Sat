@@ -598,34 +598,37 @@ rm(choices_recent_countries_all_historic)
 rm(choices_recent_countries_all_recent)
 rm(choices_recent_countries_all2_historic)
 rm(choices_recent_countries_all2_recent)
-rm(my_data_qs_check)
 
-###
+##FROM ORIGINAL PROVISION OF THIS FILE
+# my_data_DSNUs <- read.csv("preprocessing/data/DSNUs.csv")
 
-# writing --------------
-# write to dreams workspace
+# s3write_using(my_data_DSNUs, FUN = write.csv, #Overwrite the working version
+#               bucket = Sys.getenv("WRITE_S3"),
+#               object = "system_dreams_saturation/DSNUs.csv"
+# )
 
-print("writing to system dreams...")
+#THIS MUST BE MANUALLY UPDATED EACH YEAR. DOWNLOAD FROM BUCKET, UPDATE, REUPLOAD, DELETE LOCAL
+##DOWNLOAD
 
+my_data_DSNUs <- s3read_using(FUN = read.csv,
+                              bucket = Sys.getenv("WRITE_S3"),
+                              object = "system_dreams_saturation/DSNUs.csv") %>%
+  as.data.frame() %>%
+  select(-(X.1))
 
-previous <- s3read_using(FUN = read.csv, #Import the previous version
-                          bucket = Sys.getenv("WRITE_S3"),
-                          object = "system_dreams_saturation/AGYW_PREVbyCountry.csv")
+##CHECK
+my_data_DSNUs %>% 
+  View()
 
+##MANUALLY SAVE LOCALLY AND UPDATE FROM GENIE, THEN UPLOAD AND CHECK
 
-s3write_using(previous, FUN = write.csv, #Backup the previous version
+##OVERWRITE S3 BUCKET
+s3write_using(my_data_DSNUs, FUN = write.csv, #Overwrite the working version
               bucket = Sys.getenv("WRITE_S3"),
-              object = "system_dreams_saturation/AGYW_PREVbyCountry_previous.csv"
+              object = "system_dreams_saturation/DSNUs.csv"
 )
 
-
-s3write_using(my_data, FUN = write.csv, #Overwrite the working version
-              bucket = Sys.getenv("WRITE_S3"),
-              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv"
-)
-
-
-my_data_DSNUs <- read.csv("preprocessing/data/DSNUsfromDATIMDataVisualizer.csv")
+##REMOVE LOCAL COPY OF CSV
 
 my_data_DSNUs2 <- my_data_DSNUs %>%
   rename(`2018` = "X2018",
@@ -649,17 +652,17 @@ my_data_DSNUs2$fiscal_year <- my_data_DSNUs2$fiscal_year %>%
 my_data_DSNUs3 <- my_data_DSNUs2 %>%
   mutate(
     ageasentered = case_when(
-    (ageasentered == "10 to 14") ~ "10-14",
-    (ageasentered == "15 to 19") ~ "15-19",
-    (ageasentered == "20 to 24") ~ "20-24",
-    (ageasentered == "25 to 29") ~ "25-29",
-    TRUE ~ as.character(ageasentered)))
+      (ageasentered == "10 to 14") ~ "10-14",
+      (ageasentered == "15 to 19") ~ "15-19",
+      (ageasentered == "20 to 24") ~ "20-24",
+      (ageasentered == "25 to 29") ~ "25-29",
+      TRUE ~ as.character(ageasentered))) %>%
+  dplyr::select(-X)
 
+my_data_DSNUs3$fiscal_year <- as.character(my_data_DSNUs3$fiscal_year)
 
-my_data_test <- rbind(my_data,
-                   my_data_DSNUs3)
-
-my_data_test2 <- my_data_test %>%
+my_data2 <- rbind(my_data,
+                  my_data_DSNUs3) %>%
   mutate(
     JOIN_NAME = case_when(
       (country == "Uganda") ~ as.character(AREA_NAME),
@@ -667,10 +670,44 @@ my_data_test2 <- my_data_test %>%
     )
   )
 
-s3write_using(my_data_test2, FUN = write.csv, #Overwrite the working version
+
+###
+
+# writing --------------
+# write to dreams workspace
+
+print("writing to system dreams...")
+
+
+previous <- s3read_using(FUN = read.csv, #Import the previous version
+                          bucket = Sys.getenv("WRITE_S3"),
+                          object = "system_dreams_saturation/AGYW_PREVbyCountry.csv")
+
+
+s3write_using(previous, FUN = write.csv, #Backup the previous version
               bucket = Sys.getenv("WRITE_S3"),
-              object = "system_dreams_saturation/AGYW_PREVbyCountry_test.csv"
+              object = "system_dreams_saturation/AGYW_PREVbyCountry_previous.csv"
 )
+
+
+s3write_using(my_data2, FUN = write.csv, #Overwrite the working version
+              bucket = Sys.getenv("WRITE_S3"),
+              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv"
+)
+
+
+# my_data_test2 <- my_data_test %>%
+#   mutate(
+#     JOIN_NAME = case_when(
+#       (country == "Uganda") ~ as.character(AREA_NAME),
+#       TRUE ~ as.character(JOIN_NAME)
+#     )
+#   )
+
+# s3write_using(my_data_test2, FUN = write.csv, #Overwrite the working version
+#               bucket = Sys.getenv("WRITE_S3"),
+#               object = "system_dreams_saturation/AGYW_PREVbyCountry_test.csv"
+# )
 
 # test reading from write bucket --------
 # read from dreams workspace
