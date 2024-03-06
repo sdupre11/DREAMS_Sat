@@ -661,17 +661,17 @@ server <- function(input, output, session) {
     )
   }
   
-  output$ui <- renderUI({
-    main_ui()
-  })
-
   # output$ui <- renderUI({
-  #   if(!user_input$authenticated){
-  #      auth_ui()
-  #   }else{
-  #     main_ui()
-  #   }
+  #   main_ui()
   # })
+
+  output$ui <- renderUI({
+    if(!user_input$authenticated){
+       auth_ui()
+    }else{
+      main_ui()
+    }
+  })
   
   # Setup reactiveValues objects ----
   params <- reactiveValues(
