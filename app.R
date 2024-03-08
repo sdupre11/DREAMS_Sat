@@ -4,7 +4,6 @@ library(leaflet.extras)
 library(sf)
 library(DT)
 library(tidyverse)
-#library(shinyglide)
 library(writexl)
 library(shinyjs)
 library(aws.s3)
@@ -279,7 +278,7 @@ server <- function(input, output, session) {
                  "),
       shinyjs::useShinyjs(),
       titlePanel(title = div(h1("Welcome to DREAMS Sat", style="margin: 0;"), 
-                             h4('Saturation calculation application', style="margin: 0;")), 
+                             h4('Saturation calculation application (v2.0)', style="margin: 0;")), 
                  windowTitle = "DREAMS Sat"),
       br(),
       actionButton("logout",
@@ -290,7 +289,7 @@ server <- function(input, output, session) {
       br(),
       fluidRow(
         column(12,
-               strong("Welcome to version 1.0 of the DREAMS Sat app. Development is ongoing, with additional features planned for post-COP. To help improve the app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to samuel.i.dupre@census.gov.")
+               strong("Welcome to version 2.0 of the DREAMS Sat app. Development is ongoing, with additional features planned for post-COP. To help improve the app, if you run into any bugs, missing geographies, or numbers that seem unexpected, please let us know by sending an email to vania.wang@census.gov.")
         )),
       fluidRow(
         column(12,
@@ -327,9 +326,6 @@ server <- function(input, output, session) {
                ),
                h3("Step 1 of 9: Select Your Country"),
                h4("Once selected, the application will pull population data by 5-year age cohort for each individual year for each subnational unit from the U.S. Census Bureau PEPFAR estimates."),
-               h4("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
-               h4("WorldPop gridded estimates are used for Cote d'Ivoire, Eswatini, and Haiti as U.S. Census Bureau estimates are on-hold pending updated national data."),
-               h4("WorldPop data is only available through 2020, so 2020 totals have been extended to 2021, 2022, and 2023. For this reason, these Cote d'Ivoire, Eswatini, and Haiti population numbers should be replaced by internal national data as available in Step 2."),
                wellPanel(
                  selectInput("country",
                              "Country",
@@ -351,16 +347,20 @@ server <- function(input, output, session) {
                                          "Zimbabwe")
                  ),
                  fluidRow(
-                   column(4,
-                          strong("Note: country selection is meant as a first step and sets/reverts choices to default values. Avoid changing country selection without saving progress to avoid losing work.")),
-                   column(8,
-                          leafletOutput("map_main")))
+                   column(12,
+                          strong("Note: country selection is meant as a first step and sets/reverts choices to default values. Avoid changing country selection without saving progress to avoid losing work."))#,
+                   # column(8,
+                   #        leafletOutput("map_main"))
+                   )
                ),
                h3("Step 2 of 9 (DENOMINATOR): Upload Custom Population   OPTIONAL STEP"),
                h4("Overwrite default population figures for your country."),
                wellPanel(
-                 strong("Use default values or upload custom values."),
-                 p("highly recommended for Cote d'Ivoire, Eswatini, and Haiti in 2021, 2022, and 2023 especially."),
+                 strong("Use default values or upload custom values"),
+                 p("Highly recommended for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda for 2021-2024 especially."),
+                 p("U.S. Census Bureau estimates are used instead of WPP22/Spectrum data because WPP22 data is not available for subnational areas. The two sources are generally in close agreement."),
+                 p("WorldPop gridded estimates are used for Cote d'Ivoire, Eswatini, Haiti, Nankudu (Namibia), and Uganda as U.S. Census Bureau estimates are on-hold pending updated national data."),
+                 p("WorldPop data is only available through 2020, so 2020 totals have been extended to 2021 through 2024. For this reason, population numbers for these five countries should be replaced by internal national data as available in Step 2."),
                  br(),
                  br(),
                  strong("Population figures"),
@@ -368,7 +368,6 @@ server <- function(input, output, session) {
                  p("Download blank population\nworksheet"),
                  downloadButton("blankTemplateDownloadPopulation",
                                 "Download blank template"),
-                 br(),
                  br(),
                  strong("Step 2b"),
                  p("Open worksheet in Excel, fill out 'Population_20XX' columns and save"),
@@ -386,7 +385,7 @@ server <- function(input, output, session) {
                               style="color: #fff; background-color: #FFBA49; border-color: #1C110A")
                ),
                h3("Step 3 of 9 (DENOMINATOR): Set Prevalence"),
-               h4("This is used to derive HIV-negative population for each cohort."),
+               h4("This is used to derive HIV-negative population for each cohort"),
                wellPanel(
                  strong("Prevalence default: national figures based on most-recent PHIA or UNAIDS AIDSinfo data"),
                  br(),
@@ -476,17 +475,14 @@ server <- function(input, output, session) {
                           fluidRow(
                             selectInput("popStructureYear",
                                         "Select a year:",
-                                        selected = 2022,
+                                        selected = 2024,
                                         choices = c(2018,
                                                     2019,
                                                     2020,
                                                     2021,
-                                                    2022))
-                            # selectInput("popStructureDistrict",
-                            #             "Select a district (affects custom table only):",
-                            #             selected = "",
-                            #             choices = ""
-                            # )
+                                                    2022,
+                                                    2023,
+                                                    2024))
                           ),
                           fluidRow(
                             column(6,
@@ -604,14 +600,14 @@ server <- function(input, output, session) {
       wellPanel(
         # actionButton("printTest",
         #              "Test"),
-        h4("2022 Figures"),
+        h4("2023 Figures"),
         br(),
         br(),
-        DT::dataTableOutput("stats_2022"),
-        strong("Download 2022 results"),
+        DT::dataTableOutput("stats_2023"),
+        strong("Download 2023 results"),
         br(),
-        downloadButton("blankTemplateDownload2022Export",
-                       "Download 2022 Saturation Export",
+        downloadButton("blankTemplateDownload2023Export",
+                       "Download 2023 Saturation Export",
                        style="color: #fff; background-color: #20A39E; border-color: #1C110A"),
         br(),
         br(),
@@ -628,24 +624,24 @@ server <- function(input, output, session) {
                  leafletOutput("map_saturation")))
         ),
       wellPanel(
-        h4("COP Export Figures"),
+        h4("COP 24 Export Figures"),
         DT::dataTableOutput("stats_COP"),
         strong("Download to paste into AGYW tab for COP"),
         br(),
-        downloadButton("blankTemplateDownloadCOPExport",
-                       "Download COP Export",
+        downloadButton("blankTemplateDownloadCOP24Export",
+                       "Download COP 24 Export",
                        style="color: #fff; background-color: #20A39E; border-color: #1C110A")),
-      wellPanel(
-        h4("Numerator"),
-        selectInput("numeratorsDistrict",
-                    "Select a district:",
-                    selected = "",
-                    choices = ""
-        ),
-        p("Note: if this table is empty, please click the 'Accept parameters...' button in Step 9 to load numerator table"),
-        br(),
-        br(),
-        DT::dataTableOutput("table_numerator")),
+      # wellPanel(
+      #   h4("2023 Figure Numerator Calculation"),
+      #   selectInput("numeratorsDistrict",
+      #               "Select a district:",
+      #               selected = "",
+      #               choices = ""
+      #   ),
+      #   p("Note: if this table is empty, please click the 'Accept parameters...' button in Step 9 to load numerator table"),
+      #   br(),
+      #   br(),
+      #   DT::dataTableOutput("table_numerator")),
       
       br(),
       br(),
@@ -668,7 +664,7 @@ server <- function(input, output, session) {
   # output$ui <- renderUI({
   #   main_ui()
   # })
-  
+
   output$ui <- renderUI({
     if(!user_input$authenticated){
        auth_ui()
@@ -697,23 +693,36 @@ server <- function(input, output, session) {
     data = NULL
   )
   
-  data_stats_2022 <- reactiveValues(
-    data = defaultStats2022
+  workingSubNatPrev <- reactiveValues(
+    data = NULL
+  )
+  
+  data_stats_2023 <- reactiveValues(
+    data = defaultStats2023
   )
   
   data_stats_COP <- reactiveValues(
     data = defaultStatsCOP
   )
   
+  # onLoadDREAMS <- botADM2.sf %>%
+  #   dplyr::filter(DREAMSDistrict == "Yes")
+  # 
+  # onLoadNotDREAMS <- botADM2.sf %>%
+  #   dplyr::filter(DREAMSDistrict == "No")
+  # 
+  # spatial <- reactiveValues(
+  #   sf1 = botADM2.sf,
+  #   sf1_DREAMS = onLoadDREAMS,
+  #   sf1_notDREAMS = onLoadNotDREAMS,
+  #   zoom = 5
+  # )
+  
+
   spatial <- reactiveValues(
-    # sf0 = NULL,
     sf1 = botADM2.sf,
-    # sf2 = botADM2.sf,
     sf1_DREAMS = NULL,
     sf1_notDREAMS = NULL,
-    # catchments = NULL,
-    #sf1_DREAMSNeighbors = NULL,
-    # sf2_DREAMSNeighbors = botADM2.sf,
     zoom = NULL
   )
   
@@ -725,7 +734,7 @@ server <- function(input, output, session) {
     } else if (input$country == "Cote d'Ivoire") {
       spatial$sf1 <- cdiADM2.sf
     } else if (input$country == "Eswatini") {
-      spatial$sf1 <- eswADM1.sf
+      spatial$sf1 <- eswADM2.sf
     } else if (input$country == "Haiti") {
       spatial$sf1 <- haiADM2.sf
     } else if (input$country == "Kenya") {
@@ -739,26 +748,19 @@ server <- function(input, output, session) {
     } else if (input$country == "Namibia") {
       spatial$sf1 <- namADM2.sf
     } else if (input$country == "Rwanda") {
-      spatial$sf1 <- rwaADM1.sf
+      spatial$sf1 <- rwaADM2.sf
     } else if (input$country == "South Africa") {
       spatial$sf1 <- safADM1.sf
     } else if (input$country == "Tanzania") {
       spatial$sf1 <- tanADM2.sf
     } else if (input$country == "Uganda") {
-      spatial$sf1 <- ugaADM1.sf
+      spatial$sf1 <- ugaADM2.sf
     } else if (input$country == "Zambia") {
-      spatial$sf1 <- zamADM1.sf
+      spatial$sf1 <- zamADM2.sf
     } else if (input$country == "Zimbabwe") {
       spatial$sf1 <- zimADM2.sf
     }
     
-    # if (input$country == "Cote d'Ivoire") {
-    #   spatial$sf0 <- cdiADM0.sf
-    # } else if (input$country == "Eswatini") {
-    #   spatial$sf0 <- eswADM0.sf
-    # } else if (input$country == "Haiti") {
-    #   spatial$sf0 <- haiADM0.sf
-    # }
     
     if (input$country %in% small_countries) {
       spatial$zoom <- 7
@@ -774,12 +776,6 @@ server <- function(input, output, session) {
     spatial$sf1_notDREAMS <- spatial$sf1 %>%
       dplyr::filter(DREAMSDistrict == "No")
     
-    # spatial$sf2_DREAMS <- spatial$sf2 %>%
-    #   dplyr::filter(DREAMSDistrict == "Yes")
-    # 
-    # spatial$sf2_notDREAMS <- spatial$sf2 %>%
-    #   dplyr::filter(DREAMSDistrict == "No")
-    
   })
   
   
@@ -789,13 +785,13 @@ server <- function(input, output, session) {
     req(input$country)
     
     if(input$country == "Botswana") {
-      a <- c("Bobirwa District", 
-             "Mahalapye District", 
+      a <- c("Bobirwa District",
+             "Gaborone District",
+             "Kgatleng District",
+             "Kweneng East District",
+             "Mahalapye District",
+             "North East District",
              "Serowe District",
-             "Kgatleng District", 
-             "Kweneng East District", 
-             "North East District", 
-             "Gaborone District", 
              "Southern District")
     } else if (input$country == "Cote d'Ivoire") {
       a <- c("Abobo-Est", 
@@ -803,15 +799,47 @@ server <- function(input, output, session) {
              "Daloa",
              "Man")
     } else if (input$country == "Eswatini") {
-      a <-  c("Hhohho", 
-              "Lubombo",
-              "Manzini",
-              "Shiselweni")
+      a <-  c("Dvokodvweni",
+              "Ekukhanyeni",
+              "Gilgali Inkhundla",
+              "Hosea",
+              "Kumethula Inkhundla",
+              "Kwaluseni",
+              "Lobamba",
+              "Lobamba Lomdzala",
+              "Lomahasha",
+              "Ludzeludze",
+              "Lugongolweni",
+              "Madlangampisi",
+              "Mafutseni",
+              "Manzini North",
+              "Manzini South",
+              "Maseyisini",
+              "Mbabane East",
+              "Mbabane West",
+              "Mhlangatane",
+              "Mhlume",
+              "Mkhiweni",
+              "Motshane",
+              "Mpolonjeni",
+              "Mtsambama",
+              "Ngudzeni",
+              "Ngwempisi",
+              "Nkhaba",
+              "Nkomiyahlaba Inkhundla",
+              "Ntfonjeni",
+              "Phondo Inkhundla",
+              "Piggs Peak",
+              "Sandleni",
+              "Shiselweni 2",
+              "Siphocosini Inhkuhndla",
+              "Siphofaneni",
+              "Sithobela")
     } else if (input$country == "Haiti") {
-      a <- c("Dessalines",
-             "Saint-Marc",
-             "Cap-Haïtien",
-             "Port-au-Prince")
+      a <- c("Cap-Haïtien",
+             "Dessalines",
+             "Port-au-Prince",
+             "Saint-Marc")
     } else if (input$country == "Kenya") {
       a <- c("Homa Bay County", 
              "Kiambu County", 
@@ -827,55 +855,60 @@ server <- function(input, output, session) {
              "Mohale's Hoek")
     } else if (input$country == "Malawi") {
       a <- c("Blantyre District", 
-             "Machinga District",
+             "Chiradzulu District",
+             "Machinga District", 
+             "Phalombe District",
              "Zomba District")
     } else if (input$country == "Mozambique") {
-      a <- c("Pemba",
+      a <- c("Beira",
+             "Boane",
+             "Caia",
+             "Chimoio",
              "Chokwe",
              "Chonguene",
+             "Erati",
+             "Gile",
              "Guija",
+             "Ile",
+             "Inhassunge",
              "Limpopo",
-             "Xai-Xai",
-             "Maxixe",
-             "Chimoio",
-             "Boane",
+             "Lugela",
+             "Maganja Da Costa",
              "Magude",
              "Manhiça",
              "Marracuene",
              "Matola",
              "Matutuine",
-             "Moamba",
-             "Namaacha",
-             "Erati",
-             "Nampula",
-             "Beira",
-             "Caia",
-             "Gile",
-             "Ile",
-             "Inhassunge",
-             "Lugela",
-             "Maganja Da Costa",
+             "Maxixe",
              "Milange",
              "Mocuba",
              "Mocubela",
+             "Moamba",
+             "Namaacha",
              "Namacurra",
+             "Nampula",
              "Nicoadala",
              "Pebane",
-             "Quelimane")
+             "Pemba",
+             "Quelimane",
+             "Xai-Xai")
     } else if (input$country == "Namibia") {
       a <- c("Andara",
+             "Katima Mulilo",
+             "Nankudu",
              "Nyangana",
-             "Rundu",
-             "Windhoek",
-             "Oshakati",
              "Omuthiya",
              "Onandjokwe",
+             "Oshakati",
+             "Rundu",
              "Tsumeb",
-             "Katima Mulilo")
+             "Windhoek")
     } else if (input$country == "Rwanda") {
-      a <- c("East",
-             "Kigali City",
-             "South")
+      a <- c("Gasabo",
+             "Kicukiro",
+             "Nyanza",
+             "Nyarugenge",
+             "Rwamagana")
     } else if (input$country == "South Africa") {
       a <- c("ec Alfred Nzo District Municipality",
              "nw Bojanala Platinum District Municipality",
@@ -902,10 +935,12 @@ server <- function(input, output, session) {
              "kz King Cetshwayo District Municipality",
              "kz Zululand District Municipality")
     } else if (input$country == "Tanzania") {
-      a <- c("Kahama TC",
+      a <- c("Bukoba MC",
+             "Iringa MC",
+             "Kahama TC",
              "Kyela DC",
              "Mbarali DC",
-             "Mbeya City Council",
+             "Mbeya CC",
              "Msalala DC",
              "Mufindi DC",
              "Muleba DC",
@@ -913,36 +948,44 @@ server <- function(input, output, session) {
              "Shinyanga DC",
              "Shinyanga MC",
              "Temeke MC",
+             "Tunduma TC",
              "Ushetu DC")
     } else if (input$country == "Uganda") {
-      a <- c("Bukomansimbi District",
+      a <- c("Agago District",
+             "Apac District",
+             "Bukomansimbi District",
+             "Fort Portal City",
              "Gomba District",
+             "Gulu City",
+             "Gulu District",
              "Kalangala District",
+             "Kampala District",
+             "Kassanda District",
+             "Kayunga District",
+             "Kwania District",
              "Kyotera District",
+             "Lira City",
+             "Lira District",
+             "Luwero District",
              "Lwengo District",
              "Lyantonde District",
+             "Masaka City",
              "Masaka District",
-             "Rakai District",
-             "Sembabule District",
-             "Wakiso District",
-             "Kassanda District",
-             "Luwero District",
+             "Mbarara City",
+             "Mbarara District",
              "Mityana District",
              "Mubende District",
              "Mukono District",
-             "Kampala District",
-             "Agago District",
-             "Apac District",
-             "Gulu District",
-             "Kwania District",
-             "Lira District",
              "Omoro District",
              "Oyam District",
-             "Mbarara District")
+             "Rakai District",
+             "Sembabule District",
+             "Wakiso District")
     } else if (input$country == "Zambia") {
       a <- c("Chingola District",
              "Chipata District",
-             "Kabwe District", 
+             "Kabwe District",
+             "Kafue District",
              "Kapiri-Mposhi District",
              "Kasama District",
              "Kitwe District",
@@ -953,7 +996,9 @@ server <- function(input, output, session) {
              "Monze District",
              "Mongu District",
              "Mufulira District",
-             "Ndola District")
+             "Namwala District",
+             "Ndola District",
+             "Sesheke District")
     } else if (input$country == "Zimbabwe") {
       a <- c("Beitbridge",
              "Bubi",
@@ -1102,7 +1147,15 @@ server <- function(input, output, session) {
   observeEvent(input$country, {
     req(input$country)
     
-    data_stats_2022$data <- defaultStats2022 %>%
+    workingSubNatPrev$data <- DefaultSubnatPrev %>%
+      dplyr::filter(country == input$country)
+    
+  })
+  
+  observeEvent(input$country, {
+    req(input$country)
+    
+    data_stats_2023$data <- defaultStats2023 %>%
       dplyr::filter(Country == input$country)
     
   })
@@ -1244,8 +1297,8 @@ server <- function(input, output, session) {
   
   observeEvent(input$initializeSelection, {
     
-    data_stats_2022$data <- workingDataPost$data %>%
-      reduceTo2022Export()
+    data_stats_2023$data <- workingDataPost$data %>%
+      reduceTo2023Export()
   })
   
   observeEvent(input$initializeSelection, {
@@ -1265,7 +1318,7 @@ server <- function(input, output, session) {
              `P/S* deduplicated AGYW` = DeDuplicatedAGYW_PREV_Sum,
              `Mobility standardized AGYW` = MobilityStandardizedAGYW_PREV_Sum,
              `Enrollment standardized AGYW` = EnrollmentStandardizedAGYW_PREV_Sum,
-             `AGYW completed` = Actual_Served_2022
+             `AGYW completed` = Actual_Served_2023
       )
   })
   
@@ -1275,12 +1328,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "Pop_2018_Custom",
+        #"Pop_2018_Custom",
         "Pop_2019_Custom",
         "Pop_2020_Custom",
         "Pop_2021_Custom",
         "Pop_2022_Custom",
-        "Pop_2023_Custom"
+        "Pop_2023_Custom",
+        "Pop_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1289,12 +1343,13 @@ server <- function(input, output, session) {
                                              "AREA_NAME" = "District", 
                                              "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Custom
+    #workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Custom
     workingDataPost$data$Pop_2019 <- workingDataPost$data$Pop_2019_Custom
     workingDataPost$data$Pop_2020 <- workingDataPost$data$Pop_2020_Custom
     workingDataPost$data$Pop_2021 <- workingDataPost$data$Pop_2021_Custom
     workingDataPost$data$Pop_2022 <- workingDataPost$data$Pop_2022_Custom
     workingDataPost$data$Pop_2023 <- workingDataPost$data$Pop_2023_Custom
+    workingDataPost$data$Pop_2024 <- workingDataPost$data$Pop_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1308,12 +1363,13 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultPopulation, {
     req(workingDataPost$data)
     
-    workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Default
+    #workingDataPost$data$Pop_2018 <- workingDataPost$data$Pop_2018_Default
     workingDataPost$data$Pop_2019 <- workingDataPost$data$Pop_2019_Default
     workingDataPost$data$Pop_2020 <- workingDataPost$data$Pop_2020_Default
     workingDataPost$data$Pop_2021 <- workingDataPost$data$Pop_2021_Default
     workingDataPost$data$Pop_2022 <- workingDataPost$data$Pop_2022_Default
     workingDataPost$data$Pop_2023 <- workingDataPost$data$Pop_2023_Default
+    workingDataPost$data$Pop_2024 <- workingDataPost$data$Pop_2024_Default
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1330,12 +1386,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "Prevalence_2018_Custom",
+        #"Prevalence_2018_Custom",
         "Prevalence_2019_Custom",
         "Prevalence_2020_Custom",
         "Prevalence_2021_Custom",
         "Prevalence_2022_Custom",
-        "Prevalence_2023_Custom"
+        "Prevalence_2023_Custom",
+        "Prevalence_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1344,12 +1401,13 @@ server <- function(input, output, session) {
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$Prev_2018 <- workingDataPost$data$Prevalence_2018_Custom
+    #workingDataPost$data$Prev_2018 <- workingDataPost$data$Prevalence_2018_Custom
     workingDataPost$data$Prev_2019 <- workingDataPost$data$Prevalence_2019_Custom
     workingDataPost$data$Prev_2020 <- workingDataPost$data$Prevalence_2020_Custom
     workingDataPost$data$Prev_2021 <- workingDataPost$data$Prevalence_2021_Custom
     workingDataPost$data$Prev_2022 <- workingDataPost$data$Prevalence_2022_Custom
     workingDataPost$data$Prev_2023 <- workingDataPost$data$Prevalence_2023_Custom
+    workingDataPost$data$Prev_2024 <- workingDataPost$data$Prevalence_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1363,8 +1421,8 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultPrevalence, {
     req(workingDataPost$data)
     
-    workingDataPost$data <- workingDataPost$data %>%
-      countrySpecificPrev()
+    workingDataPost$data <- countrySpecificPrev(workingDataPost$data,
+                                                workingSubNatPrev$data)
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1381,12 +1439,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "Vulnerable_2018_Custom",
+        #"Vulnerable_2018_Custom",
         "Vulnerable_2019_Custom",
         "Vulnerable_2020_Custom",
         "Vulnerable_2021_Custom",
         "Vulnerable_2022_Custom",
-        "Vulnerable_2023_Custom"
+        "Vulnerable_2023_Custom",
+        "Vulnerable_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1395,12 +1454,13 @@ server <- function(input, output, session) {
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$Vuln_2018 <- workingDataPost$data$Vulnerable_2018_Custom
+    #workingDataPost$data$Vuln_2018 <- workingDataPost$data$Vulnerable_2018_Custom
     workingDataPost$data$Vuln_2019 <- workingDataPost$data$Vulnerable_2019_Custom
     workingDataPost$data$Vuln_2020 <- workingDataPost$data$Vulnerable_2020_Custom
     workingDataPost$data$Vuln_2021 <- workingDataPost$data$Vulnerable_2021_Custom
     workingDataPost$data$Vuln_2022 <- workingDataPost$data$Vulnerable_2022_Custom
     workingDataPost$data$Vuln_2023 <- workingDataPost$data$Vulnerable_2023_Custom
+    workingDataPost$data$Vuln_2024 <- workingDataPost$data$Vulnerable_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1414,12 +1474,13 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultVulnerability, {
     req(workingDataPost$data)
     
-    workingDataPost$data$Vuln_2018 <- 80
+    #workingDataPost$data$Vuln_2018 <- 80
     workingDataPost$data$Vuln_2019 <- 80
     workingDataPost$data$Vuln_2020 <- 80
     workingDataPost$data$Vuln_2021 <- 80
     workingDataPost$data$Vuln_2022 <- 80
     workingDataPost$data$Vuln_2023 <- 80
+    workingDataPost$data$Vuln_2024 <- 80
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1436,12 +1497,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "Enrollment_2018_Custom",
+        #"Enrollment_2018_Custom",
         "Enrollment_2019_Custom",
         "Enrollment_2020_Custom",
         "Enrollment_2021_Custom",
         "Enrollment_2022_Custom",
-        "Enrollment_2023_Custom"
+        "Enrollment_2023_Custom",
+        "Enrollment_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1450,11 +1512,13 @@ server <- function(input, output, session) {
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$Enrollment_2018 <- workingDataPost$data$Enrollment_2018_Custom
+    #workingDataPost$data$Enrollment_2018 <- workingDataPost$data$Enrollment_2018_Custom
     workingDataPost$data$Enrollment_2019 <- workingDataPost$data$Enrollment_2019_Custom
     workingDataPost$data$Enrollment_2020 <- workingDataPost$data$Enrollment_2020_Custom
     workingDataPost$data$Enrollment_2021 <- workingDataPost$data$Enrollment_2021_Custom
     workingDataPost$data$Enrollment_2022 <- workingDataPost$data$Enrollment_2022_Custom
+    workingDataPost$data$Enrollment_2023 <- workingDataPost$data$Enrollment_2023_Custom
+    workingDataPost$data$Enrollment_2024 <- workingDataPost$data$Enrollment_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1468,11 +1532,13 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultEnrollment, {
     req(workingDataPost$data)
     
-    workingDataPost$data$Enrollment_2018 <- 5
+    #workingDataPost$data$Enrollment_2018 <- 5
     workingDataPost$data$Enrollment_2019 <- 5
     workingDataPost$data$Enrollment_2020 <- 5
     workingDataPost$data$Enrollment_2021 <- 5
     workingDataPost$data$Enrollment_2022 <- 5
+    workingDataPost$data$Enrollment_2023 <- 5
+    workingDataPost$data$Enrollment_2024 <- 5
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1489,12 +1555,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "Mobility_2018_Custom",
+        #"Mobility_2018_Custom",
         "Mobility_2019_Custom",
         "Mobility_2020_Custom",
         "Mobility_2021_Custom",
         "Mobility_2022_Custom",
-        "Mobility_2023_Custom"
+        "Mobility_2023_Custom",
+        "Mobility_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1503,11 +1570,13 @@ server <- function(input, output, session) {
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$Mobility_2018 <- workingDataPost$data$Mobility_2018_Custom
+    #workingDataPost$data$Mobility_2018 <- workingDataPost$data$Mobility_2018_Custom
     workingDataPost$data$Mobility_2019 <- workingDataPost$data$Mobility_2019_Custom
     workingDataPost$data$Mobility_2020 <- workingDataPost$data$Mobility_2020_Custom
     workingDataPost$data$Mobility_2021 <- workingDataPost$data$Mobility_2021_Custom
     workingDataPost$data$Mobility_2022 <- workingDataPost$data$Mobility_2022_Custom
+    workingDataPost$data$Mobility_2023 <- workingDataPost$data$Mobility_2023_Custom
+    workingDataPost$data$Mobility_2024 <- workingDataPost$data$Mobility_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1521,11 +1590,13 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultMobility, {
     req(workingDataPost$data)
     
-    workingDataPost$data$Mobility_2018 <- 0
+    #workingDataPost$data$Mobility_2018 <- 0
     workingDataPost$data$Mobility_2019 <- 0
     workingDataPost$data$Mobility_2020 <- 0
     workingDataPost$data$Mobility_2021 <- 0
     workingDataPost$data$Mobility_2022 <- 0
+    workingDataPost$data$Mobility_2023 <- 0
+    workingDataPost$data$Mobility_2024 <- 0
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1542,12 +1613,13 @@ server <- function(input, output, session) {
     
     workingDataPost$data <- workingDataPost$data %>%
       dplyr::select_if(!(names(.) %in% c(
-        "PSDC_2018_Custom",
+        #"PSDC_2018_Custom",
         "PSDC_2019_Custom",
         "PSDC_2020_Custom",
         "PSDC_2021_Custom",
         "PSDC_2022_Custom",
-        "PSDC_2023_Custom"
+        "PSDC_2023_Custom",
+        "PSDC_2024_Custom"
       )))
     
     workingDataPost$data <- left_join(workingDataPost$data,
@@ -1556,11 +1628,13 @@ server <- function(input, output, session) {
                                     "AREA_NAME" = "District", 
                                     "ageasentered" = "AgeCohort"))
     
-    workingDataPost$data$PSDC_2018 <- workingDataPost$data$PSDC_2018_Custom
+    #workingDataPost$data$PSDC_2018 <- workingDataPost$data$PSDC_2018_Custom
     workingDataPost$data$PSDC_2019 <- workingDataPost$data$PSDC_2019_Custom
     workingDataPost$data$PSDC_2020 <- workingDataPost$data$PSDC_2020_Custom
     workingDataPost$data$PSDC_2021 <- workingDataPost$data$PSDC_2021_Custom
     workingDataPost$data$PSDC_2022 <- workingDataPost$data$PSDC_2022_Custom
+    workingDataPost$data$PSDC_2023 <- workingDataPost$data$PSDC_2023_Custom
+    workingDataPost$data$PSDC_2024 <- workingDataPost$data$PSDC_2024_Custom
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1574,11 +1648,13 @@ server <- function(input, output, session) {
   observeEvent(input$resetToDefaultDoubleCount, {
     req(workingDataPost$data)
     
-    workingDataPost$data$PSDC_2018 <- 15
+    #workingDataPost$data$PSDC_2018 <- 15
     workingDataPost$data$PSDC_2019 <- 15
     workingDataPost$data$PSDC_2020 <- 15
     workingDataPost$data$PSDC_2021 <- 15
     workingDataPost$data$PSDC_2022 <- 15
+    workingDataPost$data$PSDC_2023 <- 15
+    workingDataPost$data$PSDC_2024 <- 15
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1599,62 +1675,82 @@ server <- function(input, output, session) {
                                              "AREA_NAME" = "District",
                                              "ageasentered" = "ageasentered"))
     
-    workingDataPost$data$firstQ_2018 <- workingDataPost$data$firstQCustom_2018
+    #workingDataPost$data$firstQ_2018 <- workingDataPost$data$firstQCustom_2018
     workingDataPost$data$firstQ_2019 <- workingDataPost$data$firstQCustom_2019
     workingDataPost$data$firstQ_2020 <- workingDataPost$data$firstQCustom_2020
     workingDataPost$data$firstQ_2021 <- workingDataPost$data$firstQCustom_2021
     workingDataPost$data$firstQ_2022 <- workingDataPost$data$firstQCustom_2022
+    workingDataPost$data$firstQ_2023 <- workingDataPost$data$firstQCustom_2023
+    workingDataPost$data$firstQ_2024 <- workingDataPost$data$firstQCustom_2024
     
-    workingDataPost$data$secondQ_2018 <- workingDataPost$data$secondQCustom_2018
+    #workingDataPost$data$secondQ_2018 <- workingDataPost$data$secondQCustom_2018
     workingDataPost$data$secondQ_2019 <- workingDataPost$data$secondQCustom_2019
     workingDataPost$data$secondQ_2020 <- workingDataPost$data$secondQCustom_2020
     workingDataPost$data$secondQ_2021 <- workingDataPost$data$secondQCustom_2021
     workingDataPost$data$secondQ_2022 <- workingDataPost$data$secondQCustom_2022
+    workingDataPost$data$secondQ_2023 <- workingDataPost$data$secondQCustom_2023
+    workingDataPost$data$secondQ_2024 <- workingDataPost$data$secondQCustom_2024
     
-    workingDataPost$data$thirdQ_2018 <- workingDataPost$data$thirdQCustom_2018
+    #workingDataPost$data$thirdQ_2018 <- workingDataPost$data$thirdQCustom_2018
     workingDataPost$data$thirdQ_2019 <- workingDataPost$data$thirdQCustom_2019
     workingDataPost$data$thirdQ_2020 <- workingDataPost$data$thirdQCustom_2020
     workingDataPost$data$thirdQ_2021 <- workingDataPost$data$thirdQCustom_2021
     workingDataPost$data$thirdQ_2022 <- workingDataPost$data$thirdQCustom_2022
+    workingDataPost$data$thirdQ_2023 <- workingDataPost$data$thirdQCustom_2023
+    workingDataPost$data$thirdQ_2024 <- workingDataPost$data$thirdQCustom_2024
     
-    workingDataPost$data$fourthQ_2018 <- workingDataPost$data$fourthQCustom_2018
+    #workingDataPost$data$fourthQ_2018 <- workingDataPost$data$fourthQCustom_2018
     workingDataPost$data$fourthQ_2019 <- workingDataPost$data$fourthQCustom_2019
     workingDataPost$data$fourthQ_2020 <- workingDataPost$data$fourthQCustom_2020
     workingDataPost$data$fourthQ_2021 <- workingDataPost$data$fourthQCustom_2021
     workingDataPost$data$fourthQ_2022 <- workingDataPost$data$fourthQCustom_2022
+    workingDataPost$data$fourthQ_2023 <- workingDataPost$data$fourthQCustom_2023
+    workingDataPost$data$fourthQ_2024 <- workingDataPost$data$fourthQCustom_2024
     
-    workingDataPost$data$fifthQ_2018 <- workingDataPost$data$fifthQCustom_2018
+    #workingDataPost$data$fifthQ_2018 <- workingDataPost$data$fifthQCustom_2018
     workingDataPost$data$fifthQ_2019 <- workingDataPost$data$fifthQCustom_2019
     workingDataPost$data$fifthQ_2020 <- workingDataPost$data$fifthQCustom_2020
     workingDataPost$data$fifthQ_2021 <- workingDataPost$data$fifthQCustom_2021
     workingDataPost$data$fifthQ_2022 <- workingDataPost$data$fifthQCustom_2022
+    workingDataPost$data$fifthQ_2023 <- workingDataPost$data$fifthQCustom_2023
+    workingDataPost$data$fifthQ_2024 <- workingDataPost$data$fifthQCustom_2024
     
     workingDataPost$data <- workingDataPost$data %>%
-      dplyr::select(-c(firstQCustom_2018,
+      dplyr::select(-c(#firstQCustom_2018,
                        firstQCustom_2019,
                        firstQCustom_2020,
                        firstQCustom_2021,
                        firstQCustom_2022,
-                       secondQCustom_2018,
+                       firstQCustom_2023,
+                       firstQCustom_2024,
+                       #secondQCustom_2018,
                        secondQCustom_2019,
                        secondQCustom_2020,
                        secondQCustom_2021,
                        secondQCustom_2022,
-                       thirdQCustom_2018,
+                       secondQCustom_2023,
+                       secondQCustom_2024,
+                       #thirdQCustom_2018,
                        thirdQCustom_2019,
                        thirdQCustom_2020,
                        thirdQCustom_2021,
                        thirdQCustom_2022,
-                       fourthQCustom_2018,
+                       thirdQCustom_2023,
+                       thirdQCustom_2024,
+                       #fourthQCustom_2018,
                        fourthQCustom_2019,
                        fourthQCustom_2020,
                        fourthQCustom_2021,
                        fourthQCustom_2022,
-                       fifthQCustom_2018,
+                       fourthQCustom_2023,
+                       fourthQCustom_2024,
+                       #fifthQCustom_2018,
                        fifthQCustom_2019,
                        fifthQCustom_2020,
                        fifthQCustom_2021,
-                       fifthQCustom_2022))
+                       fifthQCustom_2022,
+                       fifthQCustom_2023,
+                       fifthQCustom_2024))
     
     workingDataPost$data <- workingDataPost$data %>%
       deriveStatistics() %>%
@@ -1674,18 +1770,18 @@ server <- function(input, output, session) {
     
     print(class(workingDataPost$data))  
     print(str(workingDataPost$data))
-    print(workingDataPost$data)
+    View(workingDataPost$data)
     
     
   })
   
-  output$testingTable <- DT::renderDataTable({
-    req(workingDataPost$data)
-    
-    datatable(workingDataPost$data,
-              options = list(scrollx = TRUE)
-    )
-  })
+  # output$testingTable <- DT::renderDataTable({
+  #   req(workingDataPost$data)
+  #   
+  #   datatable(workingDataPost$data,
+  #             options = list(scrollx = TRUE)
+  #   )
+  # })
   ###
   
   output$customPopulationTable <- DT::renderDataTable({
@@ -1700,7 +1796,8 @@ server <- function(input, output, session) {
                            `2020` = "Pop_2020_Custom",
                            `2021` = "Pop_2021_Custom",
                            `2022` = "Pop_2022_Custom",
-                           `2023` = "Pop_2023_Custom")
+                           `2023` = "Pop_2023_Custom",
+                           `2024` = "Pop_2024_Custom")
     )
   })
   
@@ -1716,7 +1813,8 @@ server <- function(input, output, session) {
                            `2020` = "Prevalence_2020_Custom",
                            `2021` = "Prevalence_2021_Custom",
                            `2022` = "Prevalence_2022_Custom",
-                           `2023` = "Prevalence_2023_Custom")
+                           `2023` = "Prevalence_2023_Custom",
+                           `2024` = "Prevalence_2024_Custom")
     )
   })
   
@@ -1732,7 +1830,8 @@ server <- function(input, output, session) {
                            `2020` = "Vulnerable_2020_Custom",
                            `2021` = "Vulnerable_2021_Custom",
                            `2022` = "Vulnerable_2022_Custom",
-                           `2023` = "Vulnerable_2023_Custom")
+                           `2023` = "Vulnerable_2023_Custom",
+                           `2024` = "Vulnerable_2024_Custom")
     )
   })
   
@@ -1767,7 +1866,9 @@ server <- function(input, output, session) {
                            `2019` = "Mobility_2019_Custom",
                            `2020` = "Mobility_2020_Custom",
                            `2021` = "Mobility_2021_Custom",
-                           `2022` = "Mobility_2022_Custom")
+                           `2022` = "Mobility_2022_Custom",
+                           `2023` = "Mobility_2023_Custom",
+                           `2024` = "Mobility_2024_Custom")
     )
   })
   
@@ -1782,7 +1883,9 @@ server <- function(input, output, session) {
                            `2019` = "Enrollment_2019_Custom",
                            `2020` = "Enrollment_2020_Custom",
                            `2021` = "Enrollment_2021_Custom",
-                           `2022` = "Enrollment_2022_Custom")
+                           `2022` = "Enrollment_2022_Custom",
+                           `2023` = "Enrollment_2023_Custom",
+                           `2024` = "Enrollment_2024_Custom")
     )
   })
   
@@ -1797,22 +1900,24 @@ server <- function(input, output, session) {
                            `2019` = "PSDC_2019_Custom",
                            `2020` = "PSDC_2020_Custom",
                            `2021` = "PSDC_2021_Custom",
-                           `2022` = "PSDC_2022_Custom")
+                           `2022` = "PSDC_2022_Custom",
+                           `2023` = "PSDC_2023_Custom",
+                           `2024` = "PSDC_2024_Custom")
     )
   })
   
-  output$stats_2022 <- DT::renderDataTable({
-    req(data_stats_2022$data)
+  output$stats_2023 <- DT::renderDataTable({
+    req(data_stats_2023$data)
     
-    a <- data_stats_2022$data %>%
+    a <- data_stats_2023$data %>%
       group_by(Country,
                District,
                Cohort) %>%
       dplyr::filter(Country == input$country) %>%
-      summarize(`Est. Female Population (FY22)` = mean(`Pop_2022`),
-                `Total DREAMS-eligible AGYW (FY22)` = mean(`Total DREAMS eligible AGYW`),
-                `Percent coverage (saturation) (FY22)` = mean(`Percent coverage (saturation)`),
-                `Remaining unserved AGYW (FY22)` = mean(`Remaining unserved AGYW`)) %>%
+      summarize(`Est. Female Population (FY23)` = mean(`Pop_2023`),
+                `Total DREAMS-eligible AGYW (FY23)` = mean(`Total DREAMS eligible AGYW`),
+                `Percent coverage (saturation) (FY23)` = mean(`Percent coverage (saturation)`),
+                `Remaining unserved AGYW (FY23)` = mean(`Remaining unserved AGYW`)) %>%
       ungroup()
     
     datatable(a %>%
@@ -1830,10 +1935,10 @@ server <- function(input, output, session) {
                District,
                Cohort) %>%
       dplyr::filter(Country == input$country) %>%
-      summarize(`Est. Female Population (FY23)` = mean(`Pop_2023`),
-                `H.C. Est. # of Vulnerable AGYW (FY23)` = mean(`Total DREAMS eligible AGYW 2023`),
-                `DREAMS Sat App Percent Coverage - Saturation (%, FY23)` = mean(`Percent coverage (saturation) 2023`),
-                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY23)` = mean(`Remaining unserved AGYW 2023`)) %>%
+      summarize(`Est. Female Population (FY24)` = mean(`Pop_2024`),
+                `H.C. Est. # of Vulnerable AGYW (FY24)` = mean(`Total DREAMS eligible AGYW 2024`),
+                `DREAMS Sat App Percent Coverage - Saturation (%, FY25)` = mean(`Percent coverage (saturation) 2024`),
+                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY25)` = mean(`Remaining unserved AGYW 2024`)) %>%
       ungroup()
     
     datatable(a %>%
@@ -1857,26 +1962,27 @@ server <- function(input, output, session) {
     a <- data_stats_analytics() %>%
       dplyr::filter(IsSelected == "Selected" & District == input$numeratorsDistrict) %>%
       dplyr::select(-c("District",
-                       "Sat_2022",
-                       "Prev_2022",
-                       "Vuln_2022",
+                       "Sat_2023",
                        "Prev_2023",
                        "Vuln_2023",
-                       "PSDC_2022",
-                       "Enrollment_2022",
-                       "Mobility_2022",
+                       "Prev_2024",
+                       "Vuln_2024",
+                       "PSDC_2023",
+                       "Enrollment_2023",
+                       "Mobility_2023",
                        "IsSelected",
-                       "Pop_2022",
-                       "Pop_2022_Default",
                        "Pop_2023",
                        "Pop_2023_Default",
-                       "PLHIV_2022",
-                       "NonPLHIV_2022",
-                       "VulnerableNonPLHIV_2022",
-                       "VulnerableNonPLHIV_2023"))
+                       "Pop_2024",
+                       "Pop_2024_Default",
+                       "PLHIV_2023",
+                       "NonPLHIV_2023",
+                       "VulnerableNonPLHIV_2023",
+                       "VulnerableNonPLHIV_2024"))
     
+
     a <- a[, col_order]
-    
+
     b <- a %>%
       group_by(Cohort) %>%
       summarize(`AGYW_PREV total` = mean(`AGYW_PREV total`),
@@ -1887,7 +1993,7 @@ server <- function(input, output, session) {
       )
     
     datatable(
-      b,
+      a,
       rownames = FALSE,
       caption = "*Primary/Secondary"
     )
@@ -1901,7 +2007,10 @@ server <- function(input, output, session) {
     
     age <- c(10:29)
     prop <- rep(20, 20)
-    sequence <- c("10-14", "15-19", "20-24", "25-29")
+    sequence <- c("10-14", 
+                  "15-19", 
+                  "20-24", 
+                  "25-29")
     ageasentered <- rep(sequence, each = 5)
     
     defaultDF <- data.frame(age, 
@@ -2037,85 +2146,89 @@ server <- function(input, output, session) {
   
   # Render map elements ----
   ## Main map ----
-  output$map_main <- leaflet::renderLeaflet({
-    a <- leaflet() %>%
-      setMapWidgetStyle(list(background = "white"))
-    # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
-  })
+  # output$map_main <- leaflet::renderLeaflet({
+  #   a <- leaflet() %>%
+  #     setMapWidgetStyle(list(background = "white"))
+  #   # addResetMapButton() #currently doesn't work correctly, figure out how to set to go to the new polygons
+  # })
   
-  observeEvent(input$country, {
-    
-    popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
-                           spatial$sf1_DREAMS$AREA_NAME)
-    
-    popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>",
-                              spatial$sf1_notDREAMS$AREA_NAME)
-    
-    if (input$country=="Eswatini") {
-      leafletProxy("map_main"
-      ) %>%
-        clearShapes() %>%
-        clearControls() %>%
-        addPolygons(data = spatial$sf1_notDREAMS,
-                    color = "black",
-                    fillColor = "white",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_NonDREAMS) %>%
-        addPolygons(data = spatial$sf1_DREAMS,
-                    color = "black",
-                    fillColor = "#FF6663",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_DREAMS,
-                    highlightOptions = highlightOptions(color = "white",
-                                                        weight = 2,
-                                                        bringToFront = TRUE)) %>%
-        setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
-                lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
-                zoom = spatial$zoom) %>%
-        setMapWidgetStyle(list(background = "white"))
-    } else {
-      leafletProxy("map_main"
-      ) %>%
-        clearShapes() %>%
-        clearControls() %>%
-        addPolygons(data = spatial$sf1_notDREAMS,
-                    color = "black",
-                    fillColor = "white",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_NonDREAMS) %>%
-        addPolygons(data = spatial$sf1_DREAMS,
-                    color = "black",
-                    fillColor = "#FF6663",
-                    weight = 1,
-                    opacity = 1,
-                    fillOpacity = 1,
-                    popup = popup_DREAMS,
-                    highlightOptions = highlightOptions(color = "white",
-                                                        weight = 2,
-                                                        bringToFront = TRUE)) %>%
-        setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
-                lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
-                zoom = spatial$zoom) %>%
-        setMapWidgetStyle(list(background = "white"))
-      
-    }
-  })
-  
+  # observeEvent(input$country, {
+  #   req(spatial$sf1_notDREAMS)
+  #   req(spatial$sf1_DREAMS)
+  # 
+  #   popup_DREAMS <- paste0("<strong>DREAMS District: </strong>",
+  #                          spatial$sf1_DREAMS$AREA_NAME)
+  # 
+  #   popup_NonDREAMS <- paste0("<strong>Non-DREAMS District: </strong>",
+  #                             spatial$sf1_notDREAMS$AREA_NAME)
+  # 
+  #   if (input$country=="Eswatini") { #Jan 25, 2024 - Best I can tell, this Eswatini v. Not dichotomy is no longer relevant, simplify once everything working
+  #     leafletProxy("map_main"
+  #     ) %>%
+  #       clearShapes() %>%
+  #       clearControls() %>%
+  #       addPolygons(data = spatial$sf1_notDREAMS,
+  #                   color = "black",
+  #                   fillColor = "white",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_NonDREAMS) %>%
+  #       addPolygons(data = spatial$sf1_DREAMS,
+  #                   color = "black",
+  #                   fillColor = "#FF6663",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_DREAMS,
+  #                   highlightOptions = highlightOptions(color = "white",
+  #                                                       weight = 2,
+  #                                                       bringToFront = TRUE)) %>%
+  #       setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
+  #               lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
+  #               zoom = spatial$zoom) %>%
+  #       setMapWidgetStyle(list(background = "white"))
+  #   } else {
+  #     leafletProxy("map_main"
+  #     ) %>%
+  #       clearShapes() %>%
+  #       clearControls() %>%
+  #       addPolygons(data = spatial$sf1_notDREAMS,
+  #                   color = "black",
+  #                   fillColor = "white",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_NonDREAMS) %>%
+  #       addPolygons(data = spatial$sf1_DREAMS,
+  #                   color = "black",
+  #                   fillColor = "#FF6663",
+  #                   weight = 1,
+  #                   opacity = 1,
+  #                   fillOpacity = 1,
+  #                   popup = popup_DREAMS,
+  #                   highlightOptions = highlightOptions(color = "white",
+  #                                                       weight = 2,
+  #                                                       bringToFront = TRUE)) %>%
+  #       setView(lng = mean(st_bbox(spatial$sf1)[c(1,3)]),
+  #               lat = mean(st_bbox(spatial$sf1)[c(2,4)]),
+  #               zoom = spatial$zoom) %>%
+  #       setMapWidgetStyle(list(background = "white"))
+  # 
+  #   }
+  # })
+
   ## Saturation map ----
   saturation_bins <- c(0, 25.0, 50.0, 75.0, 100.0, Inf)
   
   saturation_labels <- c("0.0 - 24.9", "25.0 - 49.9", "50.0 - 74.9", "75.0 - 99.9", "100.0 or more")
   
   output$map_saturation <- leaflet::renderLeaflet({
-    req(data_stats_2022$data)
+    req(data_stats_2023$data)
+    req(spatial$sf1_notDREAMS)
+    req(spatial$sf1_DREAMS)
     
-    internal_df <- data_stats_2022$data %>%
+    internal_df <- data_stats_2023$data %>%
       dplyr::filter(Cohort == input$saturationCohort)
     
     selected_country_DREAMS_joined <- merge(spatial$sf1_DREAMS,
@@ -2161,8 +2274,10 @@ server <- function(input, output, session) {
   
   observeEvent(input$saturationCohort, {
     #req(data_stats_2022$data)
+    req(spatial$sf1_notDREAMS)
+    req(spatial$sf1_DREAMS)
     
-    internal_df <- data_stats_2022$data %>%
+    internal_df <- data_stats_2023$data %>%
       #dplyr::filter(Cohort == "10-14")
       dplyr::filter(Cohort == input$saturationCohort)
     
@@ -2371,20 +2486,20 @@ server <- function(input, output, session) {
   
   # DownloadHandlers ----
   ## Downloads ----
-  ### 2022 Export, not COP, (FY22 Figures) ----
-  selectedCountry_2022 <- reactive({
+  ### 2023 Export, not COP, (FY23 Figures) ----
+  selectedCountry_2023 <- reactive({
     req(input$country)
-    req(data_stats_2022$data)
+    req(data_stats_2023$data)
     
-    a <- data_stats_2022$data %>%
+    a <- data_stats_2023$data %>%
       group_by(Country,
                District,
                Cohort) %>%
       dplyr::filter(Country == input$country) %>%
-      summarize(`Est. Female Population (FY22)` = mean(`Pop_2022`),
-                `Total DREAMS-eligible AGYW (FY22)` = mean(`Total DREAMS eligible AGYW`),
-                `Percent coverage (saturation) (FY22)` = mean(`Percent coverage (saturation)`),
-                `Remaining unserved AGYW (FY22)` = mean(`Remaining unserved AGYW`)) %>%
+      summarize(`Est. Female Population (FY23)` = mean(`Pop_2023`),
+                `Total DREAMS-eligible AGYW (FY23)` = mean(`Total DREAMS eligible AGYW`),
+                `Percent coverage (saturation) (FY23)` = mean(`Percent coverage (saturation)`),
+                `Remaining unserved AGYW (FY23)` = mean(`Remaining unserved AGYW`)) %>%
       ungroup() #%>%
     # dplyr::select(-c("Country"))
     
@@ -2392,21 +2507,21 @@ server <- function(input, output, session) {
     
   })
   
-  output$blankTemplateDownload2022Export <- downloadHandler(
+  output$blankTemplateDownload2023Export <- downloadHandler(
     filename = function() {
-      paste("2022Export", 
+      paste("2023Export", 
             ".xlsx",
             sep = "")
     },
     
     content = function(file) {
-      write_xlsx(selectedCountry_2022(), 
+      write_xlsx(selectedCountry_2023(), 
                  path = file)
     },
     contentType = NULL
   )
   
-  ### COP Export (FY23 Figures) ----
+  ### COP Export (FY24 Figures) ----
   selectedCountry_COP <- reactive({
     req(input$country)
     req(data_stats_COP$data)
@@ -2416,20 +2531,19 @@ server <- function(input, output, session) {
                District,
                Cohort) %>%
       dplyr::filter(Country == input$country) %>%
-      summarize(`Est. Female Population (FY23)` = mean(`Pop_2023`),
-                `H.C. Est. # of Vulnerable AGYW (FY23)` = mean(`Total DREAMS eligible AGYW 2023`),
-                `DREAMS Sat App Percent Coverage - Saturation (%, FY23)` = mean(`Percent coverage (saturation) 2023`),
-                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY23)` = mean(`Remaining unserved AGYW 2023`)) %>%
-      ungroup() #%>%
-    # dplyr::select(-c("Country"))
+      summarize(`Est. Female Population (FY24)` = mean(`Pop_2024`),
+                `H.C. Est. # of Vulnerable AGYW (FY24)` = mean(`Total DREAMS eligible AGYW 2024`),
+                `DREAMS Sat App Percent Coverage - Saturation (%, FY24)` = mean(`Percent coverage (saturation) 2024`),
+                `DREAMS Sat App DREAMS Eligible Girls Not Yet Reached (FY24)` = mean(`Remaining unserved AGYW 2024`)) %>%
+      ungroup()
     
     return(a)
     
   })
   
-  output$blankTemplateDownloadCOPExport <- downloadHandler(
+  output$blankTemplateDownloadCOP24Export <- downloadHandler(
     filename = function() {
-      paste("COPExport_AGYW_Tab", 
+      paste("COP24Export_AGYW_Tab", 
             ".xlsx",
             sep = "")
     },
@@ -2455,7 +2569,8 @@ server <- function(input, output, session) {
                       "Pop_2020",
                       "Pop_2021",
                       "Pop_2022",
-                      "Pop_2023"))
+                      "Pop_2023",
+                      "Pop_2024"))
     
     return(a)
     
@@ -2489,7 +2604,8 @@ server <- function(input, output, session) {
                       "Prevalence_2020",
                       "Prevalence_2021",
                       "Prevalence_2022",
-                      "Prevalence_2023"))
+                      "Prevalence_2023",
+                      "Prevalence_2024"))
     
     return(a)
     
@@ -2523,7 +2639,8 @@ server <- function(input, output, session) {
                       "Vulnerable_2020",
                       "Vulnerable_2021",
                       "Vulnerable_2022",
-                      "Vulnerable_2023"))
+                      "Vulnerable_2023",
+                      "Vulnerable_2024"))
     
     return(a)
     
@@ -2582,7 +2699,9 @@ server <- function(input, output, session) {
                       "Mobility_2019",
                       "Mobility_2020",
                       "Mobility_2021",
-                      "Mobility_2022"))
+                      "Mobility_2022",
+                      "Mobility_2023",
+                      "Mobility_2024"))
     
     return(a)
     
@@ -2615,7 +2734,9 @@ server <- function(input, output, session) {
                       "Enrollment_2019",
                       "Enrollment_2020",
                       "Enrollment_2021",
-                      "Enrollment_2022"))
+                      "Enrollment_2022",
+                      "Enrollment_2023",
+                      "Enrollment_2024"))
     
     return(a)
     
@@ -2648,7 +2769,9 @@ server <- function(input, output, session) {
                       "PrimarySecondaryDoubleCounts_2019",
                       "PrimarySecondaryDoubleCounts_2020",
                       "PrimarySecondaryDoubleCounts_2021",
-                      "PrimarySecondaryDoubleCounts_2022"))
+                      "PrimarySecondaryDoubleCounts_2022",
+                      "PrimarySecondaryDoubleCounts_2023",
+                      "PrimarySecondaryDoubleCounts_2024"))
     
     return(a)
     
@@ -2780,7 +2903,8 @@ server <- function(input, output, session) {
                             "Pop_2020",
                             "Pop_2021",
                             "Pop_2022",
-                            "Pop_2023")
+                            "Pop_2023",
+                            "Pop_2024")
       
       column_names <- colnames(a)
       
@@ -2793,7 +2917,8 @@ server <- function(input, output, session) {
                Pop_2020_Custom = Pop_2020,
                Pop_2021_Custom = Pop_2021,
                Pop_2022_Custom = Pop_2022,
-               Pop_2023_Custom = Pop_2023)
+               Pop_2023_Custom = Pop_2023,
+               Pop_2024_Custom = Pop_2024)
     
     
     } else {
@@ -2808,7 +2933,8 @@ server <- function(input, output, session) {
       #        Pop_2020_Custom,
       #        Pop_2021_Custom,
       #        Pop_2022_Custom,
-      #        Pop_2023_Custom
+      #        Pop_2023_Custom,
+      #        Pop_2024_Custom
       #        )
       #   ) %>%
       #   rename(Country = Country,
@@ -2834,7 +2960,8 @@ server <- function(input, output, session) {
                           "Prevalence_2020",
                           "Prevalence_2021",
                           "Prevalence_2022",
-                          "Prevalence_2023")
+                          "Prevalence_2023",
+                          "Prevalence_2024")
     
     column_names <- colnames(a)
     
@@ -2847,7 +2974,8 @@ server <- function(input, output, session) {
              Prevalence_2020_Custom = Prevalence_2020,
              Prevalence_2021_Custom = Prevalence_2021,
              Prevalence_2022_Custom = Prevalence_2022,
-             Prevalence_2023_Custom = Prevalence_2023)
+             Prevalence_2023_Custom = Prevalence_2023,
+             Prevalence_2024_Custom = Prevalence_2024)
     
     return(b)
   })
@@ -2866,7 +2994,8 @@ server <- function(input, output, session) {
                           "Vulnerable_2020",
                           "Vulnerable_2021",
                           "Vulnerable_2022",
-                          "Vulnerable_2023")
+                          "Vulnerable_2023",
+                          "Vulnerable_2024")
     
     column_names <- colnames(a)
     
@@ -2879,7 +3008,8 @@ server <- function(input, output, session) {
              Vulnerable_2020_Custom = Vulnerable_2020,
              Vulnerable_2021_Custom = Vulnerable_2021,
              Vulnerable_2022_Custom = Vulnerable_2022,
-             Vulnerable_2023_Custom = Vulnerable_2023)
+             Vulnerable_2023_Custom = Vulnerable_2023,
+             Vulnerable_2024_Custom = Vulnerable_2024)
     
     return(b)
   })
@@ -2902,26 +3032,36 @@ server <- function(input, output, session) {
              firstQCustom_2020 = firstQ_2020,
              firstQCustom_2021 = firstQ_2021,
              firstQCustom_2022 = firstQ_2022,
+             firstQCustom_2023 = firstQ_2023,
+             firstQCustom_2024 = firstQ_2024,
              secondQCustom_2018 = secondQ_2018,
              secondQCustom_2019 = secondQ_2019,
              secondQCustom_2020 = secondQ_2020,
              secondQCustom_2021 = secondQ_2021,
              secondQCustom_2022 = secondQ_2022,
+             secondQCustom_2023 = secondQ_2023,
+             secondQCustom_2024 = secondQ_2024,
              thirdQCustom_2018 = thirdQ_2018,
              thirdQCustom_2019 = thirdQ_2019,
              thirdQCustom_2020 = thirdQ_2020,
              thirdQCustom_2021 = thirdQ_2021,
              thirdQCustom_2022 = thirdQ_2022,
+             thirdQCustom_2023 = thirdQ_2023,
+             thirdQCustom_2024 = thirdQ_2024,
              fourthQCustom_2018 = fourthQ_2018,
              fourthQCustom_2019 = fourthQ_2019,
              fourthQCustom_2020 = fourthQ_2020,
              fourthQCustom_2021 = fourthQ_2021,
              fourthQCustom_2022 = fourthQ_2022,
+             fourthQCustom_2023 = fourthQ_2023,
+             fourthQCustom_2024 = fourthQ_2024,
              fifthQCustom_2018 = fifthQ_2018,
              fifthQCustom_2019 = fifthQ_2019,
              fifthQCustom_2020 = fifthQ_2020,
              fifthQCustom_2021 = fifthQ_2021,
-             fifthQCustom_2022 = fifthQ_2022)
+             fifthQCustom_2022 = fifthQ_2022,
+             fifthQCustom_2023 = fifthQ_2023,
+             fifthQCustom_2024 = fifthQ_2024)
     
     
     return(a)
@@ -2939,7 +3079,9 @@ server <- function(input, output, session) {
                           "Mobility_2019", 
                           "Mobility_2020",
                           "Mobility_2021",
-                          "Mobility_2022")
+                          "Mobility_2022",
+                          "Mobility_2023",
+                          "Mobility_2024")
     
     column_names <- colnames(a)
     
@@ -2951,7 +3093,9 @@ server <- function(input, output, session) {
              Mobility_2019_Custom = Mobility_2019,
              Mobility_2020_Custom = Mobility_2020,
              Mobility_2021_Custom = Mobility_2021,
-             Mobility_2022_Custom = Mobility_2022)
+             Mobility_2022_Custom = Mobility_2022,
+             Mobility_2023_Custom = Mobility_2023,
+             Mobility_2024_Custom = Mobility_2024)
     
     return(b)
   })
@@ -2968,7 +3112,9 @@ server <- function(input, output, session) {
                           "Enrollment_2019", 
                           "Enrollment_2020",
                           "Enrollment_2021",
-                          "Enrollment_2022")
+                          "Enrollment_2022",
+                          "Enrollment_2023",
+                          "Enrollment_2024")
     
     column_names <- colnames(a)
     
@@ -2980,7 +3126,9 @@ server <- function(input, output, session) {
              Enrollment_2019_Custom = Enrollment_2019,
              Enrollment_2020_Custom = Enrollment_2020,
              Enrollment_2021_Custom = Enrollment_2021,
-             Enrollment_2022_Custom = Enrollment_2022)
+             Enrollment_2022_Custom = Enrollment_2022,
+             Enrollment_2023_Custom = Enrollment_2023,
+             Enrollment_2024_Custom = Enrollment_2024)
     
     return(b)
   })
@@ -2999,7 +3147,9 @@ server <- function(input, output, session) {
                           "PrimarySecondaryDoubleCounts_2019", 
                           "PrimarySecondaryDoubleCounts_2020",
                           "PrimarySecondaryDoubleCounts_2021",
-                          "PrimarySecondaryDoubleCounts_2022")
+                          "PrimarySecondaryDoubleCounts_2022",
+                          "PrimarySecondaryDoubleCounts_2023",
+                          "PrimarySecondaryDoubleCounts_2024")
     
     column_names <- colnames(a)
     
@@ -3011,7 +3161,9 @@ server <- function(input, output, session) {
              PSDC_2019_Custom = PrimarySecondaryDoubleCounts_2019,
              PSDC_2020_Custom = PrimarySecondaryDoubleCounts_2020,
              PSDC_2021_Custom = PrimarySecondaryDoubleCounts_2021,
-             PSDC_2022_Custom = PrimarySecondaryDoubleCounts_2022)
+             PSDC_2022_Custom = PrimarySecondaryDoubleCounts_2022,
+             PSDC_2023_Custom = PrimarySecondaryDoubleCounts_2023,
+             PSDC_2024_Custom = PrimarySecondaryDoubleCounts_2024)
     
     return(b)
   })

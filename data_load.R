@@ -1,19 +1,19 @@
-DREAMS_Districts_Botswana <- c("Bobirwa District", 
-                               "Mahalapye District", 
-                               "Serowe District",
-                               "Kgatleng District", 
-                               "Kweneng East District", 
-                               "North East District", 
-                               "Gaborone District", 
-                               "Southern District")
+# DREAMS_Districts_Botswana <- c("Bobirwa District",
+#                                "Gaborone District",
+#                                "Kgatleng District",
+#                                "Kweneng East District",
+#                                "Mahalapye District",
+#                                "North East District",
+#                                "Serowe District",
+#                                "Southern District")
 
 DREAMS_Districts_Botswana_USCB <- c("BOBONONG",
-                                    "MAHALAPYE", 
-                                    "SEROWE PALAPYE",
+                                    "MAHALAPYE",
+                                    "GABORONE", 
                                     "KGATLENG", 
                                     "KWENENG EAST", 
                                     "NORTH EAST", 
-                                    "GABORONE", 
+                                    "SEROWE PALAPYE",
                                     "SOUTHERN")
 
 DREAMS_Districts_CotedIvoire <- c("Abobo-Est", 
@@ -21,23 +21,55 @@ DREAMS_Districts_CotedIvoire <- c("Abobo-Est",
                                   "Daloa",
                                   "Man")
 
-DREAMS_Districts_Eswatini <- c("Hhohho", 
-                               "Lubombo",
-                               "Manzini",
-                               "Shiselweni")
+DREAMS_Districts_Eswatini <- c("Dvokodvweni",
+                               "Ekukhanyeni",
+                               "Gilgali Inkhundla",
+                               "Hosea",
+                               "Kumethula Inkhundla",
+                               "Kwaluseni",
+                               "Lobamba",
+                               "Lobamba Lomdzala",
+                               "Lomahasha",
+                               "Ludzeludze",
+                               "Lugongolweni",
+                               "Madlangampisi",
+                               "Mafutseni",
+                               "Manzini North",
+                               "Manzini South",
+                               "Maseyisini",
+                               "Mbabane East",
+                               "Mbabane West",
+                               "Mhlangatane",
+                               "Mhlume",
+                               "Mkhiweni",
+                               "Motshane",
+                               "Mpolonjeni",
+                               "Mtsambama",
+                               "Ngudzeni",
+                               "Ngwempisi",
+                               "Nkhaba",
+                               "Nkomiyahlaba Inkhundla",
+                               "Ntfonjeni",
+                               "Phondo Inkhundla",
+                               "Piggs Peak",
+                               "Sandleni",
+                               "Shiselweni 2",
+                               "Siphocosini Inhkuhndla",
+                               "Siphofaneni",
+                               "Sithobela")
 
-DREAMS_Districts_Haiti <- c("Dessalines",
-                            "Saint-Marc",
-                            "Cap-Haïtien",
-                            "Port-au-Prince")
+DREAMS_Districts_Haiti <- c("Cap-Haïtien",
+                            "Dessalines",
+                            "Port-au-Prince",
+                            "Saint-Marc")
 
-DREAMS_Districts_Kenya <- c("Homa Bay County", 
-                            "Kiambu County", 
-                            "Kisumu County", 
-                            "Migori County", 
-                            "Mombasa County", 
-                            "Nairobi County", 
-                            "Siaya County")
+# DREAMS_Districts_Kenya <- c("Homa Bay County", 
+#                             "Kiambu County", 
+#                             "Kisumu County", 
+#                             "Migori County", 
+#                             "Mombasa County", 
+#                             "Nairobi County", 
+#                             "Siaya County")
 
 DREAMS_Districts_Kenya_USCB <- c("HOMA BAY",
                                  "KIAMBU", 
@@ -47,142 +79,152 @@ DREAMS_Districts_Kenya_USCB <- c("HOMA BAY",
                                  "NAIROBI CITY", 
                                  "SIAYA")
 
-DREAMS_Districts_Lesotho <- c("Berea", 
-                              "Mafeteng",
-                              "Maseru",
-                              "Mohale's Hoek")
+# DREAMS_Districts_Lesotho <- c("Berea", 
+#                               "Mafeteng",
+#                               "Maseru",
+#                               "Mohale's Hoek")
 
 DREAMS_Districts_Lesotho_USCB <- c("BEREA", 
                                    "MAFETENG",
                                    "MASERU",
                                    "MOHALE'S HOEK")
 
-DREAMS_Districts_Malawi <- c("Blantyre District", 
-                              "Machinga District",
-                              "Zomba District")
+# DREAMS_Districts_Malawi <- c("Blantyre District",
+#                              "Chiradzulu District",
+#                              "Machinga District",
+#                              "Phalombe District",
+#                              "Zomba District")
 
-DREAMS_Districts_Malawi_USCB <- c("BLANTYRE", 
+DREAMS_Districts_Malawi_USCB <- c("BLANTYRE",
+                                  "CHIRADZULU",
                                   "MACHINGA",
+                                  "PHALOMBE",
                                   "ZOMBA")
 
-DREAMS_Districts_Mozambique <- c("Pemba",
-                                 "Chokwe",
-                                 "Chonguene",
-                                 "Guija",
-                                 "Limpopo",
-                                 "Xai-Xai",
-                                 "Maxixe",
-                                 "Chimoio",
-                                 "Boane",
-                                 "Magude",
-                                 "Manhiça",
-                                 "Marracuene",
-                                 "Matola",
-                                 "Matutuine",
-                                 "Moamba",
-                                 "Namaacha",
-                                 "Erati",
-                                 "Nampula",
-                                 "Beira",
-                                 "Caia",
-                                 "Gile",
-                                 "Ile",
-                                 "Inhassunge",
-                                 "Lugela",
-                                 "Maganja Da Costa",
-                                 "Milange",
-                                 "Mocuba",
-                                 "Mocubela",
-                                 "Namacurra",
-                                 "Nicoadala",
-                                 "Pebane",
-                                 "Quelimane")
+# DREAMS_Districts_Mozambique <- c("Beira",
+#                                  "Boane",
+#                                  "Caia",
+#                                  "Chimoio",
+#                                  "Chokwe",
+#                                  "Chonguene",
+#                                  "Erati",
+#                                  "Gile",
+#                                  "Guija",
+#                                  "Ile",
+#                                  "Inhassunge",
+#                                  "Limpopo",
+#                                  "Lugela",
+#                                  "Maganja Da Costa",
+#                                  "Magude",
+#                                  "Manhiça",
+#                                  "Marracuene",
+#                                  "Matola",
+#                                  "Matutuine",
+#                                  "Maxixe",
+#                                  "Milange",
+#                                  "Mocuba",
+#                                  "Mocubela",
+#                                  "Moamba",
+#                                  "Namaacha",
+#                                  "Namacurra",
+#                                  "Nampula",
+#                                  "Nicoadala",
+#                                  "Pebane",
+#                                  "Pemba",
+#                                  "Quelimane",
+#                                  "Xai-Xai")
 
-DREAMS_Districts_Mozambique_USCB <- c("CIDADE DE PEMBA",
+DREAMS_Districts_Mozambique_USCB <- c("BOANE",
+                                      "CAIA",
+                                      "CIDADE DA BEIRA",
+                                      "CIDADE DE CHIMOIO",
+                                      "CIDADE DA MATOLA",
+                                      "CIDADE DA MAXIXE",
+                                      "CIDADE DE NAMPULA",
+                                      "CIDADE DE PEMBA",
+                                      "CIDADE DE XAI-XAI",
                                       "CHÓKWÈ",
                                       "CHONGOENE",
+                                      "ERÁTI",
+                                      "GILÉ",
                                       "GUIJÁ",
+                                      "ILE",
+                                      "INHASSUNGE",
                                       "LIMPOPO",
-                                      "CIDADE DE XAI-XAI",
-                                      "CIDADE DA MAXIXE",
-                                      "CIDADE DE CHIMOIO",
-                                      "BOANE",
+                                      "LUGELA",
+                                      "MAGANJA DA COSTA",
                                       "MAGUDE",
                                       "MANHIÇA",
                                       "MARRACUENE",
-                                      "CIDADE DA MATOLA",
                                       "MATUTUINE",
-                                      "MOAMBA",
-                                      "NAMAACHA",
-                                      "ERÁTI",
-                                      "CIDADE DE NAMPULA",
-                                      "CIDADE DA BEIRA",
-                                      "CAIA",
-                                      "GILÉ",
-                                      "ILE",
-                                      "INHASSUNGE",
-                                      "LUGELA",
-                                      "MAGANJA DA COSTA",
                                       "MILANGE",
+                                      "MOAMBA",
                                       "MOCUBA",
                                       "MOCUBELA",
+                                      "NAMAACHA",
                                       "NAMACURRA",
                                       "NICOADALA",
                                       "PEBANE",
                                       "QUELIMANE")
 
-DREAMS_Districts_Namibia <- c("Andara",
+DREAMS_Districts_Namibia <- c("Andara", #Same as Mukwe
+                              "Katima Mulilo",
+                              "Nankudu",
                               "Nyangana",
-                              "Rundu",
-                              "Windhoek",
-                              "Oshakati",
                               "Omuthiya",
                               "Onandjokwe",
+                              "Oshakati",
+                              "Rundu",
                               "Tsumeb",
-                              "Katima Mulilo")
-                                   
-DREAMS_Districts_Namibia_USCB <- c("MUKWE", 
-                                   "NDIYONA",
-                                   "RUNDU",
-                                   "WINDHOEK",
-                                   "OSHAKATI",
-                                   "OMUTHIYAGWIIPUNDI",
-                                   "ONIIPA",
-                                   "TSUMEB",
-                                   "KATIMA MULILO")
+                              "Windhoek")
 
-DREAMS_Districts_Rwanda <- c("East",
-                             "Kigali City",
-                             "South")
+# DREAMS_Districts_Namibia_USCB <- c("KATIMA MULILO",
+#                                    "MUKWE", #Same as Andara
+#                                    "NANKUDU",
+#                                    "NDIYONA",
+#                                    "OMUTHIYAGWIIPUNDI",
+#                                    "ONIIPA",
+#                                    "OSHAKATI",
+#                                    "RUNDU",
+#                                    "WINDHOEK",
+#                                    "TSUMEB")
 
-DREAMS_Districts_Rwanda_USCB <- c("EASTERN PROVINCE", 
-                                  "KIGALI",
-                                  "SOUTHERN PROVINCE")
+DREAMS_Districts_Rwanda <- c("Gasabo",
+                             "Kicukiro",
+                             "Nyanza",
+                             "Nyarugenge",
+                             "Rwamagana")
 
-DREAMS_Districts_SouthAfrica <- c("ec Alfred Nzo District Municipality",
-                                  "nw Bojanala Platinum District Municipality",
-                                  "ec Buffalo City Metropolitan Municipality",
-                                  "lp Capricorn District Municipality",
-                                  "wc City of Cape Town Metropolitan Municipality",
-                                  "gp City of Johannesburg Metropolitan Municipality",
-                                  "gp City of Tshwane Metropolitan Municipality",
-                                  "nw Dr Kenneth Kaunda District Municipality",
-                                  "mp Ehlanzeni District Municipality",
-                                  "gp Ekurhuleni Metropolitan Municipality",
-                                  "kz eThekwini Metropolitan Municipality",
-                                  "mp Gert Sibande District Municipality",
-                                  "fs Lejweleputswa District Municipality",
-                                  "lp Mopani District Municipality",
-                                  "nw Ngaka Modiri Molema District Municipality",
-                                  "mp Nkangala District Municipality",
-                                  "ec Oliver Tambo District Municipality",
-                                  "gp Sedibeng District Municipality",
-                                  "fs Thabo Mofutsanyane District Municipality",
-                                  "kz Ugu District Municipality",
-                                  "kz uMgungundlovu District Municipality",
-                                  "kz Uthukela District Municipality",
-                                  "kz King Cetshwayo District Municipality",
-                                  "kz Zululand District Municipality")
+# DREAMS_Districts_Rwanda_USCB <- c("GASABO", 
+#                                   "KICUKIRO",
+#                                   "NYANZA",
+#                                   "NYARUGENGE",
+#                                   "RWAMAGANA")
+
+# DREAMS_Districts_SouthAfrica <- c("ec Alfred Nzo District Municipality",
+#                                   "nw Bojanala Platinum District Municipality",
+#                                   "ec Buffalo City Metropolitan Municipality",
+#                                   "lp Capricorn District Municipality",
+#                                   "wc City of Cape Town Metropolitan Municipality",
+#                                   "gp City of Johannesburg Metropolitan Municipality",
+#                                   "gp City of Tshwane Metropolitan Municipality",
+#                                   "nw Dr Kenneth Kaunda District Municipality",
+#                                   "mp Ehlanzeni District Municipality",
+#                                   "gp Ekurhuleni Metropolitan Municipality",
+#                                   "kz eThekwini Metropolitan Municipality",
+#                                   "mp Gert Sibande District Municipality",
+#                                   "fs Lejweleputswa District Municipality",
+#                                   "lp Mopani District Municipality",
+#                                   "nw Ngaka Modiri Molema District Municipality",
+#                                   "mp Nkangala District Municipality",
+#                                   "ec Oliver Tambo District Municipality",
+#                                   "gp Sedibeng District Municipality",
+#                                   "fs Thabo Mofutsanyane District Municipality",
+#                                   "kz Ugu District Municipality",
+#                                   "kz uMgungundlovu District Municipality",
+#                                   "kz Uthukela District Municipality",
+#                                   "kz King Cetshwayo District Municipality",
+#                                   "kz Zululand District Municipality")
 
 DREAMS_Districts_SouthAfrica_USCB <- c("ALFRED NZO",
                                        "BOJANALA",
@@ -209,10 +251,12 @@ DREAMS_Districts_SouthAfrica_USCB <- c("ALFRED NZO",
                                        "UTHUNGULU",
                                        "ZULULAND")
 
-DREAMS_Districts_Tanzania <- c("Kahama TC",
+DREAMS_Districts_Tanzania <- c("Bukoba MC",
+                               "Iringa MC",
+                               "Kahama TC",
                                "Kyela DC",
                                "Mbarali DC",
-                               "Mbeya City Council",
+                               "Mbeya CC",
                                "Msalala DC",
                                "Mufindi DC",
                                "Muleba DC",
@@ -220,76 +264,89 @@ DREAMS_Districts_Tanzania <- c("Kahama TC",
                                "Shinyanga DC",
                                "Shinyanga MC",
                                "Temeke MC",
+                               "Tunduma TC",
                                "Ushetu DC")
 
-DREAMS_Districts_Uganda <- c("Bukomansimbi District",
-                                  "Gomba District",
-                                  "Kalangala District",
-                                  "Kyotera District",
-                                  "Lwengo District",
-                                  "Lyantonde District",
-                                  "Masaka District",
-                                  "Rakai District",
-                                  "Sembabule District",
-                                  "Wakiso District",
-                                  "Kassanda District",
-                                  "Luwero District",
-                                  "Mityana District",
-                                  "Mubende District",
-                                  "Mukono District",
-                                  "Kampala District",
-                                  "Agago District",
-                                  "Apac District",
-                                  "Gulu District",
-                                  "Kwania District",
-                                  "Lira District",
-                                  "Omoro District",
-                                  "Oyam District",
-                                  "Mbarara District")
+DREAMS_Districts_Uganda <- c("Agago District",
+                             "Apac District",
+                             "Bukomansimbi District",
+                             "Fort Portal City",
+                             "Gomba District",
+                             "Gulu City",
+                             "Gulu District",
+                             "Kalangala District",
+                             "Kampala District",
+                             "Kassanda District",
+                             "Kayunga District",
+                             "Kwania District",
+                             "Kyotera District",
+                             "Lira City",
+                             "Lira District",
+                             "Luwero District",
+                             "Lwengo District",
+                             "Lyantonde District",
+                             "Masaka City",
+                             "Masaka District",
+                             "Mbarara City",
+                             "Mbarara District",
+                             "Mityana District",
+                             "Mubende District",
+                             "Mukono District",
+                             "Omoro District",
+                             "Oyam District",
+                             "Rakai District",
+                             "Sembabule District",
+                             "Wakiso District")
 
-DREAMS_Districts_Uganda_USCB <- c("BUKOMANSIMBI",
-                                  "GOMBA",
-                                  "KALANGALA",
-                                  "KYOTERA",
-                                  "LWENGO",
-                                  "LYANTONDE",
-                                  "MASAKA",
-                                  "RAKAI",
-                                  "SEMBABULE",
-                                  "WAKISO",
-                                  "KASANDA",
-                                  "LUWERO",
-                                  "MITYANA",
-                                  "MUBENDE",
-                                  "MUKONO",
-                                  "KAMPALA",
-                                  "AGAGO",
-                                  "APAC",
-                                  "GULU",
-                                  "KWANIA",
-                                  "LIRA",
-                                  "OMORO",
-                                  "OYAM",
-                                  "MBARARA")
 
-DREAMS_Districts_Zambia <- c("Chingola District",
-                                  "Chipata District",
-                                  "Kabwe District", 
-                                  "Kapiri-Mposhi District",
-                                  "Kasama District",
-                                  "Kitwe District",
-                                  "Livingstone District",
-                                  "Luanshya District",
-                                  "Lusaka District",
-                                  "Mazabuka District",
-                                  "Monze District",
-                                  "Mongu District",
-                                  "Mufulira District",
-                                  "Ndola District")
+# DREAMS_Districts_Uganda_USCB <- c("AGAGO", #Currently no entities for the cities (Gulu, Lira, Masaka, Mbarara, and Fort Portal City)
+#                                   "APAC",
+#                                   "BUKOMANSIMBI",
+#                                   "GOMBA",
+#                                   "GULU",
+#                                   "KALANGALA",
+#                                   "KAMPALA",
+#                                   "KASANDA",
+#                                   "KAYUNGA",
+#                                   "KWANIA",
+#                                   "KYOTERA",
+#                                   "LIRA",
+#                                   "LUWERO",
+#                                   "LWENGO",
+#                                   "LYANTONDE",
+#                                   "MASAKA",
+#                                   "MBARARA",
+#                                   "MITYANA",
+#                                   "MUBENDE",
+#                                   "MUKONO",
+#                                   "OMORO",
+#                                   "OYAM",
+#                                   "RAKAI",
+#                                   "SEMBABULE",
+#                                   "WAKISO")
+
+# DREAMS_Districts_Zambia <- c("Chingola District",
+#                              "Chipata District",
+#                              "Kabwe District",
+#                              "Kafue District",
+#                              "Kapiri-Mposhi District",
+#                              "Kasama District",
+#                              "Kitwe District",
+#                              "Livingstone District",
+#                              "Luanshya District",
+#                              "Lusaka District",
+#                              "Mazabuka District",
+#                              "Monze District",
+#                              "Mongu District",
+#                              "Mufulira District",
+#                              "Namwala District",
+#                              "Ndola District",
+#                              "Sesheke District")
 
 DREAMS_Districts_Zambia_USCB <- c("CHINGOLA",
                                   "CHIPATA",
-                                  "KABWE", 
+                                  "KABWE",
+                                  "KAFUE",
                                   "KAPIRI MPOSHI",
                                   "KASAMA",
                                   "KITWE",
@@ -300,24 +357,26 @@ DREAMS_Districts_Zambia_USCB <- c("CHINGOLA",
                                   "MONZE",
                                   "MONGU",
                                   "MUFULIRA",
-                                  "NDOLA")
+                                  "NAMWALA",
+                                  "NDOLA",
+                                  "SESHEKE")
 
-DREAMS_Districts_Zimbabwe <- c("Beitbridge",
-                                "Bubi",
-                                "Bulawayo",
-                                "Bulilima",
-                                "Chipinge",
-                                "Gwanda",
-                                "Gweru",
-                                "Insiza",
-                                "Lupane",
-                                "Makoni",
-                                "Mangwe",
-                                "Matobo",
-                                "Mazowe",
-                                "Mutare",
-                                "Nkayi",
-                                "Tsholotsho")
+# DREAMS_Districts_Zimbabwe <- c("Beitbridge", 
+#                                 "Bubi",
+#                                 "Bulawayo",
+#                                 "Bulilima",
+#                                 "Chipinge",
+#                                 "Gwanda",
+#                                 "Gweru",
+#                                 "Insiza",
+#                                 "Lupane",
+#                                 "Makoni",
+#                                 "Mangwe",
+#                                 "Matobo",
+#                                 "Mazowe",
+#                                 "Mutare",
+#                                 "Nkayi",
+#                                 "Tsholotsho")
 
 DREAMS_Districts_Zimbabwe_USCB <- c("BEITBRIDGE",
                                     "BUBI",
@@ -336,7 +395,14 @@ DREAMS_Districts_Zimbabwe_USCB <- c("BEITBRIDGE",
                                     "NKAYI",
                                     "TSHOLOTSHO")
 
-countryData <- readRDS("data/countryData.RDS")
+
+countryData <- readRDS("data/countryData.RDS") %>%
+  as.data.frame()
+
+# AGYW_PREV <- s3read_using(FUN = read.csv,
+#              bucket = Sys.getenv("WRITE_S3"),
+#              object = "system_dreams_saturation/AGYW_PREVbyCountry.csv") %>%
+#   as.data.frame()
 
 AGYW_PREV <- s3read_using(FUN = read.csv,
              bucket = Sys.getenv("WRITE_S3"),
@@ -376,7 +442,9 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "Cap-Haïtien" & country == "Haiti") ~ "Cap-Haïtien",
       (JOIN_NAME == "Port-au-Prince" & country == "Haiti") ~ "Port-au-Prince",
       (JOIN_NAME == "BLANTYRE" & country == "Malawi") ~ "Blantyre District", #JOIN_NAME for Malawi
+      (JOIN_NAME == "CHIRADZULU" & country == "Malawi") ~ "Chiradzulu District", #JOIN_NAME for Malawi
       (JOIN_NAME == "MACHINGA" & country == "Malawi") ~ "Machinga District", #JOIN_NAME for Malawi
+      (JOIN_NAME == "PHALOMBE" & country == "Malawi") ~ "Phalombe District", #JOIN_NAME for Malawi
       (JOIN_NAME == "ZOMBA" & country == "Malawi") ~ "Zomba District", #JOIN_NAME for Malawi
       (JOIN_NAME == "CIDADE DE PEMBA" & country == "Mozambique") ~ "Pemba",
       (JOIN_NAME == "CHÓKWÈ" & country == "Mozambique") ~ "Chokwe",
@@ -411,13 +479,14 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "PEBANE" & country == "Mozambique") ~ "Pebane",
       (JOIN_NAME == "QUELIMANE" & country == "Mozambique") ~ "Quelimane",
       (JOIN_NAME == "MUKWE" & country == "Namibia") ~ "Andara",
+      (JOIN_NAME == "NANKUDU" & country == "Namibia") ~ "Nankudu",
       (JOIN_NAME == "NDIYONA" & country == "Namibia") ~ "Nyangana",
-      (JOIN_NAME == "RUNDU" & country == "Namibia") ~ "Rundu",
-      (JOIN_NAME == "WINDHOEK" & country == "Namibia") ~ "Windhoek",
-      (JOIN_NAME == "OSHAKATI" & country == "Namibia") ~ "Oshakati",
       (JOIN_NAME == "OMUTHIYAGWIIPUNDI" & country == "Namibia") ~ "Omuthiya",
       (JOIN_NAME == "ONIIPA" & country == "Namibia") ~ "Onandjokwe",
+      (JOIN_NAME == "OSHAKATI" & country == "Namibia") ~ "Oshakati",
+      (JOIN_NAME == "RUNDU" & country == "Namibia") ~ "Rundu",
       (JOIN_NAME == "TSUMEB" & country == "Namibia") ~ "Tsumeb",
+      (JOIN_NAME == "WINDHOEK" & country == "Namibia") ~ "Windhoek",
       (JOIN_NAME == "KATIMA MULILO" & country == "Namibia") ~ "Katima Mulilo",
       (JOIN_NAME == "ALFRED NZO" & country == "South Africa") ~ "ec Alfred Nzo District Municipality", #JOIN_NAME for South Africa
       (JOIN_NAME == "BOJANALA" & country == "South Africa") ~ "nw Bojanala Platinum District Municipality", #JOIN_NAME for South Africa
@@ -443,17 +512,20 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "UTHUKELA" & country == "South Africa") ~ "kz Uthukela District Municipality", #JOIN_NAME for South Africa
       (JOIN_NAME == "UTHUNGULU" & country == "South Africa") ~ "kz King Cetshwayo District Municipality", #JOIN_NAME for South Africa
       (JOIN_NAME == "ZULULAND" & country == "South Africa") ~ "kz Zululand District Municipality", #JOIN_NAME for South Africa
-      (JOIN_NAME == "TEMEKE MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Temeke MC",
-      (JOIN_NAME == "MUFINDI DISTRICT COUNCIL" & country == "Tanzania") ~ "Mufindi DC",
-      (JOIN_NAME == "MULEBA DISTRIC COUNCIL" & country == "Tanzania") ~ "Muleba DC",
+      (JOIN_NAME == "BUKOBA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Bukoba MC",
+      (JOIN_NAME == "IRINGA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Iringa MC",
+      (JOIN_NAME == "KAHAMA TOWN COUNCIL" & country == "Tanzania") ~ "Kahama TC",
       (JOIN_NAME == "KYELA DISTRICT COUNCIL" & country == "Tanzania") ~ "Kyela DC",
       (JOIN_NAME == "MBARALI DISTRICT COUNCIL" & country == "Tanzania") ~ "Mbarali DC",
       (JOIN_NAME == "MBEYA CITY COUNCIL" & country == "Tanzania") ~ "Mbeya CC",
-      (JOIN_NAME == "NYAMAGANA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Nyamagana MC",
-      (JOIN_NAME == "KAHAMA TOWN COUNCIL" & country == "Tanzania") ~ "Kahama TC",
       (JOIN_NAME == "MSALALA" & country == "Tanzania") ~ "Msalala DC",
+      (JOIN_NAME == "MULEBA DISTRIC COUNCIL" & country == "Tanzania") ~ "Muleba DC",
+      (JOIN_NAME == "MUFINDI DISTRICT COUNCIL" & country == "Tanzania") ~ "Mufindi DC",
+      (JOIN_NAME == "NYAMAGANA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Nyamagana MC",
       (JOIN_NAME == "SHINYANGA DISTRICT COUNCIL" & country == "Tanzania") ~ "Shinyanga DC",
       (JOIN_NAME == "SHINYANGA MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Shinyanga MC",
+      (JOIN_NAME == "TEMEKE MUNICIPAL COUNCIL" & country == "Tanzania") ~ "Temeke MC",
+      (JOIN_NAME == "TUNDUMA TOWN COUNCIL" & country == "Tanzania") ~ "Tunduma TC",
       (JOIN_NAME == "USHETU DISTRICT COUNCIL" & country == "Tanzania") ~ "Ushetu DC",
       (JOIN_NAME == "BUKOMANSIMBI" & country == "Uganda") ~ "Bukomansimbi District",
       (JOIN_NAME == "GOMBA" & country == "Uganda") ~ "Gomba District",
@@ -482,17 +554,20 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "KABWE" & country == "Zambia") ~ "Kabwe District",
       (JOIN_NAME == "KAPIRI MPOSHI" & country == "Zambia") ~ "Kapiri-Mposhi District",
       (JOIN_NAME == "CHINGOLA" & country == "Zambia") ~ "Chingola District",
-      (JOIN_NAME == "KITWE" & country == "Zambia") ~ "Kitwe District",
-      (JOIN_NAME == "LUANSHYA" & country == "Zambia") ~ "Luanshya District",
-      (JOIN_NAME == "MUFULIRA" & country == "Zambia") ~ "Mufulira District",
-      (JOIN_NAME == "NDOLA" & country == "Zambia") ~ "Ndola District",
       (JOIN_NAME == "CHIPATA" & country == "Zambia") ~ "Chipata District",
-      (JOIN_NAME == "LUSAKA" & country == "Zambia") ~ "Lusaka District",
+      (JOIN_NAME == "KAFUE" & country == "Zambia") ~ "Kafue District",
       (JOIN_NAME == "KASAMA" & country == "Zambia") ~ "Kasama District",
+      (JOIN_NAME == "KITWE" & country == "Zambia") ~ "Kitwe District",
       (JOIN_NAME == "LIVINGSTONE" & country == "Zambia") ~ "Livingstone District",
+      (JOIN_NAME == "LUANSHYA" & country == "Zambia") ~ "Luanshya District",
+      (JOIN_NAME == "LUSAKA" & country == "Zambia") ~ "Lusaka District",
       (JOIN_NAME == "MAZABUKA" & country == "Zambia") ~ "Mazabuka District",
       (JOIN_NAME == "MONZE" & country == "Zambia") ~ "Monze District",
       (JOIN_NAME == "MONGU" & country == "Zambia") ~ "Mongu District",
+      (JOIN_NAME == "MUFULIRA" & country == "Zambia") ~ "Mufulira District",
+      (JOIN_NAME == "NAMWALA" & country == "Zambia") ~ "Namwala District",
+      (JOIN_NAME == "NDOLA" & country == "Zambia") ~ "Ndola District",
+      (JOIN_NAME == "SESHEKE" & country == "Zambia") ~ "Sesheke District",
       (JOIN_NAME == "BULAWAYO" & country == "Zimbabwe") ~ "Bulawayo",
       (JOIN_NAME == "CHIPINGE" & country == "Zimbabwe") ~ "Chipinge",
       (JOIN_NAME == "MAKONI" & country == "Zimbabwe") ~ "Makoni",
@@ -526,7 +601,8 @@ countryDataJoined <- left_join(countryData,
       (JOIN_NAME == "MOHALE'S HOEK" & country == "Lesotho") ~ "Mohale's Hoek",
       (JOIN_NAME == "EASTERN PROVINCE" & country == "Rwanda") ~ "East",
       (JOIN_NAME == "KIGALI" & country == "Rwanda") ~ "Kigali City",
-      (JOIN_NAME == "SOUTHERN PROVINCE" & country == "Rwanda") ~ "South"
+      (JOIN_NAME == "SOUTHERN PROVINCE" & country == "Rwanda") ~ "South",
+      TRUE ~ as.character(JOIN_NAME)
     )
   )
 
@@ -536,7 +612,7 @@ botADM2.sf <- readRDS('data/BotswanaADM2.RDS') %>%
   attachDREAMSField("Botswana")
 cdiADM2.sf <- readRDS('data/CDIADM2.RDS') %>%
   attachDREAMSField("CDI")
-eswADM1.sf <- readRDS('data/EswADM1.RDS') %>%
+eswADM2.sf <- readRDS('data/EswADM2.RDS') %>%
   attachDREAMSField("Eswatini")
 haiADM2.sf <- readRDS('data/HaiADM2.RDS') %>%
   attachDREAMSField("Haiti")
@@ -548,9 +624,9 @@ malADM1.sf <- readRDS('data/MalawiADM1.RDS') %>%
   attachDREAMSField("Malawi")
 mozADM2.sf <- readRDS('data/MozambiqueADM2.RDS') %>%
   attachDREAMSField("Mozambique")
-namADM2.sf <- readRDS('data/NamibiaADM2.RDS') %>%
+namADM2.sf <- readRDS('data/NamADM2.RDS') %>%   ###CHECK
   attachDREAMSField("Namibia")
-rwaADM1.sf <- readRDS('data/RwandaADM1.RDS') %>%
+rwaADM2.sf <- readRDS('data/RwandaADM2.RDS') %>%
   attachDREAMSField("Rwanda")
 safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
   attachDREAMSField("South Africa") %>%
@@ -562,9 +638,9 @@ safADM1.sf <- readRDS('data/SAfricaADM1.RDS') %>%
   )
 tanADM2.sf <- readRDS('data/TanzaniaADM2.RDS') %>%
   attachDREAMSField("Tanzania")
-ugaADM1.sf <- readRDS('data/UgandaADM1.RDS') %>%
+ugaADM2.sf <- readRDS('data/UgaADM2.RDS') %>%  ###CHECK
   attachDREAMSField("Uganda")
-zamADM1.sf <- readRDS('data/ZambiaADM2.RDS') %>%
+zamADM2.sf <- readRDS('data/ZambiaADM2.RDS') %>%
   attachDREAMSField("Zambia")
 zimADM2.sf <- readRDS('data/ZimbabweADM2.RDS') %>%
   attachDREAMSField("Zimbabwe")
@@ -618,15 +694,16 @@ defaultData$Pop_2020_Default <- defaultData$Pop_2020
 defaultData$Pop_2021_Default <- defaultData$Pop_2021
 defaultData$Pop_2022_Default <- defaultData$Pop_2022
 defaultData$Pop_2023_Default <- defaultData$Pop_2023
+defaultData$Pop_2024_Default <- defaultData$Pop_2024
 
-defaultStats2022 <- defaultData %>%
+defaultStats2023 <- defaultData %>%
   mutate(
     IsSelected = case_when(
       (PopStructure == "Default") ~ as.character("Selected"),
       TRUE ~ as.character("Unselected")
     )
   ) %>%
-  reduceTo2022Export()
+  reduceTo2023Export()
 
 defaultStatsCOP <- defaultData %>%
   mutate(
@@ -647,7 +724,9 @@ defaultData_trimmed <- defaultData %>%
                   "Pop_2020",
                   "Pop_2021",
                   "Pop_2022",
-                  "Pop_2023")) 
+                  "Pop_2023",
+                  "Pop_2024"
+                  )) 
 
 default5YearTemplate <- left_join(default5YearTemplate,
                                   defaultData_trimmed,
@@ -659,10 +738,22 @@ default5YearTemplate <- left_join(default5YearTemplate,
                    "AREA_NAME",
                    "ageasentered"))
 
-rm(defaultData_trimmed)
 
+DefaultSubnatPrev  <- dataParametersImportandMutate("www/defaultTemplate_5year.xlsx") %>%
+  dplyr::select(c(Country,
+           District,
+           ageasentered,
+           Prevalence_2024
+           )) %>%
+  rename(SubNatPrevalence = Prevalence_2024,
+         AREA_NAME = District,
+         country = Country)
+
+rm(defaultData_trimmed)
 rm(countryData)
 rm(countryDataJoined)
 rm(AGYW_PREV)
+
+
 
 

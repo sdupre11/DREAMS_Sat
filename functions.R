@@ -22,15 +22,15 @@ attachDREAMSField <- function(x, y) {
   } else if  (y == "Mozambique") {
     internal_list <- DREAMS_Districts_Mozambique_USCB
   } else if  (y == "Namibia") {
-    internal_list <- DREAMS_Districts_Namibia_USCB
+    internal_list <- DREAMS_Districts_Namibia
   } else if  (y == "Rwanda") {
-    internal_list <- DREAMS_Districts_Rwanda_USCB
+    internal_list <- DREAMS_Districts_Rwanda
   } else if  (y == "South Africa") {
     internal_list <- DREAMS_Districts_SouthAfrica_USCB
   } else if  (y == "Tanzania") {
     internal_list <- DREAMS_Districts_Tanzania
   } else if  (y == "Uganda") {
-    internal_list <- DREAMS_Districts_Uganda_USCB
+    internal_list <- DREAMS_Districts_Uganda
   } else if  (y == "Zambia") {
     internal_list <- DREAMS_Districts_Zambia_USCB
   } else if (y == "Zimbabwe") {
@@ -39,14 +39,12 @@ attachDREAMSField <- function(x, y) {
   
   internal_ADM1_Countries <- c("Kenya",
                                "Lesotho",
-                               "Rwanda",
-                               "South Africa", #actually a PSNU country, but here for functionality (workaround), improve later
-                               "Uganda")
+                               "South Africa") #actually a PSNU country, but here for functionality (workaround), improve later
   
   internal_ADM2_Countries <- c("Botswana",
                                "Malawi",
                                "Mozambique",
-                               "Namibia",
+                               "Rwanda",
                                "Zambia",
                                "Zimbabwe")
   
@@ -54,7 +52,9 @@ attachDREAMSField <- function(x, y) {
   
   internal_WorldPop_Countries <- c("CDI",
                                    "Eswatini",
-                                   "Haiti")
+                                   "Haiti",
+                                   "Namibia",
+                                   "Uganda")
   
   if(y %in% internal_ADM1_Countries) {   #SNUs
     b <- a %>%
@@ -118,7 +118,7 @@ dataParametersPivot1Year <- function(x) {
   
   a <- x %>%
     pivot_longer(
-      cols = GradStructure_2018:GradStructure_2022,
+      cols = GradStructure_2018:GradStructure_2024,
       names_to = "fiscalyear",
       names_prefix = "GradStructure_",
       values_to = "GradStructure"
@@ -156,48 +156,48 @@ dataParametersPivot1Year <- function(x) {
 dataParametersPivot5Year <- function(x) {
   
   Prevalence <- x %>%
-    dplyr::select(-(10:30)) %>%
+    dplyr::select(-(11:38)) %>%
     pivot_longer(
-      cols = Prevalence_2018:Prevalence_2023,
+      cols = Prevalence_2018:Prevalence_2024,
       names_to = "fiscal_year",
       names_prefix = "Prevalence_",
       values_to = "Prevalence"
     )
   
   Vulnerable <- x %>%
-    dplyr::select(-(4:9)) %>%
-    dplyr::select(-(10:24)) %>%
+    dplyr::select(-(4:10)) %>%
+    dplyr::select(-(11:31)) %>%
     pivot_longer(
-      cols = Vulnerable_2018:Vulnerable_2023,
+      cols = Vulnerable_2018:Vulnerable_2024,
       names_to = "fiscal_year",
       names_prefix = "Vulnerable_",
       values_to = "Vulnerable"
     )
   
   Mobility <- x %>%
-    dplyr::select(-(4:15)) %>%
-    dplyr::select(-(9:18)) %>%
+    dplyr::select(-(4:17)) %>%
+    dplyr::select(-(11:24)) %>%
     pivot_longer(
-      cols = Mobility_2018:Mobility_2022,
+      cols = Mobility_2018:Mobility_2024,
       names_to = "fiscal_year",
       names_prefix = "Mobility_",
       values_to = "Mobility"
     )
   
   Enrollment <- x %>%
-    dplyr::select(-(4:20)) %>%
-    dplyr::select(-(9:13)) %>%
+    dplyr::select(-(4:24)) %>%
+    dplyr::select(-(11:17)) %>%
     pivot_longer(
-      cols = Enrollment_2018:Enrollment_2022,
+      cols = Enrollment_2018:Enrollment_2024,
       names_to = "fiscal_year",
       names_prefix = "Enrollment_",
       values_to = "Enrollment"
     )
   
   PrimarySecondaryDoubleCounts <- x %>%
-    dplyr::select(-(4:25)) %>%
+    dplyr::select(-(4:31)) %>%
     pivot_longer(
-      cols = PrimarySecondaryDoubleCounts_2018:PrimarySecondaryDoubleCounts_2022,
+      cols = PrimarySecondaryDoubleCounts_2018:PrimarySecondaryDoubleCounts_2024,
       names_to = "fiscal_year",
       names_prefix = "PrimarySecondaryDoubleCounts_",
       values_to = "PrimarySecondaryDoubleCounts"
@@ -428,6 +428,9 @@ deriveStatisticsPreSat <- function(x) {
   a$PLHIV_2023 <- round((a$Pop_2023 * ((a$Prev_2023)/100)), 
                         0)
   
+  a$PLHIV_2024 <- round((a$Pop_2024 * ((a$Prev_2024)/100)), 
+                        0)
+  
   a$NonPLHIV_2018 <- round((a$Pop_2018 - a$PLHIV_2018),
                            0)
   
@@ -444,6 +447,9 @@ deriveStatisticsPreSat <- function(x) {
                            0)
   
   a$NonPLHIV_2023 <- round((a$Pop_2023 - a$PLHIV_2023),
+                           0)
+  
+  a$NonPLHIV_2024 <- round((a$Pop_2024 - a$PLHIV_2024),
                            0)
   
   a$VulnerableNonPLHIV_2018 <- round(a$NonPLHIV_2018 * (a$Vuln_2018/100), 
@@ -464,6 +470,9 @@ deriveStatisticsPreSat <- function(x) {
   a$VulnerableNonPLHIV_2023 <- round(a$NonPLHIV_2023 * (a$Vuln_2023/100), 
                                      0)
   
+  a$VulnerableNonPLHIV_2024 <- round(a$NonPLHIV_2024 * (a$Vuln_2024/100), 
+                                     0)
+  
   a <- replaceAGYWNAs(a) 
   
   
@@ -482,6 +491,12 @@ deriveStatisticsPreSat <- function(x) {
   a$DeDuplicatedAGYW_PREV_2022 <- round(a$AGYW_PREV_2022 * ((100-a$PSDC_2022)/100),
                                         0)
   
+  a$DeDuplicatedAGYW_PREV_2023 <- round(a$AGYW_PREV_2023 * ((100-a$PSDC_2023)/100),
+                                        0)
+  
+  a$DeDuplicatedAGYW_PREV_2024 <- round(a$AGYW_PREV_2024 * ((100-a$PSDC_2024)/100),
+                                        0)
+  
   a$MobilityStandardizedAGYW_PREV_2018 <- round(a$DeDuplicatedAGYW_PREV_2018 * ((100-a$Mobility_2018)/100), 
                                                 0)
   
@@ -497,6 +512,12 @@ deriveStatisticsPreSat <- function(x) {
   a$MobilityStandardizedAGYW_PREV_2022 <- round(a$DeDuplicatedAGYW_PREV_2022 * ((100-a$Mobility_2022)/100), 
                                                 0)
   
+  a$MobilityStandardizedAGYW_PREV_2023 <- round(a$DeDuplicatedAGYW_PREV_2023 * ((100-a$Mobility_2023)/100), 
+                                                0)
+  
+  a$MobilityStandardizedAGYW_PREV_2024 <- round(a$DeDuplicatedAGYW_PREV_2024 * ((100-a$Mobility_2024)/100), 
+                                                0)
+  
   a$EnrollmentStandardizedAGYW_PREV_2018 <- round(a$MobilityStandardizedAGYW_PREV_2018 * ((100-a$Enrollment_2018)/100), 
                                                   0)
   
@@ -510,6 +531,12 @@ deriveStatisticsPreSat <- function(x) {
                                                   0)
   
   a$EnrollmentStandardizedAGYW_PREV_2022 <- round(a$MobilityStandardizedAGYW_PREV_2022 * ((100-a$Enrollment_2022)/100), 
+                                                  0)
+  
+  a$EnrollmentStandardizedAGYW_PREV_2023 <- round(a$MobilityStandardizedAGYW_PREV_2023 * ((100-a$Enrollment_2023)/100), 
+                                                  0)
+  
+  a$EnrollmentStandardizedAGYW_PREV_2024 <- round(a$MobilityStandardizedAGYW_PREV_2024 * ((100-a$Enrollment_2024)/100), 
                                                   0)
   
   return(a)
@@ -542,8 +569,12 @@ deriveStatisticsSat <- function(x) {
   a$Actual_Served_2022 <- round((a$EnrollmentStandardizedAGYW_PREV_2022 + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019)))),
                                 0)
   
-  a$Actual_Served_2023 <- round(((a$EnrollmentStandardizedAGYW_PREV_2022*(1-a$fifthQ_2022)) + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020+a$thirdQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019+a$secondQ_2019)))),
+  a$Actual_Served_2023 <- round((a$EnrollmentStandardizedAGYW_PREV_2023 + (a$EnrollmentStandardizedAGYW_PREV_2022*(1-a$fifthQ_2022)) + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-a$fifthQ_2021)) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020+a$thirdQ_2020))) + (a$EnrollmentStandardizedAGYW_PREV_2019*(1-(a$fifthQ_2019+a$fourthQ_2019+a$thirdQ_2019+a$secondQ_2019)))),
                                 0)
+  
+  a$Actual_Served_2024 <- round((a$EnrollmentStandardizedAGYW_PREV_2024 + (a$EnrollmentStandardizedAGYW_PREV_2023*(1-a$fifthQ_2023)) + (a$EnrollmentStandardizedAGYW_PREV_2022*(1-a$fifthQ_2022)) + (a$EnrollmentStandardizedAGYW_PREV_2021*(1-(a$fifthQ_2021+a$fourthQ_2021+a$thirdQ_2021))) + (a$EnrollmentStandardizedAGYW_PREV_2020*(1-(a$fifthQ_2020+a$fourthQ_2020+a$thirdQ_2020+a$secondQ_2020)))),
+                                0)
+  
   
   a$Sat_2018 <- round(((a$Actual_Served_2018/a$VulnerableNonPLHIV_2018)*100),
                       1)
@@ -563,6 +594,9 @@ deriveStatisticsSat <- function(x) {
   a$Sat_2023 <- round(((a$Actual_Served_2023/a$VulnerableNonPLHIV_2023)*100),
                       1)
   
+  a$Sat_2024 <- round(((a$Actual_Served_2024/a$VulnerableNonPLHIV_2024)*100),
+                      1)
+  
   b$Actual_Served_2018 <- round(b$EnrollmentStandardizedAGYW_PREV_2018, #Make work if 2018 AGYW_PREV ingestion becomes an option, incorporate into successive calculations
                                 0)
   
@@ -578,7 +612,10 @@ deriveStatisticsSat <- function(x) {
   b$Actual_Served_2022 <- round((b$EnrollmentStandardizedAGYW_PREV_2022 + (b$EnrollmentStandardizedAGYW_PREV_2021*.8) + (b$EnrollmentStandardizedAGYW_PREV_2020*.6) + (b$EnrollmentStandardizedAGYW_PREV_2019*.4)),
                                 0)
   
-  b$Actual_Served_2023 <- round(((b$EnrollmentStandardizedAGYW_PREV_2022*.8) + (b$EnrollmentStandardizedAGYW_PREV_2021*.6) + (b$EnrollmentStandardizedAGYW_PREV_2020*.4) + (b$EnrollmentStandardizedAGYW_PREV_2019*.2)),
+  b$Actual_Served_2023 <- round((b$EnrollmentStandardizedAGYW_PREV_2023 + (b$EnrollmentStandardizedAGYW_PREV_2022*.8) + (b$EnrollmentStandardizedAGYW_PREV_2021*.6) + (b$EnrollmentStandardizedAGYW_PREV_2020*.4) + (b$EnrollmentStandardizedAGYW_PREV_2019*.2)),
+                                0)
+  
+  b$Actual_Served_2024 <- round((b$EnrollmentStandardizedAGYW_PREV_2024 + (b$EnrollmentStandardizedAGYW_PREV_2023*.8) + (b$EnrollmentStandardizedAGYW_PREV_2022*.6) + (b$EnrollmentStandardizedAGYW_PREV_2021*.4) + (b$EnrollmentStandardizedAGYW_PREV_2020*.2)),
                                 0)
   
   b$Sat_2018 <- round(((b$Actual_Served_2018/b$VulnerableNonPLHIV_2018)*100),
@@ -599,6 +636,9 @@ deriveStatisticsSat <- function(x) {
   b$Sat_2023 <- round(((b$Actual_Served_2023/b$VulnerableNonPLHIV_2023)*100),
                       1)
   
+  b$Sat_2024 <- round(((b$Actual_Served_2024/b$VulnerableNonPLHIV_2024)*100),
+                      1)
+  
   c$Actual_Served_2018 <- round(c$EnrollmentStandardizedAGYW_PREV_2018, #Make work if 2018 AGYW_PREV ingestion becomes an option, incorporate into successive calculations
                                 0)
   
@@ -614,7 +654,10 @@ deriveStatisticsSat <- function(x) {
   c$Actual_Served_2022 <- round((c$EnrollmentStandardizedAGYW_PREV_2022 + (c$EnrollmentStandardizedAGYW_PREV_2021*(1-c$fifthQNat_2021)) + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020))) + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019)))),
                                 0)
   
-  c$Actual_Served_2023 <- round(((c$EnrollmentStandardizedAGYW_PREV_2022*(1-c$fifthQNat_2022)) + (c$EnrollmentStandardizedAGYW_PREV_2021*(1-(c$fifthQNat_2021+c$fourthQNat_2021))) + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020+c$thirdQNat_2020))) + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019+c$secondQNat_2019)))),
+  c$Actual_Served_2023 <- round(((c$EnrollmentStandardizedAGYW_PREV_2023*(1-c$fifthQNat_2022)) + (c$EnrollmentStandardizedAGYW_PREV_2021*(1-(c$fifthQNat_2021+c$fourthQNat_2021))) + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020+c$thirdQNat_2020))) + (c$EnrollmentStandardizedAGYW_PREV_2019*(1-(c$fifthQNat_2019+c$fourthQNat_2019+c$thirdQNat_2019+c$secondQNat_2019)))),
+                                0)
+  
+  c$Actual_Served_2024 <- round(((c$EnrollmentStandardizedAGYW_PREV_2024*(1-c$fifthQNat_2023)) + (c$EnrollmentStandardizedAGYW_PREV_2022*(1-(c$fifthQNat_2022+c$fourthQNat_2022))) + (c$EnrollmentStandardizedAGYW_PREV_2021*(1-(c$fifthQNat_2021+c$fourthQNat_2021+c$thirdQNat_2021))) + (c$EnrollmentStandardizedAGYW_PREV_2020*(1-(c$fifthQNat_2020+c$fourthQNat_2020+c$thirdQNat_2020+c$secondQNat_2020)))),
                                 0)
   
   c$Sat_2018 <- round(((c$Actual_Served_2018/c$VulnerableNonPLHIV_2018)*100),
@@ -633,6 +676,9 @@ deriveStatisticsSat <- function(x) {
                       1)
   
   c$Sat_2023 <- round(((c$Actual_Served_2023/c$VulnerableNonPLHIV_2023)*100),
+                      1)
+  
+  c$Sat_2024 <- round(((c$Actual_Served_2024/c$VulnerableNonPLHIV_2024)*100),
                       1)
   
   d <- rbind(a,
@@ -663,6 +709,8 @@ deriveStatisticsGirlsRemaining <- function(x) {
   a$PopRemaining_2022 <- a$VulnerableNonPLHIV_2022 - a$Actual_Served_2022
   
   a$PopRemaining_2023 <- a$VulnerableNonPLHIV_2023 - a$Actual_Served_2023
+  
+  a$PopRemaining_2024 <- a$VulnerableNonPLHIV_2024 - a$Actual_Served_2024
   
   return(a)
   
@@ -708,6 +756,12 @@ replaceAGYWNAs <- function(x) {
       AGYW_PREV_2022 = case_when(
         (is.na(AGYW_PREV_2022)) ~ 0,
         TRUE ~ as.numeric(AGYW_PREV_2022)
+      )
+    ) %>%
+    mutate(
+      AGYW_PREV_2023 = case_when(
+        (is.na(AGYW_PREV_2023)) ~ 0,
+        TRUE ~ as.numeric(AGYW_PREV_2023)
       )
     )
   
@@ -758,13 +812,13 @@ attachParameters_1year <- function(x, y) {
   return(b)
 }
 
-reduceTo2022Export <- function(x) {
+reduceTo2023Export <- function(x) {
   
-  col_order <- c("Prev_2022",
+  col_order <- c("Prev_2023",
                  "Country",
                  "District",
                  "Cohort",
-                 "Pop_2022",
+                 "Pop_2023",
                  "Total DREAMS eligible AGYW",
                  "Percent coverage (saturation)",
                  "Remaining unserved AGYW"
@@ -774,76 +828,27 @@ reduceTo2022Export <- function(x) {
     dplyr::filter(IsSelected == "Selected") %>%
     dplyr::select(-c("IsSelected",
                      "PopStructure")) %>%
-    dplyr::select((-ends_with(c("2018",
-                                "2019", 
+    dplyr::select((-ends_with(c("2019",
                                 "2020", 
-                                "2021")))&(-starts_with(c("first", 
-                                                          "second", 
-                                                          "third", 
-                                                          "fourth", 
-                                                          "fifth")))) %>%
-    dplyr::select(-c(#"Prev_2022", 
-      "PSDC_2022", 
-      "Vuln_2022",
-      "Pop_2022_Default",
-      "AGYW_PREV_2022",
-      "PLHIV_2022",
-      "NonPLHIV_2022",
-      "DeDuplicatedAGYW_PREV_2022",
-      "MobilityStandardizedAGYW_PREV_2022",
-      "EnrollmentStandardizedAGYW_PREV_2022",
-      "Actual_Served_2022",
-      "Prev_2023",
-      "Vuln_2023")) %>%
-    dplyr::mutate(
-      PopRemaining_2022 = case_when(
-        (PopRemaining_2022 < 0) ~ 0,
-        TRUE ~ as.numeric(PopRemaining_2022)
-      )
-    ) %>%
-    dplyr::rename("Country" = "country",
-                  "Cohort" = "ageasentered",
-                  "District" = "AREA_NAME",
-                  "Total DREAMS eligible AGYW" = "VulnerableNonPLHIV_2022",
-                  "Percent coverage (saturation)" = "Sat_2022",
-                  "Remaining unserved AGYW" = "PopRemaining_2022")
-  
-  a <- a[, col_order]
-  
-  return(a)
-}
-
-
-reduceToCOPExport <- function(x) {
-  
-  col_order <- c("Prev_2023", 
-                 "Country",
-                 "District",
-                 "Cohort",
-                 "Pop_2023",
-                 "Total DREAMS eligible AGYW 2023",
-                 "Percent coverage (saturation) 2023",
-                 "Remaining unserved AGYW 2023"
-  )
-  
-  a <- x %>%
-    dplyr::filter(IsSelected == "Selected") %>%
-    dplyr::select(-c("IsSelected",
-                     "PopStructure")) %>%
-    dplyr::select((-ends_with(c("2018",
-                                "2019", 
-                                "2020", 
-                                "2021",
+                                "2021", 
                                 "2022")))&(-starts_with(c("first", 
                                                           "second", 
                                                           "third", 
                                                           "fourth", 
                                                           "fifth")))) %>%
-    dplyr::select(-c(#"Prev_2023", 
+    dplyr::select(-c(#"Prev_2022", 
+      "PSDC_2023", 
       "Vuln_2023",
       "Pop_2023_Default",
+      "AGYW_PREV_2023",
       "PLHIV_2023",
-      "NonPLHIV_2023")) %>%
+      "NonPLHIV_2023",
+      "DeDuplicatedAGYW_PREV_2023",
+      "MobilityStandardizedAGYW_PREV_2023",
+      "EnrollmentStandardizedAGYW_PREV_2023",
+      "Actual_Served_2023",
+      "Prev_2024",
+      "Vuln_2024")) %>%
     dplyr::mutate(
       PopRemaining_2023 = case_when(
         (PopRemaining_2023 < 0) ~ 0,
@@ -853,10 +858,58 @@ reduceToCOPExport <- function(x) {
     dplyr::rename("Country" = "country",
                   "Cohort" = "ageasentered",
                   "District" = "AREA_NAME",
-                  "Pop_2023" = "Pop_2023",
-                  "Total DREAMS eligible AGYW 2023" = "VulnerableNonPLHIV_2023",
-                  "Percent coverage (saturation) 2023" = "Sat_2023",
-                  "Remaining unserved AGYW 2023" = "PopRemaining_2023")
+                  "Total DREAMS eligible AGYW" = "VulnerableNonPLHIV_2023",
+                  "Percent coverage (saturation)" = "Sat_2023",
+                  "Remaining unserved AGYW" = "PopRemaining_2023")
+  
+  a <- a[, col_order]
+  
+  return(a)
+}
+
+reduceToCOPExport <- function(x) {
+  
+  col_order <- c("Prev_2024", 
+                 "Country",
+                 "District",
+                 "Cohort",
+                 "Pop_2024",
+                 "Total DREAMS eligible AGYW 2024",
+                 "Percent coverage (saturation) 2024",
+                 "Remaining unserved AGYW 2024"
+  )
+  
+  a <- x %>%
+    dplyr::filter(IsSelected == "Selected") %>%
+    dplyr::select(-c("IsSelected",
+                     "PopStructure")) %>%
+    dplyr::select((-ends_with(c("2019", 
+                                "2020", 
+                                "2021",
+                                "2022",
+                                "2023")))&(-starts_with(c("first", 
+                                                          "second", 
+                                                          "third", 
+                                                          "fourth", 
+                                                          "fifth")))) %>%
+    dplyr::select(-c(#"Prev_2023", 
+      "Vuln_2024",
+      "Pop_2024_Default",
+      "PLHIV_2024",
+      "NonPLHIV_2024")) %>%
+    dplyr::mutate(
+      PopRemaining_2024 = case_when(
+        (PopRemaining_2024 < 0) ~ 0,
+        TRUE ~ as.numeric(PopRemaining_2024)
+      )
+    ) %>%
+    dplyr::rename("Country" = "country",
+                  "Cohort" = "ageasentered",
+                  "District" = "AREA_NAME",
+                  "Pop_2024" = "Pop_2024",
+                  "Total DREAMS eligible AGYW 2024" = "VulnerableNonPLHIV_2024",
+                  "Percent coverage (saturation) 2024" = "Sat_2024",
+                  "Remaining unserved AGYW 2024" = "PopRemaining_2024")
   
   a <- a[, col_order]
   
@@ -867,26 +920,26 @@ reduceForAnalyticsPlots <- function(x) {
   
   a <- x
   
-  a$AGYW_PREV_Sum <- a$AGYW_PREV_2018 + a$AGYW_PREV_2019 + a$AGYW_PREV_2020 + a$AGYW_PREV_2021 + a$AGYW_PREV_2022
-  a$DeDuplicatedAGYW_PREV_Sum <- a$DeDuplicatedAGYW_PREV_2018 + a$DeDuplicatedAGYW_PREV_2019 + a$DeDuplicatedAGYW_PREV_2020 + a$DeDuplicatedAGYW_PREV_2021 + a$DeDuplicatedAGYW_PREV_2022
-  a$MobilityStandardizedAGYW_PREV_Sum <- a$MobilityStandardizedAGYW_PREV_2018 + a$MobilityStandardizedAGYW_PREV_2019 + a$MobilityStandardizedAGYW_PREV_2020 + a$MobilityStandardizedAGYW_PREV_2021 + a$MobilityStandardizedAGYW_PREV_2022
-  a$EnrollmentStandardizedAGYW_PREV_Sum <- a$EnrollmentStandardizedAGYW_PREV_2018 + a$EnrollmentStandardizedAGYW_PREV_2019 + a$EnrollmentStandardizedAGYW_PREV_2020 + a$EnrollmentStandardizedAGYW_PREV_2021 + a$EnrollmentStandardizedAGYW_PREV_2022
+  a$AGYW_PREV_Sum <- a$AGYW_PREV_2019 + a$AGYW_PREV_2020 + a$AGYW_PREV_2021 + a$AGYW_PREV_2022 + a$AGYW_PREV_2023
+  a$DeDuplicatedAGYW_PREV_Sum <- a$DeDuplicatedAGYW_PREV_2019 + a$DeDuplicatedAGYW_PREV_2020 + a$DeDuplicatedAGYW_PREV_2021 + a$DeDuplicatedAGYW_PREV_2022 + a$DeDuplicatedAGYW_PREV_2023
+  a$MobilityStandardizedAGYW_PREV_Sum <- a$MobilityStandardizedAGYW_PREV_2019 + a$MobilityStandardizedAGYW_PREV_2020 + a$MobilityStandardizedAGYW_PREV_2021 + a$MobilityStandardizedAGYW_PREV_2022 + a$MobilityStandardizedAGYW_PREV_2023
+  a$EnrollmentStandardizedAGYW_PREV_Sum <- a$EnrollmentStandardizedAGYW_PREV_2019 + a$EnrollmentStandardizedAGYW_PREV_2020 + a$EnrollmentStandardizedAGYW_PREV_2021 + a$EnrollmentStandardizedAGYW_PREV_2022 + a$EnrollmentStandardizedAGYW_PREV_2023
   
   b <- a %>%
-    dplyr::select((-ends_with(c("2018",
-                                "2019",
+    dplyr::select((-ends_with(c("2019",
                                 "2020",
-                                "2021")))&(-starts_with(c("first",
+                                "2021",
+                                "2022")))&(-starts_with(c("first",
                                                           "second",
                                                           "third",
                                                           "fourth",
                                                           "fifth")))) %>%
     dplyr::select(-c("country",
-                     "AGYW_PREV_2022",
-                     "DeDuplicatedAGYW_PREV_2022",
-                     "MobilityStandardizedAGYW_PREV_2022",
-                     "EnrollmentStandardizedAGYW_PREV_2022",
-                     "PopRemaining_2022",
+                     "AGYW_PREV_2023",
+                     "DeDuplicatedAGYW_PREV_2023",
+                     "MobilityStandardizedAGYW_PREV_2023",
+                     "EnrollmentStandardizedAGYW_PREV_2023",
+                     "PopRemaining_2023",
                      "PopStructure"))
 }
 
@@ -1000,90 +1053,48 @@ prepQDataforPopStructurePlots <- function(x) {
 }
 
 # attach prevalence ----
-countrySpecificPrev <- function(x) {
+countrySpecificPrev <- function(x, y) {
   a <- x
   
-  b <- a %>%
-    mutate(
-      Internal_Prev = case_when(
-        (country == "Botswana" & ageasentered == "10-14") ~ 0.6,
-        (country == "Botswana" & ageasentered == "15-19") ~ 2.7,
-        (country == "Botswana" & ageasentered == "20-24") ~ 6.7,
-        (country == "Botswana" & ageasentered == "25-29") ~ 15.8,
-        (country == "Cote d'Ivoire" & ageasentered == "10-14") ~ 0.2,
-        (country == "Cote d'Ivoire" & ageasentered == "15-19") ~ 0.6,
-        (country == "Cote d'Ivoire" & ageasentered == "20-24") ~ 1.3,
-        (country == "Cote d'Ivoire" & ageasentered == "25-29") ~ 3.2,
-        (country == "Eswatini" & ageasentered == "10-14") ~ 3.4,
-        (country == "Eswatini" & ageasentered == "15-19") ~ 7.2,
-        (country == "Eswatini" & ageasentered == "20-24") ~ 20.9,
-        (country == "Eswatini" & ageasentered == "25-29") ~ 37.5,
-        (country == "Haiti" & ageasentered == "10-14") ~ 0.2,
-        (country == "Haiti" & ageasentered == "15-19") ~ 0.3,
-        (country == "Haiti" & ageasentered == "20-24") ~ 1.5,
-        (country == "Haiti" & ageasentered == "25-29") ~ 3.0,
-        (country == "Kenya" & ageasentered == "10-14") ~ 0.8,
-        (country == "Kenya" & ageasentered == "15-19") ~ 1.2,
-        (country == "Kenya" & ageasentered == "20-24") ~ 3.4,
-        (country == "Kenya" & ageasentered == "25-29") ~ 6.0,
-        (country == "Lesotho" & ageasentered == "10-14") ~ 2.0,
-        (country == "Lesotho" & ageasentered == "15-19") ~ 3.9,
-        (country == "Lesotho" & ageasentered == "20-24") ~ 13.0,
-        (country == "Lesotho" & ageasentered == "25-29") ~ 27.5,
-        (country == "Mozambique" & ageasentered == "10-14") ~ 2.3,
-        (country == "Mozambique" & ageasentered == "15-19") ~ 11.5,
-        (country == "Mozambique" & ageasentered == "20-24") ~ 11.5,
-        (country == "Mozambique" & ageasentered == "25-29") ~ 11.5,
-        (country == "Malawi" & ageasentered == "10-14") ~ 0.7,
-        (country == "Malawi" & ageasentered == "15-19") ~ 1.4,
-        (country == "Malawi" & ageasentered == "20-24") ~ 1.3,
-        (country == "Malawi" & ageasentered == "25-29") ~ 3.2,
-        (country == "Namibia" & ageasentered == "10-14") ~ 1.6,
-        (country == "Namibia" & ageasentered == "15-19") ~ 4.7,
-        (country == "Namibia" & ageasentered == "20-24") ~ 6.0,
-        (country == "Namibia" & ageasentered == "25-29") ~ 9.2,
-        (country == "Rwanda" & ageasentered == "10-14") ~ 0.5,
-        (country == "Rwanda" & ageasentered == "15-19") ~ 0.8,
-        (country == "Rwanda" & ageasentered == "20-24") ~ 1.8,
-        (country == "Rwanda" & ageasentered == "25-29") ~ 3.4,
-        (country == "South Africa" & ageasentered == "10-14") ~ 3.8,
-        (country == "South Africa" & ageasentered == "15-19") ~ 19.1,
-        (country == "South Africa" & ageasentered == "20-24") ~ 19.1,
-        (country == "South Africa" & ageasentered == "25-29") ~ 19.1,
-        (country == "South Sudan" & ageasentered == "10-14") ~ 0.5,
-        (country == "South Sudan" & ageasentered == "15-19") ~ 2.3,
-        (country == "South Sudan" & ageasentered == "20-24") ~ 2.3,
-        (country == "South Sudan" & ageasentered == "25-29") ~ 2.3,
-        (country == "Tanzania" & ageasentered == "10-14") ~ 0.3,
-        (country == "Tanzania" & ageasentered == "15-19") ~ 1.0,
-        (country == "Tanzania" & ageasentered == "20-24") ~ 3.4,
-        (country == "Tanzania" & ageasentered == "25-29") ~ 5.6,
-        (country == "Uganda" & ageasentered == "10-14") ~ 0.9,
-        (country == "Uganda" & ageasentered == "15-19") ~ 1.7,
-        (country == "Uganda" & ageasentered == "20-24") ~ 4.2,
-        (country == "Uganda" & ageasentered == "25-29") ~ 7.5,
-        (country == "Zambia" & ageasentered == "10-14") ~ 1.0,
-        (country == "Zambia" & ageasentered == "15-19") ~ 3.3,
-        (country == "Zambia" & ageasentered == "20-24") ~ 8.3,
-        (country == "Zambia" & ageasentered == "25-29") ~ 13.6,
-        (country == "Zimbabwe" & ageasentered == "10-14") ~ 1.9,
-        (country == "Zimbabwe" & ageasentered == "15-19") ~ 3.8,
-        (country == "Zimbabwe" & ageasentered == "20-24") ~ 6.4,
-        (country == "Zimbabwe" & ageasentered == "25-29") ~ 10.6,
-      )
-    )
+  b <- y
   
-  b$Prev_2018 <- b$Internal_Prev
-  b$Prev_2019 <- b$Internal_Prev
-  b$Prev_2020 <- b$Internal_Prev
-  b$Prev_2021 <- b$Internal_Prev
-  b$Prev_2022 <- b$Internal_Prev
-  b$Prev_2023 <- b$Internal_Prev
+  # print("DefaultSubnatPrevTabFiltered")
+  # print(b)
+
+  c <- left_join(a,
+                 b,
+                 by = c("country",
+                        "AREA_NAME",
+                        "ageasentered"),
+                 keep = TRUE) %>%
+    dplyr::select(-c(country.y,
+                     AREA_NAME.y,
+                     ageasentered.y)) %>%
+    rename(country = country.x,
+           AREA_NAME = AREA_NAME.x,
+           ageasentered = ageasentered.x)
   
-  c <- b %>%
-    dplyr::select(-c("Internal_Prev"))
+  # print("joined")
+  # print(c)
   
-  return(c)
+  c$Prev_2018 <- c$SubNatPrevalence
+  c$Prev_2019 <- c$SubNatPrevalence
+  c$Prev_2020 <- c$SubNatPrevalence
+  c$Prev_2021 <- c$SubNatPrevalence
+  c$Prev_2022 <- c$SubNatPrevalence
+  c$Prev_2023 <- c$SubNatPrevalence
+  c$Prev_2024 <- c$SubNatPrevalence
+  
+  # print("Prev Replaced")
+  # print(c)
+  
+  d <- c %>%
+    dplyr::select(-c("SubNatPrevalence"))
+  
+  # print("Final?")
+  # print(d)
+  
+  return(d)
   
 }
 
