@@ -598,8 +598,8 @@ server <- function(input, output, session) {
                ),
                h3("Review Your Results"))),
       wellPanel(
-        actionButton("printTest",
-                     "Test"),
+        # actionButton("printTest",
+        #              "Test"),
         h4("2023 Figures"),
         br(),
         br(),
