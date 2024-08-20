@@ -274,6 +274,15 @@ server <- function(input, output, session) {
   
   # logout process ----
   observeEvent(input$logout, {
+    
+    # capture logout event
+    send_event_to_s3(
+      app_name = Sys.getenv("SECRET_ID"), 
+      event_type = "LOGOUT", 
+      user_input = user_input, 
+      log_bucket = Sys.getenv("LOG_BUCKET")
+    )
+    
     req(input$logout)
     # Returns to the log in screen without the authorization code at top
     updateQueryString("?", mode = "replace", session = session)
@@ -285,15 +294,6 @@ server <- function(input, output, session) {
     user_input$d2_session  <-  NULL
     d2_default_session <- NULL
     gc()
-    
-    # capture logout event
-    send_event_to_s3(
-      app_name = Sys.getenv("SECRET_ID"), 
-      event_type = "LOGOUT", 
-      user_input = user_input, 
-      log_bucket = Sys.getenv("LOG_BUCKET")
-    )
-    
     session$reload()
   })
   
