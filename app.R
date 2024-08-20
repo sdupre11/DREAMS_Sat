@@ -272,6 +272,15 @@ server <- function(input, output, session) {
   # logout process ----
   observeEvent(input$logout, {
     req(input$logout)
+    
+    # capture logout event
+    pdaprules::send_event_to_s3(
+      app_name = Sys.getenv("SECRET_ID"), 
+      event_type = "LOGOUT", 
+      user_input = user_input, 
+      log_bucket = Sys.getenv("LOG_BUCKET")
+    )
+    
     # Returns to the log in screen without the authorization code at top
     updateQueryString("?", mode = "replace", session = session)
     flog.info(paste0("User ", user_input$d2_session$me$userCredentials$username, " logged out."))
@@ -282,15 +291,6 @@ server <- function(input, output, session) {
     user_input$d2_session  <-  NULL
     d2_default_session <- NULL
     gc()
-    
-    # capture logout event
-    pdaprules::send_event_to_s3(
-      app_name = Sys.getenv("SECRET_ID"), 
-      event_type = "LOGOUT", 
-      user_input = user_input, 
-      log_bucket = Sys.getenv("LOG_BUCKET")
-    )
-    
     session$reload()
   })
   
