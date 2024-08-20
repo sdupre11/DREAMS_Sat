@@ -510,14 +510,14 @@
     },
     "digest": {
       "Package": "digest",
-      "Version": "0.6.37",
+      "Version": "0.6.36",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "33698c4b3127fc9f506654607fb73676"
+      "Hash": "fd6824ad91ede64151e93af67df6376b"
     },
     "dplyr": {
       "Package": "dplyr",
